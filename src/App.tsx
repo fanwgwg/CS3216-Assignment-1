@@ -5,6 +5,7 @@ import * as Utilities from './Utilities';
 
 import QuestionView from './QuestionView';
 import MainPage from './MainPage';
+import TopBar from './TopBar';
 
 require("../resources/app.css");
 
@@ -18,6 +19,7 @@ interface AppStates {
 
 class App extends React.Component<AppProps, AppStates> {
 
+  appTitle = "Team Builder";
   jsonUrls = ["questions"]; // hardcoded for now
   numberOfQuestions: number = 0;
 
@@ -97,6 +99,7 @@ class App extends React.Component<AppProps, AppStates> {
 
     return (
       <div className="App">
+        <TopBar appTitle={this.appTitle}/>
         {questionView}
         {mainPage}
       </div>

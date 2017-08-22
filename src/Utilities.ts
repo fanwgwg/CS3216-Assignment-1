@@ -3,6 +3,7 @@ export class Question {
     answer1: string = "";
     answer2: string = "";
 }
+
 export class JsonDownloader {
 
     callback: Function = null;

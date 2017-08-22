@@ -3,10 +3,10 @@ const express = require('express');
 const app = express();
 const port = process.env.port || process.env.PORT || 8000
 
-// const mysql = require('mysql');
-// const config = require('./config');
+const mysql = require('mysql');
+const config = require('./config');
 
-// const pool = mysql.createPool(config.MYSQL_OPTIONS);
+const pool = mysql.createPool(config.MYSQL_OPTIONS);
 
 function loadJsonFromFile(jsonPath, req, res) {
   fs.readFile(jsonPath, function(err, data) {
@@ -19,10 +19,10 @@ function loadJsonFromFile(jsonPath, req, res) {
   });
 }
 
-// pool.getConnection(function(err, connection) {
-//   if (err) throw err;
-//   console.log("Database Connected: %s", connection);
-// });
+pool.getConnection(function(err, connection) {
+  if (err) throw err;
+  console.log("Database Connected: %s", connection);
+});
 
 app.use(express.static(__dirname));
 
