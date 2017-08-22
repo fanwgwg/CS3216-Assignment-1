@@ -5,17 +5,17 @@ const port = process.env.port || process.env.PORT || 8000
 const mysql = require('mysql');
 const config = require('./config');
 
-const mysqlCon = mysql.createConnection(config.MYSQL_OPTIONS);
+const pool = mysql.createPool(config.MYSQL_OPTIONS);
 
-mysqlCon.connect(function(err) {
+pool.getConnection(function(err, connection) {
   if (err) throw err;
-  console.log("Connected!");
+  console.log("Database Connected: %s", connection);
 });
 
 app.use(express.static(__dirname));
 
 app.get('/', function (req, res) {
-  res.render("index.html");
+  res.render("./index.html");
 });
 
 app.listen(port, function () {
