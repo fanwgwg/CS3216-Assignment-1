@@ -8,8 +8,8 @@ const mysql = require('mysql');
 const poolOptions = {
     connectionLimit : 10,
     host: "assignment-1.cbvy9uwdbgm6.ap-southeast-1.rds.amazonaws.com",
-    user: process.env.DB_ID,
-    password: process.env.DB_PASSWORD,
+    user: process.env.MYSQL_ID,
+    password: process.env.MYSQL_PASSWORD,
     database: "cs3216_assignment_1"
 }
 const pool = mysql.createPool(poolOptions);
