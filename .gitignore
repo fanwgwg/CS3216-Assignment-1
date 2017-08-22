@@ -10,6 +10,9 @@ config.js
 # production
 /build
 
+# Temporary output files
+/dist
+
 # misc
 .DS_Store
 .env.local
