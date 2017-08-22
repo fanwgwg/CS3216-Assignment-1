@@ -15,7 +15,7 @@ Installing all dependencies
 
 - Serve up the site
 
-    `$ node ./index.js`
+    `$ node ./main.js`
 
 - Navigate to `localhost:8000` in browser
 
