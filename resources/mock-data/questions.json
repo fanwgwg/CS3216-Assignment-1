@@ -1,0 +1,29 @@
+{
+    "questions": [
+        {
+            "body": "What's your gender?",
+            "answer1": "Male",
+            "answer2": "Female"
+        },
+        {
+            "body": "Are you a CS student?",
+            "answer1": "Yes",
+            "answer2": "No"
+        },
+        {
+            "body": "Have you taken CS2103/CS2103T before?",
+            "answer1": "Yes",
+            "answer2": "No"
+        },
+        {
+            "body": "Do you prefer working during day or night?",
+            "answer1": "Day",
+            "answer2": "Night"
+        },
+        {
+            "body": "Are you more into front-end or back-end?",
+            "answer1": "front-end",
+            "answer2": "back-end"
+        }
+    ]
+}

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const express = require('express');
 const app = express();
 const port = process.env.port || process.env.PORT || 8000
@@ -13,6 +14,17 @@ const poolOptions = {
 }
 const pool = mysql.createPool(poolOptions);
 
+function loadJsonFromFile(jsonPath, req, res) {
+  fs.readFile(jsonPath, function(err, data) {
+    if (err) {
+      res.end(err.message);
+    } else {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(data.toString());
+    }
+  });
+}
+
 pool.getConnection(function(err, connection) {
   if (err) throw err;
   console.log("Database Connected: %s", connection);
@@ -22,6 +34,10 @@ app.use(express.static(__dirname));
 
 app.get('/', function (req, res) {
   res.render("./index.html");
+});
+
+app.get('/questions', function (req, res) {
+  loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 });
 
 app.listen(port, function () {

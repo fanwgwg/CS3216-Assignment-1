@@ -1,0 +1,100 @@
+body {
+    font-family: "PT Sans";
+    font-size: 13px;
+    margin: 0px;
+}
+
+.TopBar {
+    height: 50px;
+    font-size: 25px;
+    color: grey;
+    display: flex;
+    position: relative;
+    align-items: center;
+    user-select: none;
+    cursor: default;
+}
+
+.TopBar .Logo {
+    height: 25px;
+    padding: 12px 15px;
+}
+
+.TopBar .Title {
+    padding: 10px 0px;
+}
+
+.QuestionContainer {
+    background-color: #7F8C8D;
+    color: white;
+    min-height: 100vh;
+    text-align: center;
+}
+
+.QuestionContainer .Title {
+    font-size: 50px;
+    padding-top: 200px;
+}
+
+.QuestionContainer .Body {
+    font-size: 30px;
+    padding-top: 50px;
+}
+
+.QuestionContainer .Answers {
+    font-size: 30px;
+    display: flex;
+    justify-content: space-around;
+    padding: 50px 100px 50px 100px;
+    user-select: none;
+}
+
+.QuestionContainer .Answer1 {
+    background-color: #36D7B7;
+    padding: 5px 30px 5px 30px;
+    border-radius: 10px;
+    transition: 0.15s;
+    cursor: pointer;
+}
+
+.QuestionContainer .Answer2 {
+    background-color: #B3C1C2;
+    padding: 5px 30px 5px 30px;
+    border-radius: 10px;
+    transition: 0.15s;
+    cursor: pointer;
+}
+
+.QuestionContainer .Back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: fixed;
+    bottom: 50px;
+    width: 100%;
+    transition: 0.15s;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+.QuestionContainer .Answer1:hover,
+.QuestionContainer .Answer2:hover,
+.QuestionContainer .Back:hover {
+    opacity: 0.8;
+}
+
+.QuestionContainer .BackButton {
+    height: 25px;
+    cursor: pointer;
+}
+
+.QuestionContainer .BackButtonDesc {
+    font-size: 12px;
+    padding-left: 5px;
+}
+
+.MainPage {
+    background-color: white;
+    min-height: 100vh;
+}
