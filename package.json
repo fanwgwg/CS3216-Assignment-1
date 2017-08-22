@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/han-gyeol/CS3216-Assignment-1#readme",
   "dependencies": {
-    "express": "^4.15.4"
+    "express": "^4.15.4",
+    "mysql": "^2.14.1"
   }
 }
