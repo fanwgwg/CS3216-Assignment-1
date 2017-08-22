@@ -24,7 +24,7 @@ if (productionBuild) {
 
 module.exports = {
     entry: [
-        "./src/entry-point.tsx"
+        "./src/App.tsx"
     ],
     target: "node",
     output: {
