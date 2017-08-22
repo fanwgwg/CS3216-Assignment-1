@@ -20,7 +20,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/questions', function (req, res) {
-  loadJsonFromFile("./src/questions.json", req, res);
+  loadJsonFromFile("./resources/mockdata/questions.json", req, res);
 });
 
 app.listen(port, function () {
