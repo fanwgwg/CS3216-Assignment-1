@@ -3,9 +3,15 @@ const app = express();
 const port = process.env.port || process.env.PORT || 8000
 
 const mysql = require('mysql');
-const config = require('./config');
 
-const pool = mysql.createPool(config.MYSQL_OPTIONS);
+const poolOptions = {
+    connectionLimit : 10,
+    host: "assignment-1.cbvy9uwdbgm6.ap-southeast-1.rds.amazonaws.com",
+    user: process.env.DB_ID,
+    password: process.env.DB_PASSWORD,
+    database: "cs3216_assignment_1"
+}
+const pool = mysql.createPool(poolOptions);
 
 pool.getConnection(function(err, connection) {
   if (err) throw err;
