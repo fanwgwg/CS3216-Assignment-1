@@ -12,8 +12,10 @@ mysqlCon.connect(function(err) {
   console.log("Connected!");
 });
 
+app.use(express.static(__dirname));
+
 app.get('/', function (req, res) {
-  res.send('Hello World!')
+  res.render("index.html");
 });
 
 app.listen(port, function () {
