@@ -9,12 +9,17 @@ body {
     margin: 0px;
 }
 
+.App {
+    min-height: 100vh;
+}
+
 .TopBar {
     height: 50px;
     font-size: 25px;
     color: grey;
     display: flex;
-    position: relative;
+    position: fixed;
+    width: 100%;
     align-items: center;
     user-select: none;
     cursor: default;
@@ -32,42 +37,45 @@ body {
 .QuestionContainer {
     background-color: #7F8C8D;
     color: white;
-    min-height: 100vh;
     text-align: center;
+    position: fixed;
+    width: 100%;
+    top: 50px;
+    height: 100%;
 }
 
 .QuestionContainer .Title {
-    font-size: 50px;
+    font-size: 80px;
     padding-top: 200px;
 }
 
 .QuestionContainer .Body {
-    font-size: 30px;
+    font-size: 50px;
     padding-top: 50px;
 }
 
 .QuestionContainer .Answers {
-    font-size: 30px;
+    font-size: 50px;
     display: flex;
     justify-content: space-around;
     padding: 50px 100px 50px 100px;
     user-select: none;
 }
 
-.QuestionContainer .Answer1 {
-    background-color: #36D7B7;
-    padding: 5px 30px 5px 30px;
+.QuestionContainer .Answer1,
+.QuestionContainer .Answer2 {
+    padding: 15px 30px 10px 30px;
     border-radius: 10px;
     transition: 0.15s;
     cursor: pointer;
 }
 
+.QuestionContainer .Answer1 {
+    background-color: #36D7B7;
+}
+
 .QuestionContainer .Answer2 {
     background-color: #B3C1C2;
-    padding: 5px 30px 5px 30px;
-    border-radius: 10px;
-    transition: 0.15s;
-    cursor: pointer;
 }
 
 .QuestionContainer .Back {
@@ -76,11 +84,14 @@ body {
     justify-content: center;
     cursor: pointer;
     position: fixed;
+    width: 20%;
     bottom: 50px;
-    width: 100%;
-    transition: 0.15s;
-    -webkit-user-select: none;
+    left: 0;
+    right: 0;
+    margin-right: auto;
+    margin-left: auto;
     user-select: none;
+    transition: 0.15s;
 }
 
 .QuestionContainer .Answer1:hover,
@@ -90,13 +101,13 @@ body {
 }
 
 .QuestionContainer .BackButton {
-    height: 25px;
+    height: 36px;
     cursor: pointer;
 }
 
 .QuestionContainer .BackButtonDesc {
-    font-size: 12px;
-    padding-left: 5px;
+    font-size: 20px;
+    padding-left: 10px;
 }
 
 .MainPage {

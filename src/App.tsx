@@ -99,7 +99,7 @@ class App extends React.Component<AppProps, AppStates> {
 
     return (
       <div className="App">
-        <TopBar appTitle={this.appTitle}/>
+        <TopBar appTitle={this.appTitle} />
         {questionView}
         {mainPage}
       </div>

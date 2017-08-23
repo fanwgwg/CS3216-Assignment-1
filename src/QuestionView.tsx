@@ -41,6 +41,6 @@ export default class QuestionView extends React.Component<QuestionViewProps, Que
     }
 
     getQuestionTitle(): string {
-        return "Question #" + this.props.index;
+        return "Question #" + (this.props.index + 1);
     }
 }
