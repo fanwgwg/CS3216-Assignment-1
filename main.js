@@ -19,6 +19,34 @@ pool.getConnection(function (err, connection) {
   console.log("Database Connected: %s", connection);
 });
 
+app.use(express.static(__dirname));
+
+app.get('/', function (req, res) {
+  res.render("./index.html");
+});
+
+app.get('/questions', function (req, res) {
+  // stub
+  // loadJsonFromFile("./resources/mock-data/questions.json", req, res);
+
+  // from database
+  pool.query(`SELECT * FROM cs3216_assignment_1.questions WHERE project_id='temp_id'`, function (error, results, fields) {
+    if (error) {
+      console.log(error.message);
+      res.end(err.message);
+    }
+    else {
+      let data = parseQueryResult(results);
+      res.writeHead(200, { "Content-Type": "application/json" });
+      res.end(data);
+    }
+  });
+});
+
+app.listen(port, function () {
+  console.log("Server listening on port %s", port);
+});
+
 function loadJsonFromFile(jsonPath, req, res) {
   fs.readFile(jsonPath, function (err, data) {
     if (err) {
@@ -32,16 +60,11 @@ function loadJsonFromFile(jsonPath, req, res) {
   });
 }
 
-app.use(express.static(__dirname));
+function parseQueryResult(results) {
+  let data = { questions: [] };
+  results.forEach(function(row) {
+    data.questions.push({"body": row.text});
+  });
 
-app.get('/', function (req, res) {
-  res.render("./index.html");
-});
-
-app.get('/questions', function (req, res) {
-  loadJsonFromFile("./resources/mock-data/questions.json", req, res);
-});
-
-app.listen(port, function () {
-  console.log("Server listening on port %s", port);
-});
+  return JSON.stringify(data);
+}
