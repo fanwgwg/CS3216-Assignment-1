@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import UserCard from './UserCard';
+
 interface TopBarProps {
     appTitle: string
 }

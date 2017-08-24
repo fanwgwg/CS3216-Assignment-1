@@ -4,6 +4,12 @@ export class Question {
     answer2: string = "";
 }
 
+export class User {
+    name: string = "";
+    desc: string = "";
+    matchScore: number = 0;
+}
+
 export class JsonDownloader {
 
     callback: Function = null;

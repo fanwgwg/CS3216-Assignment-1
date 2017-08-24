@@ -16,7 +16,9 @@ body {
 .TopBar {
     height: 50px;
     font-size: 25px;
+    min-width: 300px;
     color: grey;
+    background-color: whitesmoke;
     display: flex;
     position: fixed;
     width: 100%;
@@ -112,5 +114,77 @@ body {
 
 .MainPage {
     background-color: white;
-    min-height: 100vh;
+    padding-top: 50px;
+    width: 100%;
+}
+
+.MainPage .Header {
+    font-size: 60px;
+    color: grey;
+    background-color: whitesmoke;
+    padding: 20px 0px 20px 55px;
+    border-bottom: #E8E8E8 solid 1px;
+}
+
+.MainPage .UserList {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px 40px;
+    justify-content: center;
+}
+
+.UserCard {
+    border-radius: 5px;
+    background-color: #53B6E1;
+    margin: 20px 40px;
+}
+
+.UserCard .NameCard {
+    display: flex;
+    background-color: #ececec;
+    border-radius: 4px;
+    padding: 15px 25px 5px 25px;
+    width: 350px;
+}
+
+.UserCard .IndexImg {
+    height: 60px;
+    padding: 0px 0px 10px 0px;
+}
+
+.UserCard .IndexId {
+    font-size: 55px;
+    text-align: center;
+    padding: 5px 15px 0 5px;
+    color: #9c9890;
+}
+
+.UserCard .Detail {
+    padding: 5px 10px 0px 20px;
+}
+
+.UserCard .Detail .Top {
+    display: flex;
+}
+
+
+.UserCard .Detail .Icon {
+    height: 30px;
+    padding-right: 10px;
+}
+
+.UserCard .Detail .Name {
+    color: #5298AB;
+    font-size: 25px;
+}
+
+.UserCard .Detail .Bottom {
+    color: #e48a82;
+    font-size: 15px;
+    padding-top: 5px;
+}
+
+.UserCard .MatchScore {
+    padding: 10px 10px 10px 30px;
+    color: white;
 }
