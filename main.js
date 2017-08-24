@@ -27,20 +27,20 @@ app.get('/', function (req, res) {
 
 app.get('/questions', function (req, res) {
   // stub
-  // loadJsonFromFile("./resources/mock-data/questions.json", req, res);
+  loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 
   // from database
-  pool.query(`SELECT * FROM cs3216_assignment_1.questions WHERE project_id='temp_id'`, function (error, results, fields) {
-    if (error) {
-      console.log(error.message);
-      res.end(err.message);
-    }
-    else {
-      let data = parseQueryResult(results);
-      res.writeHead(200, { "Content-Type": "application/json" });
-      res.end(data);
-    }
-  });
+  // pool.query(`SELECT * FROM cs3216_assignment_1.questions WHERE project_id='temp_id'`, function (error, results, fields) {
+  //   if (error) {
+  //     console.log(error.message);
+  //     res.end(err.message);
+  //   }
+  //   else {
+  //     let data = parseQueryResult(results);
+  //     res.writeHead(200, { "Content-Type": "application/json" });
+  //     res.end(data);
+  //   }
+  // });
 });
 
 app.listen(port, function () {
