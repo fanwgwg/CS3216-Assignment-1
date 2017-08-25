@@ -48,12 +48,12 @@ body {
 
 .QuestionContainer .Title {
     font-size: 80px;
-    padding-top: 120px;
+    margin-top: 10%;
 }
 
 .QuestionContainer .Body {
     font-size: 50px;
-    padding-top: 50px;
+    margin-top: 5%;
 }
 
 .QuestionContainer .Answers {
