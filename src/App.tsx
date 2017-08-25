@@ -19,7 +19,7 @@ interface AppStates {
 
 class App extends React.Component<AppProps, AppStates> {
 
-  appTitle = "Team Builder";
+  appTitle = "Teamker";
   jsonUrls = ["questions"]; // hardcoded for now
   numberOfQuestions: number = 0;
 

@@ -10,6 +10,19 @@ interface UserDetailProps {
 interface UserDetailStates { }
 
 export default class UserDetail extends React.Component<UserDetailProps, UserDetailStates> {
+
+    componentWillMount() {
+        let userList = document.getElementsByClassName("UserList") as HTMLCollectionOf<HTMLElement>;
+        userList[0].style.pointerEvents = "none";
+        document.body.style.overflow = "hidden";
+    }
+
+    componentWillUnmount() {
+        document.body.style.overflow = "auto";
+        let userList = document.getElementsByClassName("UserList") as HTMLCollectionOf<HTMLElement>;
+        userList[0].style.pointerEvents = "auto";
+    }
+
     render() {
         let index = 0;
         let answers = this.props.user.questionAndAnswers.map(x =>
