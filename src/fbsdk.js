@@ -1,38 +1,8 @@
 
-// function statusChangeCallback(response) {
-//   var userId = "";
-//   var userName = "";
-//   console.log('statusChangeCallback');
-//   console.log(response);
-//   // The response object is returned with a status field that lets the
-//   // app know the current login status of the person.
-//   // Full docs on the response object can be found in the documentation
-//   // for FB.getLoginStatus().
-//   if (response.status === 'connected') {
-//     // Logged into your app and Facebook.
-//     FB.api('/me', function (response) {
-//       userId = response.id;
-//       userName = response.name;
-//       console.log('Successful login for: ' + response.name);
-//     });
-//   } else {
-
-//     // The person is not logged into your app or we are unable to tell.
-//     //      document.getElementById('status').innerHTML = 'Please log ' +
-//     //        'into this app.';
-//   }
-//   return [userId, userName]
-// }
-// function checkLoginState() {
-//   userInfo = FB.getLoginStatus(function (response) {
-//     statusChangeCallback(response);
-//   });
-//   return userInfo
-
-//}
 window.fbAsyncInit = function () {
   FB.init({
-    appId: '485887598470622',
+    appId: '196392960900707',
+    //appId: '847275338755067',
     xfbml: true,
     version: 'v2.10'
   });
@@ -53,7 +23,5 @@ function testAPI() {
   console.log('Welcome!  Fetching your information.... ');
   FB.api('/me', function (response) {
     console.log('Successful login for: ' + response.name + response.id);
-    //      document.getElementById('status').innerHTML =
-    //        'Thanks for logging in, ' + response.name + '!';
   });
 }
