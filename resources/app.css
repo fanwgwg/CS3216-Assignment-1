@@ -138,8 +138,6 @@ input[type=range]:active::-webkit-slider-thumb {
     transition: 0.2s;
 }
 
-.QuestionContainer .Answer1:hover,
-.QuestionContainer .Answer2:hover,
 .QuestionContainer .Back:hover {
     opacity: 0.5;
 }
