@@ -39,7 +39,7 @@ export default class QuestionView extends React.Component<QuestionViewProps, Que
                 <div className={"Title"}>{this.getQuestionTitle()}</div>
                 <div className={"Body"}>{this.props.question.body}</div>
                 <div className={"Answers"}>
-                    <input id="rangeInput" type="range" min="1" max="10" step="any" onChange={this.updateRangeInputValue.bind(this)} />
+                    <input id="rangeInput" type="range" min="1" max="10" step="any" defaultValue="5" onChange={this.updateRangeInputValue.bind(this)} />
                     <div className={"InputValue"}>{this.state.rangeValue}</div>
                     <div className={"OkButton"} onClick={this.props.onQuestionAnswered.bind(this)}>Next</div>
                 </div>

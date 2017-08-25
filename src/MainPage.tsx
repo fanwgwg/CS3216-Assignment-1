@@ -46,21 +46,31 @@ export default class MainPage extends React.Component<MainPageProps, MainPageSta
         let questionAndAnswers: Utilities.QuestionAndAnswer[] = questions.map(x => {
             return {
                 question: x,
-                answer: 5
+                answer: Math.floor(Math.random() * 9 + 1)
             }
         })
 
-        for (let i = 0; i < 50; i++) {
-            let user = {
-                name: "Jim Bob " + i,
+        let users = ["Li Zihan", "Ho Yi Hang", "Goh Wei Wen", "Chan Khan", "Stefano Chiesa Suryanto",
+            "Lau Shi Jie", "Yip Mun Kit Bernard", "Tan Zheng Wei", "Tan Kai Meng Wilson", "Jeremy Jee De Sheng",
+            "Ng Jun Wei", "Chan Jin Jia", "Chua Lin Jing", "Apoorva Ullas", "Charlton Lim", "WANG RIWU",
+            "Lim Jia Yee", "Lim Ta Eu", "Aaron Ong Chong Shi", "Danielle Chan Xin Yun", "Maximilianus Kusnadi",
+            "Oh Han Gyeol", "WON JUN RU DAPHNE", "Kushagra Goyal", "Curtis Tan Wei Jie", "See Soon Kiat", "See Loo Jane",
+            "Alan Lee Yung Chong", "Fan Weiguang", "Bai Chuan", "Chng Hui Yie", "Ong Jing Yin", "Ng Si Kai",
+            "Liew Yu Young Jovin", "Aaron Ong Chong Shi"];
+
+        this.userList = users.map(name => {
+            return {
+                name: name,
                 desc: "This is a description about myself",
-                matchScore: 100 - i,
+                matchScore: Math.floor(Math.random() * 99 + 1),
                 photoUrl: require("../resources/icons/user.svg"),
                 questionAndAnswers: questionAndAnswers
             };
+        });
 
-            this.userList.push(user);
-        }
+        this.userList.sort((a, b) => {
+            return a.matchScore < b.matchScore ? 1 : -1;
+        })
     }
 
     render() {
