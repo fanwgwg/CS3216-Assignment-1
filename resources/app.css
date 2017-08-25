@@ -11,8 +11,10 @@ body {
 
 .App {
     min-height: 100vh;
-}.TopBar {
-    height: 50px;
+}
+
+.TopBar {
+    height: 60px;
     font-size: 25px;
     min-width: 300px;
     color: grey;
@@ -26,8 +28,8 @@ body {
 }
 
 .TopBar .Logo {
-    height: 25px;
-    padding: 12px 15px;
+    height: 55px;
+    padding-left: 10px;
 }
 
 .TopBar .Title {
@@ -41,7 +43,7 @@ body {
 }
 
 .TopBar .ProfilePhoto {
-    height: 30px;
+    height: 40px;
     padding: 10px 10px;
     margin-right: 0;
     margin-left: auto;
@@ -59,7 +61,7 @@ body {
 }
 
 .LoginPage {
-    top: 50px;
+    top: 60px;
     text-align: center;
     width: 100%; 
     height: 100%;
@@ -136,13 +138,13 @@ body {
     text-align: center;
     position: fixed;
     width: 100%;
-    top: 50px;
+    top: 60px;
     height: 100%;
 }
 
 .QuestionContainer .Title {
     font-size: 80px;
-    padding-top: 150px;
+    padding-top: 120px;
 }
 
 .QuestionContainer .Body {
@@ -287,6 +289,7 @@ input[type=range]:active::-webkit-slider-thumb {
     border-radius: 4px;
     padding: 15px 25px 5px 25px;
     width: 350px;
+    height: 60%;
 }
 
 .UserCard .IndexImg {
