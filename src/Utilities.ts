@@ -1,12 +1,10 @@
 export class Question {
     body: string = "";
-    answer1: string = "";
-    answer2: string = "";
 }
 
 export class QuestionAndAnswer {
     question: Question = null;
-    answer: string = "";
+    answer: number = 0;
 }
 
 export class User {

@@ -27,36 +27,26 @@ export default class MainPage extends React.Component<MainPageProps, MainPageSta
     setUserList(): void {
         let questions: Utilities.Question[] = [
             {
-                "body": "What's your gender?",
-                "answer1": "Male",
-                "answer2": "Female"
+                "body": "How much do you know about Photoshop and design?"
             },
             {
-                "body": "Are you a CS student?",
-                "answer1": "Yes",
-                "answer2": "No"
+                "body": "How much do you know about Html and CSS?"
             },
             {
-                "body": "Have you taken CS2103/CS2103T before?",
-                "answer1": "Yes",
-                "answer2": "No"
+                "body": "How much do you know about Javascript?"
             },
             {
-                "body": "Do you prefer working during day or night?",
-                "answer1": "Day",
-                "answer2": "Night"
+                "body": "How much do you know about server side languages?"
             },
             {
-                "body": "Are you more into front-end or back-end?",
-                "answer1": "front-end",
-                "answer2": "back-end"
+                "body": "How much do you know about database?"
             }
         ];
 
         let questionAndAnswers: Utilities.QuestionAndAnswer[] = questions.map(x => {
             return {
                 question: x,
-                answer: x.answer1
+                answer: 5
             }
         })
 
@@ -82,7 +72,7 @@ export default class MainPage extends React.Component<MainPageProps, MainPageSta
 
         if (this.state.shouldUserDetailOpen) {
             let user = this.userList[this.currentUserIndex];
-            userDetails = <UserDetails user={user} onCloseButtonClicked={this.closeUserDetails.bind(this)}/>
+            userDetails = <UserDetails user={user} onCloseButtonClicked={this.closeUserDetails.bind(this)} />
         }
 
         return (
