@@ -18,7 +18,7 @@ export default class TopBar extends React.Component<TopBarProps, TopBarStates> {
             return (
                 <div className={"TopBar"}>
                     <img className={"Logo"} src={require("../resources/icons/logo.png")} />
-                    <div className={"Title"}>{this.props.appTitle}</div>
+                    {/* <div className={"Title"}>{this.props.appTitle}</div> */}
                 </div>
             )
         }else{
@@ -26,7 +26,7 @@ export default class TopBar extends React.Component<TopBarProps, TopBarStates> {
             return (
                 <div className={"TopBar"}>
                     <img className={"Logo"} src={require("../resources/icons/logo.png")} />
-                    <div className={"Title"}>{this.props.appTitle}</div>
+                    {/* <div className={"Title"}>{this.props.appTitle}</div> */}
                     <img className={"ProfilePhoto"} src={photolink}/>
                     <div className={"UserName"}>{this.props.userName}</div>
                     <button className={"loginBtn"} 
