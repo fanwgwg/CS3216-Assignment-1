@@ -9,6 +9,10 @@ export default class LoginPage extends React.Component<LoginPageProps>{
         console.log("start rendering login page");
         return (
             <div className={"LoginPage"}>
+                <div className={"WelcomeMessage"}>
+                    Welcome to Teamker</div>
+                <div className={"Introduction"}>
+                    A fast and simple way to find the best teammates.</div> 
                 <button className={"loginBtn loginBtn--facebook"} 
                  onClick={this.props.onLogin.bind(this)}>
                  Continue with Facebook</button> 

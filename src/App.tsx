@@ -29,7 +29,7 @@ declare function fbCheckLoginState(): any;
 
 class App extends React.Component<AppProps, AppStates> {
 
-  appTitle = "Team Builder";
+  appTitle = "Teamker";
   jsonUrls = ["questions"]; // hardcoded for now
   numberOfQuestions: number = 0;
 
@@ -159,12 +159,11 @@ class App extends React.Component<AppProps, AppStates> {
         appTitle={this.appTitle} userId={this.state.userId} 
         userName={this.state.userName} onLogout={this.logUserOut.bind(this)} />
         
-
-      loginPage = <LoginPage
-        onLogin={this.checkLoginState.bind(this)}
-      />
-     
-  
+      if (!this.state.login){
+        loginPage = <LoginPage
+        onLogin={this.checkLoginState.bind(this)}/>
+      }
+      
       if (this.state.login && !this.state.allQuestionsAnswered && this.state.questions) {
         questionView = <QuestionView
           question={this.state.questions[this.state.currentQuestionIndex]}
@@ -174,7 +173,7 @@ class App extends React.Component<AppProps, AppStates> {
         />
       }
   
-      if (this.state.allQuestionsAnswered) {
+      if (this.state.login && this.state.allQuestionsAnswered) {
         mainPage = <MainPage />
       }
   

@@ -11,12 +11,12 @@ body {
 
 .App {
     min-height: 100vh;
-}
-
-.TopBar {
+}.TopBar {
     height: 50px;
     font-size: 25px;
+    min-width: 300px;
     color: grey;
+    background-color: whitesmoke;
     display: flex;
     position: fixed;
     width: 100%;
@@ -41,22 +41,45 @@ body {
 }
 
 .TopBar .ProfilePhoto {
-    height: 40px;
-    padding: 5px 10px;
+    height: 30px;
+    padding: 10px 10px;
     margin-right: 0;
     margin-left: auto;
 }
 .TopBar .loginBtn{
-    margin-right: 0;
+    margin-right: 10px;
     margin-left: 10px;
+    line-height: 26px;
+    padding-right: 5px;
+    padding-left: 5px;
+    background-color: #4C69BA;
+    background-image: linear-gradient(#4C69BA, #3B55A0);
+    /*font-family: "Helvetica neue", Helvetica Neue, Helvetica, Arial, sans-serif;*/
+    text-shadow: 0 -1px 0 #354C8C;
 }
 
 .LoginPage {
     top: 50px;
     text-align: center;
     width: 100%; 
+    height: 100%;
     margin: auto;
     position: fixed;
+    background-image: url("./icons/login.png");
+    background-size: cover;
+}
+
+.LoginPage .WelcomeMessage {
+    font-size: 100px;
+    padding-top: 100px;
+    color: #FFF;
+}
+
+.LoginPage .Introduction {
+    font-size: 30px;
+    padding-top: 20px;
+    padding-bottom: 50px;
+    color: #FFF;
 }
 
 .loginBtn {
@@ -119,7 +142,7 @@ body {
 
 .QuestionContainer .Title {
     font-size: 80px;
-    padding-top: 200px;
+    padding-top: 150px;
 }
 
 .QuestionContainer .Body {
@@ -135,20 +158,62 @@ body {
     user-select: none;
 }
 
-.QuestionContainer .Answer1,
-.QuestionContainer .Answer2 {
+.QuestionContainer .InputValue {
+    font-size: 30px;
+    width: 50px;
+    padding: 20px 0px 10px 0px;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    margin: 10px 0px;
+    background-color: transparent;
+    width: 40%;
+}
+
+input[type=range]:focus {
+    outline: none;
+}
+
+input[type=range]::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 3px;
+    cursor: pointer;
+    box-shadow: 0px 0px 0px #000000, 0px 0px 0px #0d0d0d;
+    background-color: #E8E8E8;
+    border-radius: 15px;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    height: 30px;
+    width: 30px;
+    border-radius: 50%;
+    background-color: #87C7C1;
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -12px;
+    transition: 0.2s;
+}
+
+input[type=range]:active::-webkit-slider-thumb {
+    box-shadow: 4px 4px 20px 0px #787878;
+    height: 35px;
+    width: 35px;
+    margin-top: -15px;
+}
+
+.QuestionContainer .OkButton {
     padding: 15px 30px 10px 30px;
     border-radius: 10px;
-    transition: 0.15s;
+    background-color: #93B2C0;
+    transition: 0.2s;
     cursor: pointer;
+    font-size: 36px;
+    margin-left: 30%;
 }
 
-.QuestionContainer .Answer1 {
-    background-color: #36D7B7;
-}
-
-.QuestionContainer .Answer2 {
-    background-color: #B3C1C2;
+.QuestionContainer .OkButton:hover {
+    opacity: 0.8;
 }
 
 .QuestionContainer .Back {
@@ -164,13 +229,11 @@ body {
     margin-right: auto;
     margin-left: auto;
     user-select: none;
-    transition: 0.15s;
+    transition: 0.2s;
 }
 
-.QuestionContainer .Answer1:hover,
-.QuestionContainer .Answer2:hover,
 .QuestionContainer .Back:hover {
-    opacity: 0.8;
+    opacity: 0.5;
 }
 
 .QuestionContainer .BackButton {
@@ -186,5 +249,158 @@ body {
 .MainPage {
     background-color: white;
     min-height: 100vh;
+    padding-top: 50px;
+    width: 100%;
 }
 
+.MainPage .Header {
+    font-size: 60px;
+    color: grey;
+    background-color: whitesmoke;
+    padding: 20px 0px 20px 55px;
+    border-bottom: #E8E8E8 solid 1px;
+}
+
+.MainPage .UserList {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px 40px;
+    justify-content: center;
+}
+
+.UserCard {
+    border-radius: 5px;
+    background-color: #53B6E1;
+    margin: 20px 40px;
+    box-shadow: 4px 4px 20px 0px #eaeaea;
+    transition: 0.2s;
+}
+
+.UserCard:hover {
+    box-shadow: 4px 4px 20px 0px #908d8d;
+    cursor: pointer;
+}
+
+.UserCard .NameCard {
+    display: flex;
+    background-color: #ececec;
+    border-radius: 4px;
+    padding: 15px 25px 5px 25px;
+    width: 350px;
+}
+
+.UserCard .IndexImg {
+    height: 60px;
+    padding: 0px 0px 10px 0px;
+}
+
+.UserCard .IndexId {
+    font-size: 55px;
+    text-align: center;
+    padding: 5px 15px 0 5px;
+    color: #9c9890;
+}
+
+.UserCard .Detail {
+    padding: 5px 10px 0px 20px;
+}
+
+.UserCard .Detail .Top {
+    display: flex;
+}
+
+.UserCard .Detail .Icon {
+    height: 30px;
+    padding-right: 10px;
+}
+
+.UserCard .Detail .Name {
+    color: #5298AB;
+    font-size: 25px;
+}
+
+.UserCard .Detail .Bottom {
+    color: #e48a82;
+    font-size: 15px;
+    padding-top: 5px;
+}
+
+.UserCard .MatchScore {
+    padding: 10px 10px 10px 30px;
+    color: white;
+}
+
+.UserDetail {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 10%;
+    max-width: 40%;
+    margin: auto;
+    text-align: center;
+    align-items: center;
+    background-color: whitesmoke;
+    box-shadow: 0px 0px 1px 5000px rgba(14, 14, 14, 0.80);
+    border-radius: 5px;
+}
+
+.UserDetail .Top {
+    height: 150px;
+    background-color: #9da9bd;
+    border-radius: 5px;
+    text-align: right;
+}
+
+.UserDetail .CloseButton {
+    height: 15px;
+    padding: 10px;
+    opacity: 0.6;
+    transition: 0.2s;
+}
+
+.UserDetail .CloseButton:hover {
+    opacity: 0.9;
+    height: 18px;
+    cursor: pointer;
+}
+
+.UserDetail .Icon {
+    position: relative;
+    margin-top: -50px;
+    z-index: 1;
+    height: 100px;
+    transition: 0.1s;
+}
+
+.UserDetail .Icon:hover {
+    margin-top: -60px;
+    height: 120px;
+    cursor: pointer;
+}
+
+.UserDetail .Answers {
+    padding: 20px 20px 0px 20px;
+    max-height: 300px;
+    overflow: auto;
+}
+
+.UserDetail .QuestionAndAnswer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding: 10px 20px 10px 20px;
+    background-color: #efebd2;
+    border-radius: 5px;
+    color: #6b6b6b;
+    font-size: 15px;
+}
+
+.UserDetail .Question {
+    width: 75%;
+    text-align: left;
+}
+
+.UserDetail .Answer {
+    width: 25%;
+    text-align: right;
+}

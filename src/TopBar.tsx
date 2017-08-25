@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import UserCard from './UserCard';
+
 interface TopBarProps {
     appTitle: string
     userName: string
@@ -27,7 +29,7 @@ export default class TopBar extends React.Component<TopBarProps, TopBarStates> {
                     <div className={"Title"}>{this.props.appTitle}</div>
                     <img className={"ProfilePhoto"} src={photolink}/>
                     <div className={"UserName"}>{this.props.userName}</div>
-                    <button className={"loginBtn loginBtn--facebook"} 
+                    <button className={"loginBtn"} 
                             onClick={this.props.onLogout.bind(this)}>
                             Log out</button> 
                    

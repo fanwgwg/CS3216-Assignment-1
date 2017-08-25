@@ -9,9 +9,20 @@ interface QuestionViewProps {
     onPreviousQuestionClicked: Function;
 }
 
-interface QuestionViewStates { }
+interface QuestionViewStates {
+    rangeValue: number;
+}
 
 export default class QuestionView extends React.Component<QuestionViewProps, QuestionViewStates> {
+
+    constructor(props: QuestionViewProps) {
+        super(props);
+
+        this.state = {
+            rangeValue: 5
+        };
+    }
+
     render() {
         let backButton: JSX.Element = null;
 
@@ -28,12 +39,9 @@ export default class QuestionView extends React.Component<QuestionViewProps, Que
                 <div className={"Title"}>{this.getQuestionTitle()}</div>
                 <div className={"Body"}>{this.props.question.body}</div>
                 <div className={"Answers"}>
-                    <div className={"Answer1"} onClick={this.props.onQuestionAnswered.bind(this)}>
-                        {this.props.question.answer1}
-                    </div>
-                    <div className={"Answer2"} onClick={this.props.onQuestionAnswered.bind(this)}>
-                        {this.props.question.answer2}
-                    </div>
+                    <input id="rangeInput" type="range" min="1" max="10" step="any" onChange={this.updateRangeInputValue.bind(this)} />
+                    <div className={"InputValue"}>{this.state.rangeValue}</div>
+                    <div className={"OkButton"} onClick={this.props.onQuestionAnswered.bind(this)}>Next</div>
                 </div>
                 {backButton}
             </div>
@@ -42,5 +50,11 @@ export default class QuestionView extends React.Component<QuestionViewProps, Que
 
     getQuestionTitle(): string {
         return "Question #" + (this.props.index + 1);
+    }
+
+    updateRangeInputValue(event: any) {
+        this.setState({
+            rangeValue: Math.floor(event.target.value)
+        })
     }
 }
