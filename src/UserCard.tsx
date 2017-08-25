@@ -5,11 +5,10 @@ import * as Utilities from './Utilities';
 interface UserCardProps {
     user: Utilities.User;
     index: number;
+    onUserCardClick: Function;
 }
 
-interface UserCardStates {
-
-}
+interface UserCardStates { }
 
 export default class UserCard extends React.Component<UserCardProps, UserCardStates> {
     render() {
@@ -35,12 +34,12 @@ export default class UserCard extends React.Component<UserCardProps, UserCardSta
         }
 
         return (
-            <div className={"UserCard"} >
+            <div className={"UserCard"} onClick={this.onUserCardClicked.bind(this)}>
                 <div className={"NameCard"}>
                     {index}
                     <div className={"Detail"}>
                         <div className={"Top"}>
-                            <img className={"Icon"} src={require("../resources/icons/user.png")} />
+                            <img className={"Icon"} src={this.props.user.photoUrl} />
                             <div className={"Name"}>{this.props.user.name}</div>
                         </div>
                         <div className={"Bottom"}>{this.props.user.desc}</div>
@@ -49,6 +48,10 @@ export default class UserCard extends React.Component<UserCardProps, UserCardSta
                 <div className={"MatchScore"}>{this.getMatchScoreString()}</div>
             </div>
         )
+    }
+
+    onUserCardClicked() {
+        this.props.onUserCardClick(this.props.index - 1);
     }
 
     getMatchScoreString(): string {

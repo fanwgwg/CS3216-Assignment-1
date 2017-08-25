@@ -3,21 +3,21 @@ const express = require('express');
 const app = express();
 const port = process.env.port || process.env.PORT || 8000
 
-const mysql = require('mysql');
+// const mysql = require('mysql');
 
-const poolOptions = {
-  connectionLimit: 10,
-  host: "assignment-1.cbvy9uwdbgm6.ap-southeast-1.rds.amazonaws.com",
-  user: process.env.MYSQL_ID,
-  password: process.env.MYSQL_PASSWORD,
-  database: "cs3216_assignment_1"
-}
-const pool = mysql.createPool(poolOptions);
+// const poolOptions = {
+//   connectionLimit: 10,
+//   host: "assignment-1.cbvy9uwdbgm6.ap-southeast-1.rds.amazonaws.com",
+//   user: process.env.MYSQL_ID,
+//   password: process.env.MYSQL_PASSWORD,
+//   database: "cs3216_assignment_1"
+// }
+// const pool = mysql.createPool(poolOptions);
 
-pool.getConnection(function (err, connection) {
-  if (err) throw err;
-  console.log("Database Connected: %s", connection);
-});
+// pool.getConnection(function (err, connection) {
+//   if (err) throw err;
+//   console.log("Database Connected: %s", connection);
+// });
 
 app.use(express.static(__dirname));
 
