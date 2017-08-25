@@ -14,7 +14,7 @@ body {
 }
 
 .TopBar {
-    height: 50px;
+    height: 60px;
     font-size: 25px;
     min-width: 300px;
     color: grey;
@@ -28,8 +28,8 @@ body {
 }
 
 .TopBar .Logo {
-    height: 25px;
-    padding: 12px 15px;
+    height: 55px;
+    padding-left: 10px;
 }
 
 .TopBar .Title {
@@ -42,13 +42,13 @@ body {
     text-align: center;
     position: fixed;
     width: 100%;
-    top: 50px;
+    top: 60px;
     height: 100%;
 }
 
 .QuestionContainer .Title {
     font-size: 80px;
-    padding-top: 150px;
+    padding-top: 120px;
 }
 
 .QuestionContainer .Body {
