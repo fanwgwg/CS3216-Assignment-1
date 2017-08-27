@@ -32,7 +32,7 @@ app.get('/questions', function (req, res) {
     else {
       let data = { questions: [] };
       results.forEach(function(row) {
-        data.questions.push({"body": `How much do you know about ${row.attribute}?`});
+        data.questions.push({"body": row.attribute});
       });
       data = JSON.stringify(data);
       res.writeHead(200, { "Content-Type": "application/json" });
