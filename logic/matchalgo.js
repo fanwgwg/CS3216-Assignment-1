@@ -1,6 +1,15 @@
 var _ = require("underscore");
 
-function MostDifferent(user, rest){
+function MostDifferent(userid, users){
+	let user = {};
+	let rest = [];
+	for(i = 0; i < users.length; i++){
+		if(users[i].userid == userid){
+			rest = users.slice(0);
+			user = users[i];
+			rest.splice(i,1);
+		}
+	}
 	let matchscores = [];
 	for(i = 0; i < rest.length; i++){
 		let diffsum = 0;
@@ -21,7 +30,16 @@ function MostDifferent(user, rest){
 	return matchscores;
 }
 
-function MostSimilar(user, rest){
+function MostSimilar(userid, users){
+	let user = {};
+	let rest = [];
+	for(i = 0; i < users.length; i++){
+		if(users[i].userid == userid){
+			rest = users.slice(0);
+			user = users[i];
+			rest.splice(i,1);
+		}
+	}
 	let matchscores = [];
 	for(i = 0; i < rest.length; i++){
 		let diffsum = 0;
