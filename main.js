@@ -2,14 +2,7 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 const port = process.env.port || process.env.PORT || 8000
-const mysql = require('mysql');
-const config = require('./config.js');
-const pool = mysql.createPool(config.DBOPTIONS);
-
-pool.getConnection(function (err, connection) {
-	if (err) throw err;
-	console.log("Database Connected: %s", connection);
-});
+const database = require('./database');
 
 app.use(express.static(__dirname));
 
@@ -22,28 +15,17 @@ app.get('/questions', function (req, res) {
 	// loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 
 	// from database
-	pool.query(`SELECT * FROM Teamker.questions
-              WHERE page_id='page_id'
-              ORDER BY 'index';`, function (error, results, fields) {
-		if (error) {
-			console.log(error.message);
-			res.end(err.message);
-		} else {
-			let data = {
-				questions: []
-			};
-			results.forEach(function (row) {
-				data.questions.push({
-					"body": row.attribute
-				});
-			});
-			data = JSON.stringify(data);
-			res.writeHead(200, {
-				"Content-Type": "application/json"
-			});
-			res.end(data);
-		}
-	});
+	try {
+		data = JSON.stringify(database.getQuestions('page_id'));
+		res.writeHead(200, {
+			"Content-Type": "application/json"
+		});
+		res.end(data);
+	} catch (error) {
+		console.log("Failed to fetch questions: " + error.message);
+		res.writeHead(404);
+		res.end();
+	}
 });
 
 app.post('/user', function (req, res) {
@@ -53,7 +35,12 @@ app.post('/user', function (req, res) {
 		name: body.user_name,
 		desc: body.user_desc
 	}
-	addUserToDatabase(user);
+	const involved = {
+		user_id: body.user_id,
+		page_ide: body.page_id
+	}
+	database.addUser(user);
+	database.addInvolved(involved);
 	for(let i = 1; i <= body.responses.length; i++) {
 		const response = {
 			user_id: body.user_id,
@@ -61,7 +48,7 @@ app.post('/user', function (req, res) {
 			question_index: i,
 			score: body.responses[i]
 		}
-		addResponseTodatabase(response);
+		database.addResponse(response);
 	}
 });
 
@@ -80,48 +67,4 @@ function loadJsonFromFile(jsonPath, req, res) {
 			res.end(data.toString());
 		}
 	});
-}
-
-function addUserToDatabase(user) {
-	pool.query(`INSERT INTO users VALUES(
-				${user.id},
-				${user.name},
-				${user.desc});`, function (error, results, fields) {
-		if (error) throw error;
-		else {
-			console.log("New user added: " + user.name);
-		}
-	});
-}
-
-function addResponseToDatabase(response) {
-	pool.query(`INSERT INTO responses VALUES(
-				${response.user_id},
-				${response.page_id},
-				${response.question_index},
-				${response.score});`, function (error, results, fields) {
-		if (error) throw error;
-		else {
-			console.log("New response added: " + response.user_id);
-		}
-	});
-}
-
-function parseUserData() {
-	let users = [];
-	pool.query(`SELECT users.id, users.name, users.desc, GROUP_CONCAT(responses.score) AS attributes
-              FROM users
-              INNER JOIN responses ON users.id = responses.user_id
-              WHERE responses.page_id = 'page_id'
-              GROUP BY users.id;`, function (error, results, fields) {
-		if (error) throw error;
-		else {
-			results.forEach(function (row) {
-				users.push(Object.assign({}, row, {
-					attributes: row.attributes.split(',').map(Number)
-				}));
-			});
-		}
-	});
-	return users;
 }
