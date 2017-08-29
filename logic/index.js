@@ -1,5 +1,6 @@
 var _ = require("underscore");
 
+
 function MostDifferent(userid, users){
 	let user = {};
 	let rest = [];
@@ -61,5 +62,5 @@ function MostSimilar(userid, users){
 	return matchscores;
 }
 
-exports.MostDifferent = MostDifferent;
-exports.MostSimilar = MostSimilar;
+module.exports.MostDifferent = MostDifferent;
+module.exports.MostSimilar = MostSimilar;
