@@ -88,7 +88,7 @@ module.exports = {
         });
     },
 
-    parseUserData: function () {
+    parseUserData: function (callback) {
         let users = [];
         pool.query(`SELECT users.id, users.name, users.desc, GROUP_CONCAT(responses.score) AS attributes
                   FROM users
@@ -102,9 +102,9 @@ module.exports = {
                         attributes: row.attributes.split(',').map(Number)
                     }));
                 });
+                callback(users);
             }
         });
-        return users;
     }
 
 }
