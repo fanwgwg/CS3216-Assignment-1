@@ -12,17 +12,17 @@ import MainPage from './MainPage';
 import TopBar from './TopBar';
 
 require("../resources/app.css");
-require("./fbsdk.js");
+// require("./fbsdk.js");
 
 interface AppProps { };
 
 interface AppStates {
-  login: boolean;
+  login: number;
   questions: Utilities.Question[];
   currentQuestionIndex: number;
   allQuestionsAnswered: boolean;
-  userId: string;
-  userName: string;
+  //userId: string;
+  //userName: string;
 };
 
 declare function fbCheckLoginState(): any;
@@ -32,6 +32,8 @@ class App extends React.Component<AppProps, AppStates> {
   appTitle = "Teamker";
   jsonUrls = ["questions"]; // hardcoded for now
   numberOfQuestions: number = 0;
+  userId = "";
+  userName = "";
 
   constructor(props: AppProps) {
     super(props);
@@ -43,17 +45,17 @@ class App extends React.Component<AppProps, AppStates> {
     this.fetchData();
 
     this.state = {
-      login: false,
+      login: -1,
       questions: null,
       currentQuestionIndex: 0,
       allQuestionsAnswered: false,
-      userId: "",
-      userName: ""
+      //userId: "",
+      //userName: ""
     }
   }
 
-  componentDidMount() {
-    //  this.checkLoginState();
+  componentWillMount() {
+     this.checkLoginState();
   }
 
   fetchData() {
@@ -83,13 +85,14 @@ class App extends React.Component<AppProps, AppStates> {
       console.log("check");
       // console.log(FB.getLoginStatus);
       FB.getLoginStatus(function (response:any) {
+        console.log(response);
         if(response.status === "connected") {
           console.log("logged in");
           FB.api('/me', function (response: any) {
+            this.userId = response.id;
+            this.userName = response.name;
             this.setState({
-              login: true,
-              userId: response.id,
-              userName: response.name
+              login: 1
             });
             
             console.log('Successful login for: ' + response.name);
@@ -99,32 +102,42 @@ class App extends React.Component<AppProps, AppStates> {
       //persist to database
       
         } else {
-          FB.login(function(response: any) {
-            // handle the response
-            if(response.status == 'connected'){
-              FB.api('/me', function (response: any) {
-                this.setState({
-                  login: true,
-                  userId: response.id,
-                  userName: response.name
-                });
-                console.log('Successful login for: ' + response.name);
-              }.bind(this));
-            }else{
-              console.log("not logged in");
-            }
-          }.bind(this), {scope: 'public_profile'}); 
+          console.log("initially not connect..wtf???")
+          this.setState({
+            login: 0
+          });
         }
-      }.bind(this));
+      }.bind(this), true);
       
   }
-
+  
+  logUserIn(): void{
+    FB.login(function(response: any) {
+      console.log("not connected");
+      if(response.status == 'connected'){
+        console.log("connected");
+        FB.api('/me', function (response: any) {
+          this.userId = response.id;
+          this.userName = response.name;
+          this.setState({
+            login: true
+          });
+          console.log('Successful login for: ' + response.name);
+        }.bind(this));
+      }else{
+        console.log("cannot logged in");
+      }
+    }.bind(this), {scope: 'public_profile'}); 
+  }
   logUserOut(): void{
     FB.logout(function(response:any){
+      document.cookie.split(";").forEach(function(c) {
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain=localhost;path=/");
+      });
+      this.userId = "";
+      this.userName = "";
       this.setState({
-        login: false,
-        userId: "",
-        userName: ""
+        login: false
       });
     }.bind(this));
   }
@@ -154,17 +167,18 @@ class App extends React.Component<AppProps, AppStates> {
     let loginPage: JSX.Element = null;
     let questionView: JSX.Element = null;
     let mainPage: JSX.Element = null;
-      
+      console.log("start rendering");
       topBar = <TopBar 
-        appTitle={this.appTitle} userId={this.state.userId} 
-        userName={this.state.userName} onLogout={this.logUserOut.bind(this)} />
-        
-      if (!this.state.login){
+        appTitle={this.appTitle} userId={this.userId} 
+        userName={this.userName} onLogout={this.logUserOut.bind(this)} />
+     
+      if (this.state.login == 0){
+        //this.checkLoginState();
         loginPage = <LoginPage
-        onLogin={this.checkLoginState.bind(this)}/>
+        onLogin={this.logUserIn.bind(this)}/>
       }
       
-      if (this.state.login && !this.state.allQuestionsAnswered && this.state.questions) {
+      if (this.state.login == 1 && !this.state.allQuestionsAnswered && this.state.questions) {
         questionView = <QuestionView
           question={this.state.questions[this.state.currentQuestionIndex]}
           index={this.state.currentQuestionIndex}
@@ -173,12 +187,14 @@ class App extends React.Component<AppProps, AppStates> {
         />
       }
   
-      if (this.state.login && this.state.allQuestionsAnswered) {
+      if (this.state.login == 1 && this.state.allQuestionsAnswered) {
         mainPage = <MainPage />
       }
   
     
-    console.log(this.state.userId);
+      
+      
+    console.log(this.userId);
     console.log(this);
     return (
       <div className="App">
@@ -187,7 +203,7 @@ class App extends React.Component<AppProps, AppStates> {
         {questionView}
         {mainPage}
       </div>
-    );
+    ); 
   }
 }
 
