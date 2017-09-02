@@ -9,7 +9,7 @@ pool.getConnection(function (error, connection) {
 module.exports = {
 
     addPage: function (page) {
-        pool.query(`INSERT INTO pages VALUES(
+        pool.query(`INSERT INTO Teamker.pages VALUES(
                     ${page.id},
                     ${page.name},
                     ${page.admin_id});`, function (error, results, fields) {
@@ -21,7 +21,7 @@ module.exports = {
     },
 
     addUser: function (user) {
-        pool.query(`INSERT INTO users VALUES(
+        pool.query(`INSERT INTO Teamker.users VALUES(
                     ${user.id},
                     ${user.name},
                     ${user.desc});`, function (error, results, fields) {
@@ -33,7 +33,7 @@ module.exports = {
     },
 
     addInvolved: function (involved) {
-        pool.query(`INSERT INTO involved VALUES(
+        pool.query(`INSERT INTO Teamker.involved VALUES(
                     ${involved.user_id},
                     ${involved.page_id});`, function (error, results, fields) {
             if (error) throw error;
@@ -44,7 +44,7 @@ module.exports = {
     },
 
     addQuestion: function (question) {
-        pool.query(`INSERT INTO questions VALUES(
+        pool.query(`INSERT INTO Teamker.questions VALUES(
                     ${question.page_id},
                     ${question.index},
                     ${question.attribute});`, function (error, results, fields) {
@@ -56,7 +56,7 @@ module.exports = {
     },
 
     addResponse: function (response) {
-        pool.query(`INSERT INTO responses VALUES(
+        pool.query(`INSERT INTO Teamker.responses VALUES(
                     ${response.user_id},
                     ${response.page_id},
                     ${response.question_index},
@@ -88,11 +88,29 @@ module.exports = {
         });
     },
 
+    getPagesUserInvolved: function (user_id) {
+        pool.query(`SELECT * FROM Teamker.involved
+                    INNER JOIN Teamker.pages ON page_id = pages.id
+                    WHERE user_id=${user_id};`, function (error, results, fields) {
+            if (error) {
+                throw error;
+            } else {
+                let data = {
+                    pages: []
+                };
+                results.forEach(function (row) {
+                    data.pages.push(row.name);
+                });
+                return data;
+            }
+        });
+    },
+
     parseUserData: function (callback) {
         let users = [];
         pool.query(`SELECT users.id, users.name, users.desc, GROUP_CONCAT(responses.score) AS attributes
-                  FROM users
-                  INNER JOIN responses ON users.id = responses.user_id
+                  FROM Teamker.users
+                  INNER JOIN Teamker.responses ON users.id = responses.user_id
                   WHERE responses.page_id = 'page_id'
                   GROUP BY users.id;`, function (error, results, fields) {
             if (error) throw error;
