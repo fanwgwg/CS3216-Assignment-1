@@ -1,3 +1,5 @@
+
+
 import * as React from 'react';
 
 import UserCard from './UserCard';
@@ -18,6 +20,8 @@ export default class TopBar extends React.Component<TopBarProps, TopBarStates> {
             return (
                 <div className={"TopBar"}>
                     <img className={"Logo"} src={require("../resources/icons/logo.png")} />
+                    <div className={"fb-like"} data-href="https://teamker.tk" data-layout="standard" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+                    {/* <div className={"Title"}>{this.props.appTitle}</div> */}
                 </div>
             )
         } else {
@@ -25,6 +29,8 @@ export default class TopBar extends React.Component<TopBarProps, TopBarStates> {
             return (
                 <div className={"TopBar"}>
                     <img className={"Logo"} src={require("../resources/icons/logo.png")} />
+                    <div className={"fb-like"} data-href="https://teamker.tk" data-layout="standard" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+                    {/* <div className={"Title"}>{this.props.appTitle}</div> */}
                     <img className={"ProfilePhoto"} src={photolink} />
                     <div className={"UserName"}>{this.props.userName}</div>
                     <button className={"loginBtn"}

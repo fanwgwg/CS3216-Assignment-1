@@ -41,7 +41,7 @@ app.post('/user', function (req, res) {
 	}
 	database.addUser(user);
 	database.addInvolved(involved);
-	for(let i = 1; i <= body.responses.length; i++) {
+	for (let i = 1; i <= body.responses.length; i++) {
 		const response = {
 			user_id: body.user_id,
 			page_id: body.page_id,
