@@ -19,54 +19,88 @@ app.get('/', function (req, res) {
  */
 app.get('/questions', function (req, res) {
 	// stub
-	// loadJsonFromFile("./resources/mock-data/questions.json", req, res);
+	loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 
 	// from database
+	// try {
+	// 	const page_id = req.query.page_id;
+	// 	// data = JSON.stringify(database.getQuestions(page_id));
+	// 	data = JSON.stringify(database.getQuestions('page_id'));
+	// 	res.writeHead(200, {
+	// 		"Content-Type": "application/json"
+	// 	});
+	// 	res.end(data);
+	// } catch (error) {
+	// 	console.log("Failed to fetch questions: " + error.message);
+	// 	res.writeHead(404);
+	// 	res.end();
+	// }
+});
+
+/** 
+ * Register facebook group
+ * 
+ * request.body = {
+ *    	page_id: "facebook group id",
+ *		page_name: "facebook group name",
+ *		admin_id: "facebook group admin id",
+ *		questions: [q1_attribute, q2_attribute, ...]
+ *		user_ids: [user_id_1, user_id_2, ...]
+ *		user_names: [user_name_1, user_name_2, ...]
+ * }
+ */
+app.post('/admin', function (req, res) {
 	try {
-		const page_id = req.query.page_id;
-		// data = JSON.stringify(database.getQuestions(page_id));
-		data = JSON.stringify(database.getQuestions('page_id'));
-		res.writeHead(200, {
-			"Content-Type": "application/json"
-		});
-		res.end(data);
-	} catch (error) {
-		console.log("Failed to fetch questions: " + error.message);
-		res.writeHead(404);
+		const body = req.body;
+		const page = {
+			id: body.page_id,
+			name: body.page_name,
+			admin_id: body.admin_id
+		}
+		database.addPage(page);
+		for (let i = 0; i < body.questions.length; i++) {
+			const question = {
+				page_id: body.page_id,
+				index: i+1,
+				attribute: body.questions[i]
+			}
+			database.addQuestion(question);
+		}
+		for (let i = 0; i < body.user_ids.length; i++) {
+			const user = {
+				id: body.user_ids[i],
+				name: body.user_names[i]
+			}
+			database.addUser(user);
+		}
+		res.writeHead(200);
 		res.end();
+	} catch (error) {
+		console.log(error.message);
+		res.writeHead(500);
+		res.end(error.message);
 	}
 });
 
 /** 
- * Register a new user to database
+ * Register user responses to database
  * 
  * request.body = {
  *    	user_id: "user facebook id",
- * 		user_name: "user facebook name",
  *		user_desc: "user desc input",
  *		page_id: "facebook page id",
  *		responses: [q1_score, q2_score, ...]
  * }
  */
-app.post('/user', function (req, res) {
+app.post('/response', function (req, res) {
 	try {
 		const body = req.body;
-		const user = {
-			id: body.user_id,
-			name: body.user_name,
-			desc: body.user_desc
-		}
-		const involved = {
-			user_id: body.user_id,
-			page_ide: body.page_id
-		}
-		database.addUser(user);
-		database.addInvolved(involved);
-		for (let i = 1; i <= body.responses.length; i++) {
+		database.addDescription(body.user_id, body.user_desc);
+		for (let i = 0; i < body.responses.length; i++) {
 			const response = {
 				user_id: body.user_id,
 				page_id: body.page_id,
-				question_index: i,
+				question_index: i+1,
 				score: body.responses[i]
 			}
 			database.addResponse(response);
