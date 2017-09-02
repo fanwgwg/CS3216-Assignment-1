@@ -22,8 +22,8 @@ app.get('/questions', function (req, res) {
 	// loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 
 	// from database
-	const page_id = req.query.page_id;
 	try {
+		const page_id = req.query.page_id;
 		// data = JSON.stringify(database.getQuestions(page_id));
 		data = JSON.stringify(database.getQuestions('page_id'));
 		res.writeHead(200, {
@@ -49,17 +49,17 @@ app.get('/questions', function (req, res) {
  * }
  */
 app.post('/user', function (req, res) {
-	const body = req.body;
-	const user = {
-		id: body.user_id,
-		name: body.user_name,
-		desc: body.user_desc
-	}
-	const involved = {
-		user_id: body.user_id,
-		page_ide: body.page_id
-	}
 	try {
+		const body = req.body;
+		const user = {
+			id: body.user_id,
+			name: body.user_name,
+			desc: body.user_desc
+		}
+		const involved = {
+			user_id: body.user_id,
+			page_ide: body.page_id
+		}
 		database.addUser(user);
 		database.addInvolved(involved);
 		for (let i = 1; i <= body.responses.length; i++) {
@@ -71,13 +71,13 @@ app.post('/user', function (req, res) {
 			}
 			database.addResponse(response);
 		}
+		res.writeHead(200);
+		res.end();
 	} catch (error) {
 		console.log(error.message);
 		res.writeHead(500);
-		res.end();
+		res.end(error.message);
 	}
-	res.writeHead(200);
-	res.end();
 });
 
 /** 
@@ -88,10 +88,9 @@ app.post('/user', function (req, res) {
  * 			response = { pages: ["CS3216", "CS3217", "CS2103"] }
  */
 app.get('/frontpage', function (req, res) {
-	const user_id = req.query.user_id;
-	let pages;
 	try {
-		data = JSON.stringify(database.getPagesUserInvolved(user_id));
+		const user_id = req.query.user_id;
+		const data = JSON.stringify(database.getPagesUserInvolved(user_id));
 		res.writeHead(200, {
 			"Content-Type": "application/json"
 		});
@@ -99,7 +98,7 @@ app.get('/frontpage', function (req, res) {
 	} catch (error) {
 		console.log(error.message);
 		res.writeHead(500);
-		res.end();
+		res.end(error.message);
 	}
 });
 
