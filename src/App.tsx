@@ -43,9 +43,6 @@ class App extends React.Component<AppProps, AppStates> {
     // console.log(FB);
     // login part
 
-    // fetch data
-    this.fetchData();
-
     this.state = {
       login: -1,
       questions: null,
@@ -124,12 +121,14 @@ class App extends React.Component<AppProps, AppStates> {
             login: true
           });
           console.log('Successful login for: ' + response.name);
+          this.fetchData();
         }.bind(this));
       } else {
         console.log("cannot logged in");
       }
     }.bind(this), { scope: 'public_profile' });
   }
+
   logUserOut(): void {
     FB.logout(function (response: any) {
       document.cookie.split(";").forEach(function (c) {
@@ -138,7 +137,11 @@ class App extends React.Component<AppProps, AppStates> {
       this.userId = "";
       this.userName = "";
       this.setState({
-        login: false
+        login: 0,
+        questions: null,
+        unfinishedQuestionIndex: -1,
+        allQuestionsAnswered: false,
+        isWaitingForUserList: false
       });
     }.bind(this));
   }
