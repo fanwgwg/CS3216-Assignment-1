@@ -1,60 +1,95 @@
 import * as React from 'react';
+import * as ReactDOM from "react-dom";
 
 import { Question } from './Utilities';
 
 interface QuestionViewProps {
     index: number;
     question: Question;
+    isUnfinished: boolean;
+    isDescriptionQuestion: boolean;
+    onDescriptionUpdated: Function;
     onQuestionAnswered: Function;
-    onPreviousQuestionClicked: Function;
 }
 
 interface QuestionViewStates {
-    rangeValue: number;
+    score: number;
 }
 
 export default class QuestionView extends React.Component<QuestionViewProps, QuestionViewStates> {
+
+    bodyColor = { color: "white" };
 
     constructor(props: QuestionViewProps) {
         super(props);
 
         this.state = {
-            rangeValue: 5
+            score: -1
         };
     }
 
-    render() {
-        let backButton: JSX.Element = null;
+    componentWillReceiveProps(nextProps: QuestionViewProps) {
+        if (nextProps.isUnfinished) {
+            this.bodyColor = { color: "#ffb5b5" };
+            let currentRect = ReactDOM.findDOMNode(this).getBoundingClientRect();
+            window.scrollBy(0, currentRect.top - 50);
+            setTimeout(function () {
+                this.bodyColor = { color: "white" };
+                this.forceUpdate();
+            }.bind(this), 1000);
+        }
+    }
 
-        if (this.props.index > 0) {
-            backButton = <div className={"Back"} onClick={this.props.onPreviousQuestionClicked.bind(this)}>
-                <img className={"BackButton"} src={require("../resources/icons/back.png")}
-                />
-                <div className={"BackButtonDesc"}>Previous question</div>
-            </div>
+    render() {
+        if (this.props.isDescriptionQuestion) {
+            return (
+                <div className={"QuestionContainer"}>
+                    <form>
+                        <div className={"Body"} style={this.bodyColor}>{this.getQuestionBody()}</div>
+                        <input type="text" onChange={this.updateDescription.bind(this)} />
+                    </form>
+                </div>
+            );
+        }
+
+        let scores: JSX.Element[] = [];
+
+        for (let i = 0; i <= 10; i++) {
+            let name = (i == this.state.score) ? "ScoreSquareSelected" : "ScoreSquare";
+            scores.push(<div className={name} key={i} onClick={this.updateScore.bind(this, i)}>{i}</div>);
         }
 
         return (
             <div className={"QuestionContainer"}>
-                <div className={"Title"}>{this.getQuestionTitle()}</div>
-                <div className={"Body"}>{this.props.question.body}</div>
+                <div className={"Body"} style={this.bodyColor}>{this.getQuestionBody()}</div>
                 <div className={"Answers"}>
-                    <input id="rangeInput" type="range" min="1" max="10" step="any" defaultValue="5" onChange={this.updateRangeInputValue.bind(this)} />
-                    <div className={"InputValue"}>{this.state.rangeValue}</div>
-                    <div className={"OkButton"} onClick={this.props.onQuestionAnswered.bind(this)}>Next</div>
+                    <div className={"Scores"}>{scores}</div>
+                    <div className={"Explainations"}>
+                        <div>don't know</div>
+                        <div>very familiar</div>
+                    </div>
                 </div>
-                {backButton}
             </div>
         );
     }
 
-    getQuestionTitle(): string {
-        return "Question #" + (this.props.index + 1);
+    getQuestionBody(): string {
+        if (this.props.isDescriptionQuestion) {
+            return (this.props.index + 1) + ". " + "One-line description about yourself";
+        } else {
+            return (this.props.index + 1) + ". " + this.props.question.body;
+        }
     }
 
-    updateRangeInputValue(event: any) {
+    updateScore(score: number): void {
+        this.props.onQuestionAnswered(this.props.index, score);
         this.setState({
-            rangeValue: Math.floor(event.target.value)
+            score: score
         })
+    }
+
+    updateDescription(event: any): void {
+        let text = event.target.value.trim();
+        this.props.onDescriptionUpdated(text);
     }
 }
