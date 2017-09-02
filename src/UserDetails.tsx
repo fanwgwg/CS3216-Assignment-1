@@ -35,7 +35,7 @@ export default class UserDetail extends React.Component<UserDetailProps, UserDet
         return (
             <div className={"UserDetail"}>
                 <div className={"Top"}>
-                    <img className={"CloseButton"} src={require("../resources/icons/close.svg")} onClick={this.props.onCloseButtonClicked.bind(this)} />
+                    <img className={"CloseButton"} src={require("../resources/images/close.svg")} onClick={this.props.onCloseButtonClicked.bind(this)} />
                 </div>
                 <img className={"Icon"} src={this.props.user.photoUrl} />
                 <div className={"Answers"}>{answers}</div>

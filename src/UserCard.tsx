@@ -16,15 +16,15 @@ export default class UserCard extends React.Component<UserCardProps, UserCardSta
 
         switch (this.props.index) {
             case 1: {
-                index = <img className={"IndexImg"} src={require("../resources/icons/1.svg")} />;
+                index = <img className={"IndexImg"} src={require("../resources/images/1.svg")} />;
                 break;
             }
             case 2: {
-                index = <img className={"IndexImg"} src={require("../resources/icons/2.svg")} />;
+                index = <img className={"IndexImg"} src={require("../resources/images/2.svg")} />;
                 break;
             }
             case 3: {
-                index = <img className={"IndexImg"} src={require("../resources/icons/3.svg")} />;
+                index = <img className={"IndexImg"} src={require("../resources/images/3.svg")} />;
                 break;
             }
             default: {

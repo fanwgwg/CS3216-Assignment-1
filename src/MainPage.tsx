@@ -63,7 +63,7 @@ export default class MainPage extends React.Component<MainPageProps, MainPageSta
                 name: name,
                 desc: "This is a description about myself",
                 matchScore: Math.floor(Math.random() * 99 + 1),
-                photoUrl: require("../resources/icons/user.svg"),
+                photoUrl: require("../resources/images/user.svg"),
                 questionAndAnswers: questionAndAnswers
             };
         });

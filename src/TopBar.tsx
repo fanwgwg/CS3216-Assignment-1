@@ -19,7 +19,7 @@ export default class TopBar extends React.Component<TopBarProps, TopBarStates> {
         if (this.props.userId == "") {
             return (
                 <div className={"TopBar"}>
-                    <img className={"Logo"} src={require("../resources/icons/logo.png")} />
+                    <img className={"Logo"} src={require("../resources/images/logo.png")} />
                     <div className={"fb-like"} data-href="https://teamker.tk" data-layout="standard" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
                     {/* <div className={"Title"}>{this.props.appTitle}</div> */}
                 </div>
@@ -28,7 +28,7 @@ export default class TopBar extends React.Component<TopBarProps, TopBarStates> {
             var photolink = ("http://graph.facebook.com/" + this.props.userId + "/picture?type=square")
             return (
                 <div className={"TopBar"}>
-                    <img className={"Logo"} src={require("../resources/icons/logo.png")} />
+                    <img className={"Logo"} src={require("../resources/images/logo.png")} />
                     <div className={"fb-like"} data-href="https://teamker.tk" data-layout="standard" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
                     {/* <div className={"Title"}>{this.props.appTitle}</div> */}
                     <img className={"ProfilePhoto"} src={photolink} />
