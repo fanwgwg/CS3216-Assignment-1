@@ -10,9 +10,9 @@ module.exports = {
 
     addPage: function (page) {
         pool.query(`INSERT INTO Teamker.pages VALUES(
-                    ${page.id},
-                    ${page.name},
-                    ${page.admin_id});`, function (error, results, fields) {
+                    ${pool.escape(page.id)},
+                    ${pool.escape(page.name)},
+                    ${pool.escape(page.admin_id)});`, function (error, results, fields) {
             if (error) throw error;
             else {
                 console.log("New page added: " + page.name);
@@ -22,9 +22,9 @@ module.exports = {
 
     addUser: function (user) {
         pool.query(`INSERT INTO Teamker.users VALUES(
-                    ${user.id},
-                    ${user.name},
-                    ${user.desc});`, function (error, results, fields) {
+                    ${pool.escape(user.id)},
+                    ${pool.escape(user.name)},
+                    ${pool.escape(user.desc)});`, function (error, results, fields) {
             if (error) throw error;
             else {
                 console.log("New user added: " + user.name);
@@ -34,8 +34,8 @@ module.exports = {
 
     addInvolved: function (involved) {
         pool.query(`INSERT INTO Teamker.involved VALUES(
-                    ${involved.user_id},
-                    ${involved.page_id});`, function (error, results, fields) {
+                    ${pool.escape(involved.user_id)},
+                    ${pool.escape(involved.page_id)});`, function (error, results, fields) {
             if (error) throw error;
             else {
                 console.log("New involved added: " + involved.user_id);
@@ -45,9 +45,9 @@ module.exports = {
 
     addQuestion: function (question) {
         pool.query(`INSERT INTO Teamker.questions VALUES(
-                    ${question.page_id},
-                    ${question.index},
-                    ${question.attribute});`, function (error, results, fields) {
+                    ${pool.escape(question.page_id)},
+                    ${pool.escape(question.index)},
+                    ${pool.escape(question.attribute)});`, function (error, results, fields) {
             if (error) throw error;
             else {
                 console.log("New question added: " + question.attribute);
@@ -57,10 +57,10 @@ module.exports = {
 
     addResponse: function (response) {
         pool.query(`INSERT INTO Teamker.responses VALUES(
-                    ${response.user_id},
-                    ${response.page_id},
-                    ${response.question_index},
-                    ${response.score});`, function (error, results, fields) {
+                    ${pool.escape(response.user_id)},
+                    ${pool.escape(response.page_id)},
+                    ${pool.escape(response.question_index)},
+                    ${pool.escape(response.score)});`, function (error, results, fields) {
             if (error) throw error;
             else {
                 console.log("New response added: " + response.user_id);
@@ -70,7 +70,7 @@ module.exports = {
 
     getQuestions: function (page_id) {
         pool.query(`SELECT * FROM Teamker.questions
-                    WHERE page_id=${page_id}
+                    WHERE page_id=${pool.escape(page_id)}
                     ORDER BY 'index';`, function (error, results, fields) {
             if (error) {
                 throw error;
@@ -91,7 +91,7 @@ module.exports = {
     getPagesUserInvolved: function (user_id) {
         pool.query(`SELECT * FROM Teamker.involved
                     INNER JOIN Teamker.pages ON page_id = pages.id
-                    WHERE user_id=${user_id};`, function (error, results, fields) {
+                    WHERE user_id=${pool.escape(user_id)};`, function (error, results, fields) {
             if (error) {
                 throw error;
             } else {
