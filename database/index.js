@@ -1,4 +1,5 @@
 const mysql = require('mysql');
+const logic = require('../logic');
 const config = require('../config.js');
 const pool = mysql.createPool(config.DBOPTIONS);
 pool.getConnection(function (error, connection) {
@@ -79,7 +80,7 @@ module.exports = {
         });
     },
 
-    getQuestions: function (page_id) {
+    getQuestions: function (page_id, callback) {
         pool.query(`SELECT * FROM Teamker.questions
                     WHERE page_id=\'${pool.escape(page_id)}\'
                     ORDER BY 'index';`, function (error, results, fields) {
@@ -94,14 +95,14 @@ module.exports = {
                         "body": row.attribute
                     });
                 });
-                return data;
+                callback(data);
             }
         });
     },
 
-    getPagesUserInvolved: function (user_id) {
+    getPagesUserInvolved: function (user_id, callback) {
         pool.query(`SELECT * FROM Teamker.involved
-                    INNER JOIN Teamker.pages ON page_id = pages.id
+                    INNER JOIN Teamker.pages ON page_id=id
                     WHERE user_id=\'${pool.escape(user_id)}\';`, function (error, results, fields) {
             if (error) {
                 throw error;
@@ -112,7 +113,29 @@ module.exports = {
                 results.forEach(function (row) {
                     data.pages.push(row.name);
                 });
-                return data;
+                callback(data);
+            }
+        });
+    },
+
+    getMatchedList: function (user_id, page_id, callback) {
+        pool.query(`SELECT users.id, users.name, GROUP_CONCAT(responses.score) AS attributes
+                    FROM Teamker.users
+                    INNER JOIN Teamker.responses ON users.id=responses.user_id
+                    WHERE responses.page_id=\'${pool.escape(page_id)}\'
+                    GROUP BY users.id;`, function (error, results, fields) {
+            if (error) {
+                throw error;
+            } else {
+                let users = [];
+                results.forEach(function (row) {
+                    users.push(Object.assign({}, row,
+                        {
+                            attributes: row.attributes.split(',').map(Number)
+                        }
+                    ));
+                });
+                callback(logic.MostDifferent(user_id, users));
             }
         });
     },

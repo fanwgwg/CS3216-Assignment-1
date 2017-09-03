@@ -22,19 +22,20 @@ app.get('/questions', function (req, res) {
 	loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 
 	// from database
-	// try {
-	// 	const page_id = req.query.page_id;
-	// 	// data = JSON.stringify(database.getQuestions(page_id));
-	// 	data = JSON.stringify(database.getQuestions('page_id'));
-	// 	res.writeHead(200, {
-	// 		"Content-Type": "application/json"
-	// 	});
-	// 	res.end(data);
-	// } catch (error) {
-	// 	console.log("Failed to fetch questions: " + error.message);
-	// 	res.writeHead(404);
-	// 	res.end();
-	// }
+	try {
+		const page_id = req.query.page_id;
+		// data = JSON.stringify(database.getQuestions(page_id));
+		database.getQuestions('page_id', function(questions){
+			res.writeHead(200, {
+				"Content-Type": "application/json"
+			});
+			res.end(JSON.stringify(questions));
+		});
+	} catch (error) {
+		console.log("Failed to fetch questions: " + error.message);
+		res.writeHead(404);
+		res.end();
+	}
 });
 
 /** 
@@ -124,11 +125,12 @@ app.post('/response', function (req, res) {
 app.get('/frontpage', function (req, res) {
 	try {
 		const user_id = req.query.user_id;
-		const data = JSON.stringify(database.getPagesUserInvolved(user_id));
-		res.writeHead(200, {
-			"Content-Type": "application/json"
+		database.getPagesUserInvolved(user_id, function(pages) {
+			res.writeHead(200, {
+				"Content-Type": "application/json"
+			});
+			res.end(JSON.stringify(pages));
 		});
-		res.end(data);
 	} catch (error) {
 		console.log(error.message);
 		res.writeHead(500);
