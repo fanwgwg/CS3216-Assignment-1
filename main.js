@@ -17,7 +17,7 @@ app.get('/', function (req, res) {
  * @return list of questions under the page
  * 			response = { questions: ["coding", "business", "design"] }
  */
-app.get('/questions', function (req, res) {
+app.get('/api/questions', function (req, res) {
 	// stub
 	loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 
@@ -50,7 +50,7 @@ app.get('/questions', function (req, res) {
  *		user_names: [user_name_1, user_name_2, ...]
  * }
  */
-app.post('/admin', function (req, res) {
+app.post('/api/admin', function (req, res) {
 	try {
 		const body = req.body;
 		const page = {
@@ -93,7 +93,7 @@ app.post('/admin', function (req, res) {
  *		responses: [q1_score, q2_score, ...]
  * }
  */
-app.post('/response', function (req, res) {
+app.post('/api/response', function (req, res) {
 	try {
 		const body = req.body;
 		database.addDescription(body.user_id, body.user_desc);
@@ -122,7 +122,7 @@ app.post('/response', function (req, res) {
  * @return list of pages the user is involved
  * 			response = { pages: ["CS3216", "CS3217", "CS2103"] }
  */
-app.get('/frontpage', function (req, res) {
+app.get('/api/frontpage', function (req, res) {
 	try {
 		const user_id = req.query.user_id;
 		database.getPagesUserInvolved(user_id, function(pages) {
