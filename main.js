@@ -2,7 +2,7 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 const port = process.env.port || process.env.PORT || 8000
-const database = require('./database');
+// const database = require('./database');
 
 app.use(express.static(__dirname));
 
@@ -22,20 +22,20 @@ app.get('/api/questions', function (req, res) {
 	loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 
 	// from database
-	try {
-		const page_id = req.query.page_id;
-		// data = JSON.stringify(database.getQuestions(page_id));
-		database.getQuestions('page_id', function(questions){
-			res.writeHead(200, {
-				"Content-Type": "application/json"
-			});
-			res.end(JSON.stringify(questions));
-		});
-	} catch (error) {
-		console.log("Failed to fetch questions: " + error.message);
-		res.writeHead(404);
-		res.end();
-	}
+	// try {
+	// 	const page_id = req.query.page_id;
+	// 	// data = JSON.stringify(database.getQuestions(page_id));
+	// 	database.getQuestions('page_id', function(questions){
+	// 		res.writeHead(200, {
+	// 			"Content-Type": "application/json"
+	// 		});
+	// 		res.end(JSON.stringify(questions));
+	// 	});
+	// } catch (error) {
+	// 	console.log("Failed to fetch questions: " + error.message);
+	// 	res.writeHead(404);
+	// 	res.end();
+	// }
 });
 
 /** 

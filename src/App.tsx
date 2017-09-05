@@ -30,7 +30,7 @@ declare function fbCheckLoginState(): any;
 class App extends React.Component<AppProps, AppStates> {
 
   appTitle = "Teamker";
-  jsonUrls = ["questions"]; // hardcoded for now
+  jsonUrls = ["api/questions"]; // hardcoded for now
   userScores: number[] = [];
   userDesc: string = "";
   numberOfQuestions: number = 0;
@@ -62,7 +62,8 @@ class App extends React.Component<AppProps, AppStates> {
     let downloader = Utilities.creteJsonDownloader(this.jsonUrls,
       () => {
         let downloadedObjects = downloader.getDownloadedJsonObjects();
-        let questions = downloadedObjects["questions"].questions;
+
+        let questions = downloadedObjects["api/questions"].questions;
 
         if (!questions) {
           return; // Not fully downloaded yet
@@ -121,7 +122,6 @@ class App extends React.Component<AppProps, AppStates> {
             login: true
           });
           console.log('Successful login for: ' + response.name);
-          this.fetchData();
         }.bind(this));
       } else {
         console.log("cannot logged in");
@@ -243,6 +243,8 @@ class App extends React.Component<AppProps, AppStates> {
     if (this.state.login === 0) {
       //this.checkLoginState();
       loginPage = <LoginPage onLogin={this.logUserIn.bind(this)} />
+    } else if (!this.state.questions) {
+      this.fetchData();
     }
 
     if (this.state.login == 1 && !this.state.allQuestionsAnswered && this.state.questions) {
@@ -275,7 +277,7 @@ class App extends React.Component<AppProps, AppStates> {
       );
     }
 
-    if (this.state.allQuestionsAnswered && this.state.isWaitingForUserList) {
+    if (this.state.login == 1 && this.state.allQuestionsAnswered && this.state.isWaitingForUserList) {
       loaderPage = <LoaderPage />
     }
 
