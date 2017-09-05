@@ -66,6 +66,14 @@ body {
     text-shadow: 0 -1px 0 #354C8C;
 }
 
+.Header {
+    font-size: 60px;
+    color: grey;
+    background-color: whitesmoke;
+    padding: 20px 0px 20px 20px;
+    border-bottom: #E8E8E8 solid 1px;
+}
+
 .AppContainer {
     height: 100%;
     margin-top: 60px;
@@ -284,14 +292,6 @@ body {
     width: 100%;
 }
 
-.MainPage .Header {
-    font-size: 60px;
-    color: grey;
-    background-color: whitesmoke;
-    padding: 20px 0px 20px 55px;
-    border-bottom: #E8E8E8 solid 1px;
-}
-
 .MainPage .UserList {
     display: flex;
     flex-wrap: wrap;
@@ -468,6 +468,221 @@ body {
     animation: loader-inner 2s infinite ease-in;
 }
 
+.AdminPage .Main {
+    display: flex;
+    justify-content: space-between;
+    background-color: white;
+    color: #7B7B7B;
+    padding: 20px;
+    font-size: 15px;
+}
+
+.AdminPage .Left {
+    width: 25%;
+}
+
+.AdminPage .GroupPanel {
+    border-radius: 5px;
+    background: whitesmoke;
+    box-shadow: 0px 2px 9px 0px #c3c3c3;
+    padding: 20px;
+}
+
+.AdminPage .LeftTitle {
+    font-size: 45px;
+}
+
+.AdminPage .GroupList {
+    margin-top: 20px;
+    display: inline-block;
+}
+
+.AdminPage .Group,
+.AdminPage .GroupSelected {
+    margin-bottom: 10px;
+    padding: 8px 10px 5px 10px;
+    border-radius: 5px;
+    transition: 0.2s;
+    cursor: pointer;
+}
+
+.AdminPage .Group:hover {
+    background: #e6e6e6;
+}
+
+.AdminPage .GroupSelected {
+    background-color: #567AB4;
+    color: white;
+}
+
+.AdminPage .Right {
+    width: 70%;
+}
+
+.AdminPage .Message,
+.AdminPage .MessageHighlight {
+    color: white;
+    border-radius: 5px;
+    padding: 5px 10px;
+    display: inline-block;
+    margin-top: 30px;
+    box-shadow: 3px 3px 10px 0px #cecece;
+}
+
+.AdminPage .MessageHighlight {
+    background-color: #da6f6f;
+}
+
+.AdminPage .Message {
+    background-color: #60758A;
+}
+
+.AdminPage .Body {
+    background-color: #F5F5F5;
+    border-radius: 5px;
+    margin-top: 50px;
+    padding: 10px 40px;
+    box-shadow: 0px 2px 9px 0px #c3c3c3;
+}
+
+.AdminPage .Title {
+    font-size: 40px;
+    padding-top: 30px;
+}
+
+.AdminPage .Explaination {
+    margin-bottom: 20px;
+}
+
+.AdminPage form {
+    margin-bottom: 10px;
+    display: flex;
+    font-size: 20px;
+}
+
+.AdminPage input {
+    font-size: 20px;
+    margin-left: 20px;
+    padding-left: 2px;
+    width: 40%;
+    border: none;
+    border-bottom: 1px solid #b9b9b9;
+    background-color: transparent;
+    color: grey;
+    transition: 0.2s;
+}
+
+.AdminPage input:focus {
+    outline: none;
+    border-bottom: 1px solid #7d7d7d;
+}
+
+.AdminPage .Index {
+    padding-top: 5px;
+    width: 20px;
+}
+
+.AdminPage .AddButton,
+.AdminPage .DeleteButton {
+    color: white;
+    line-height: 25px;
+    bottom: 0px;
+    padding-top: 4px;
+    width: 30px;
+    margin-left: 10px;
+    font-size: 18px;
+    border-radius: 5px;
+    text-align: center;
+    user-select: none;
+    box-shadow: 1px 1px 3px 1px #d4d4d4;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.AdminPage .AddButton:hover,
+.AdminPage .DeleteButton:hover {
+    box-shadow: 1px 1px 3px 1px #B3B3B3;
+}
+
+.AdminPage .AddButton {
+    background-color: #50A6E3;
+}
+
+.AdminPage .DeleteButton {
+    background: #da6f6f;
+}
+
+.AdminPage .MatchOption {
+    display: flex;
+    line-height: 35px;
+    margin-top: 10px;
+    font-size: 18px;
+}
+
+.AdminPage .SwitchButton {
+    display: flex;
+    border-radius: 10px;
+    margin-left: 10px;
+    background: #ffffff;
+    box-shadow: 1px 1px 4px 0px #d4d4d4;
+    transition: 0.2s;
+}
+
+.AdminPage .SwitchButton:hover {
+    box-shadow: 3px 4px 14px 0px #cecece;
+}
+
+.AdminPage .Option,
+.AdminPage .OptionSelected {
+    padding: 0px 10px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.AdminPage .OptionSelected {
+    background: #50a6e3;
+    color: white;
+    border-radius: 5px;
+}
+
+.AdminPage .BottomButton {
+    display: flex;
+    justify-content: left;
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.AdminPage .Button,
+.AdminPage .ButtonHighght {
+    border-radius: 5px;
+    color: white;
+    font-size: 36px;
+    padding: 10px 20px;
+    transition: 0.2s;
+    user-select: none;
+    cursor: pointer;
+}
+
+.AdminPage .Button:hover,
+.AdminPage .ButtonHighght:hover {
+    box-shadow: 3px 3px 17px 0px #b5b5b5;
+}
+
+.AdminPage .Button {
+    background-color: #60758A;
+}
+
+.AdminPage .ButtonHighght {
+    background-color: #D45353;
+}
+
+.AdminPage .ButtonMessage {
+    color: #D45353;
+    padding-top: 20px;
+    font-style: italic;
+    margin-left: 20px;
+}
+
 @keyframes loader {
     0% {
         transform: rotate(0deg);
@@ -503,32 +718,3 @@ body {
         height: 0%;
     }
 }
-
-
-/* .loaderPageTransition-appear {
-    opacity: 0.01;
-    transition: opacity 500ms ease-in;
-}
-
-.loaderPageTransition-appear.loaderPageTransition-appear-active {
-    opacity: 1;
-} */
-
-
-/* .loaderPageTransition-enter {
-    opacity: 0.01;
-    transition: opacity 500ms ease-in;
-}
-
-.loaderPageTransition-enter.loaderPageTransition-enter-active {
-    opacity: 1;
-}
-
-.loaderPageTransition-leave {
-    opacity: 1;
-    transition: opacity 300ms ease-in;
-}
-
-.loaderPageTransition-leave.loaderPageTransition-leave-active {
-    opacity: 0.01;
-} */

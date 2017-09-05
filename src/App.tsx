@@ -10,6 +10,7 @@ import LoginPage from './LoginPage';
 import QuestionView from './QuestionView';
 import LoaderPage from './LoaderPage';
 import MainPage from './MainPage';
+import AdminPage from './AdminPage';
 import TopBar from './TopBar';
 
 require("../resources/app.css");
@@ -46,7 +47,7 @@ class App extends React.Component<AppProps, AppStates> {
     this.state = {
       login: -1,
       questions: null,
-      allQuestionsAnswered: false,
+      allQuestionsAnswered: true, // set to true to display adminPage for debugging use
       unfinishedQuestionIndex: -1,
       isWaitingForUserList: false
     }
@@ -229,6 +230,7 @@ class App extends React.Component<AppProps, AppStates> {
     let topBar: JSX.Element = null;
     let loginPage: JSX.Element = null;
     let mainPage: JSX.Element = null;
+    let adminPage: JSX.Element = null;
     let questions: JSX.Element[] = [];
     let questionPage: JSX.Element = null;
     let loaderPage: JSX.Element = null;
@@ -282,7 +284,8 @@ class App extends React.Component<AppProps, AppStates> {
     }
 
     if (this.state.login == 1 && this.state.allQuestionsAnswered && !this.state.isWaitingForUserList) {
-      mainPage = <MainPage />
+      // mainPage = <MainPage />
+      adminPage = <AdminPage index={0} groupList={Utilities.getGroupList(0)} />
     }
 
     return (
@@ -292,6 +295,7 @@ class App extends React.Component<AppProps, AppStates> {
           {loginPage}
           {loaderPage}
           {questionPage}
+          {adminPage}
           {mainPage}
         </div>
       </div>
