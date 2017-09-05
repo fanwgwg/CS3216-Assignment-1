@@ -19,6 +19,7 @@ interface AppProps { };
 
 interface AppStates {
   login: number;
+  groupSelected: boolean;
   questions: Utilities.Question[];
   allQuestionsAnswered: boolean;
   unfinishedQuestionIndex: number;
@@ -45,6 +46,7 @@ class App extends React.Component<AppProps, AppStates> {
 
     this.state = {
       login: -1,
+      groupSelected: false,
       questions: null,
       allQuestionsAnswered: false,
       unfinishedQuestionIndex: -1,
@@ -228,6 +230,7 @@ class App extends React.Component<AppProps, AppStates> {
   render() {
     let topBar: JSX.Element = null;
     let loginPage: JSX.Element = null;
+    let groupList: JSX.Element = null; 
     let mainPage: JSX.Element = null;
     let questions: JSX.Element[] = [];
     let questionPage: JSX.Element = null;
