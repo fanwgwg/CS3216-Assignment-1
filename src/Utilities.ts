@@ -15,6 +15,11 @@ export class User {
     questionAndAnswers: QuestionAndAnswer[] = [];
 }
 
+export class Group {
+    name: string = "";
+    id: number = null;
+}
+
 export class JsonDownloader {
 
     callback: Function = null;
@@ -58,4 +63,35 @@ export class JsonDownloader {
 
 export function creteJsonDownloader(jsonUrls: string[], callback: Function) {
     return new JsonDownloader(jsonUrls, callback);
+}
+
+// Return true if this group is not on Teamker, true otherwise
+export function isNewGroup(groupId: number): boolean {
+    return true;
+}
+
+// Return the number of group members that have finished questions
+export function getNumOfGroupMemberOnTeamker(groupId: number) {
+    return 30;
+}
+
+// Return the number of group members
+export function getNumOfGroupMember(groupId: number): number {
+    return 34;
+}
+
+// Return a list of group that the user owns
+export function getGroupList(userId: number): Group[] {
+    let mockGroup = {
+        name: "CS3216 Software Engineering in Digital Platforms",
+        id: 0
+    };
+
+    let groupList: Group[] = [];
+
+    for (let i = 0; i < 10; i++) {
+        groupList.push(mockGroup);
+    }
+
+    return groupList;
 }

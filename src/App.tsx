@@ -10,6 +10,7 @@ import LoginPage from './LoginPage';
 import QuestionView from './QuestionView';
 import LoaderPage from './LoaderPage';
 import MainPage from './MainPage';
+import AdminPage from './AdminPage';
 import TopBar from './TopBar';
 
 require("../resources/app.css");
@@ -31,7 +32,7 @@ declare function fbCheckLoginState(): any;
 class App extends React.Component<AppProps, AppStates> {
 
   appTitle = "Teamker";
-  jsonUrls = ["questions"]; // hardcoded for now
+  jsonUrls = ["api/questions"]; // hardcoded for now
   userScores: number[] = [];
   userDesc: string = "";
   numberOfQuestions: number = 0;
@@ -48,7 +49,7 @@ class App extends React.Component<AppProps, AppStates> {
       login: -1,
       groupSelected: false,
       questions: null,
-      allQuestionsAnswered: false,
+      allQuestionsAnswered: true, // set to true to display adminPage for debugging use
       unfinishedQuestionIndex: -1,
       isWaitingForUserList: false
     }
@@ -64,7 +65,8 @@ class App extends React.Component<AppProps, AppStates> {
     let downloader = Utilities.creteJsonDownloader(this.jsonUrls,
       () => {
         let downloadedObjects = downloader.getDownloadedJsonObjects();
-        let questions = downloadedObjects["questions"].questions;
+
+        let questions = downloadedObjects["api/questions"].questions;
 
         if (!questions) {
           return; // Not fully downloaded yet
@@ -123,7 +125,6 @@ class App extends React.Component<AppProps, AppStates> {
             login: true
           });
           console.log('Successful login for: ' + response.name);
-          this.fetchData();
         }.bind(this));
       } else {
         console.log("cannot logged in");
@@ -232,6 +233,7 @@ class App extends React.Component<AppProps, AppStates> {
     let loginPage: JSX.Element = null;
     let groupList: JSX.Element = null; 
     let mainPage: JSX.Element = null;
+    let adminPage: JSX.Element = null;
     let questions: JSX.Element[] = [];
     let questionPage: JSX.Element = null;
     let loaderPage: JSX.Element = null;
@@ -246,6 +248,8 @@ class App extends React.Component<AppProps, AppStates> {
     if (this.state.login === 0) {
       //this.checkLoginState();
       loginPage = <LoginPage onLogin={this.logUserIn.bind(this)} />
+    } else if (!this.state.questions) {
+      this.fetchData();
     }
 
     if (this.state.login == 1 && !this.state.allQuestionsAnswered && this.state.questions) {
@@ -278,12 +282,13 @@ class App extends React.Component<AppProps, AppStates> {
       );
     }
 
-    if (this.state.allQuestionsAnswered && this.state.isWaitingForUserList) {
+    if (this.state.login == 1 && this.state.allQuestionsAnswered && this.state.isWaitingForUserList) {
       loaderPage = <LoaderPage />
     }
 
     if (this.state.login == 1 && this.state.allQuestionsAnswered && !this.state.isWaitingForUserList) {
-      mainPage = <MainPage />
+      // mainPage = <MainPage />
+      adminPage = <AdminPage index={0} groupList={Utilities.getGroupList(0)} />
     }
 
     return (
@@ -293,6 +298,7 @@ class App extends React.Component<AppProps, AppStates> {
           {loginPage}
           {loaderPage}
           {questionPage}
+          {adminPage}
           {mainPage}
         </div>
       </div>
