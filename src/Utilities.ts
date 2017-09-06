@@ -15,9 +15,14 @@ export class User {
     questionAndAnswers: QuestionAndAnswer[] = [];
 }
 
+export class Member {
+    id: string = "";
+    name: string = "";
+}
+
 export class Group {
     name: string = "";
-    id: number = null;
+    id: string = "";
 }
 
 export class JsonDownloader {
@@ -66,25 +71,25 @@ export function creteJsonDownloader(jsonUrls: string[], callback: Function) {
 }
 
 // Return true if this group is not on Teamker, true otherwise
-export function isNewGroup(groupId: number): boolean {
+export function isNewGroup(groupId: string): boolean {
     return true;
 }
 
 // Return the number of group members that have finished questions
-export function getNumOfGroupMemberOnTeamker(groupId: number) {
+export function getNumOfGroupMemberOnTeamker(groupId: string) {
     return 30;
 }
 
 // Return the number of group members
-export function getNumOfGroupMember(groupId: number): number {
+export function getNumOfGroupMember(groupId: string): number {
     return 34;
 }
 
 // Return a list of group that the user owns
-export function getGroupList(userId: number): Group[] {
+export function getGroupList(userId: string): Group[]{
     let mockGroup = {
         name: "CS3216 Software Engineering in Digital Platforms",
-        id: 0
+        id: "0"
     };
 
     let groupList: Group[] = [];
@@ -93,5 +98,65 @@ export function getGroupList(userId: number): Group[] {
         groupList.push(mockGroup);
     }
 
+    // return groupList;
+    //console.log(userId);
+    // let groupList: Group[] = [];
+    // FB.api(
+    //     "/me/groups",
+    //     function (response: any) {
+    //         if (response && !response.error) {
+    //             /* handle the result */
+    //             //console.log(response);
+    //             for (let grp of response.data) {
+    //                 groupList.push({ name: grp.name, id: grp.id });
+    //             }
+
+    //             // callback(groupList);
+    //             //console.log(groupList);
+    //         }
+    //     }
+    // );
+    // console.log(groupList);
+
     return groupList;
+}
+
+// Return a list of group that the user owns
+export function getGroupMembers(groupId: string): Member[]{
+    // let mockGroup = {
+    //     name: "CS3216 Software Engineering in Digital Platforms",
+    //     id: 0
+    // };
+
+    // let groupList: Group[] = [];
+
+    // for (let i = 0; i < 10; i++) {
+    //     groupList.push(mockGroup);
+    // }
+
+    // return groupList;
+    console.log(groupId);
+    let memberList: Member[] = [];
+    FB.api(
+        "/" + groupId + "/members",
+        function (response: any) {
+            if (response && !response.error) {
+                /* handle the result */
+                console.log(response);
+                for (let mem of response.data) {
+                    console.log(mem);
+                    if (!mem.administrator){
+                        memberList.push({id: mem.id, name: mem.name });
+                    }
+                }
+
+                // callback(groupList);
+                console.log(memberList);
+            }
+        }
+    );
+    // console.log(groupList);
+
+    return memberList;
+
 }

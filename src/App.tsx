@@ -7,6 +7,7 @@ import * as ReactDOM from 'react-dom';
 import * as Utilities from './Utilities';
 
 import LoginPage from './LoginPage';
+import EntryPage from './EntryPage';
 import QuestionView from './QuestionView';
 import LoaderPage from './LoaderPage';
 import MainPage from './MainPage';
@@ -38,6 +39,7 @@ class App extends React.Component<AppProps, AppStates> {
   numberOfQuestions: number = 0;
   userId = "";
   userName = "";
+  groupId = "";
 
   constructor(props: AppProps) {
     super(props);
@@ -150,6 +152,13 @@ class App extends React.Component<AppProps, AppStates> {
     }.bind(this));
   }
 
+  onGroupEntrySelected(entry: string, groupId: string): void{
+    this.groupId = groupId;
+    this.setState({
+      entryType: entry
+    });
+  }
+
   updateScores(index: number, score: number): void {
     this.userScores[index] = score;
   }
@@ -231,7 +240,7 @@ class App extends React.Component<AppProps, AppStates> {
   render() {
     let topBar: JSX.Element = null;
     let loginPage: JSX.Element = null;
-    let groupList: JSX.Element = null; 
+    let entryPage: JSX.Element = null; 
     let mainPage: JSX.Element = null;
     let adminPage: JSX.Element = null;
     let questions: JSX.Element[] = [];
