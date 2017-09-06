@@ -144,11 +144,27 @@ app.get('/api/frontpage', function (req, res) {
 /**
  * Return true if this group is on Teamker, false otherwise
  * 
- * request.body = {
- * 		page_id: "facebook page id"
- * }
+ * @param /api/checkNewGroup?page_id="facebook page id"
  */
 app.get('/api/checkNewGroup', function (req, res) {
+
+});
+
+/**
+ * Given the page id, return a list of users that have answered all the questions, given the page id
+ * 
+ * @param /api/usersOnTeamker?page_id="facebook page id"
+ */
+app.get('/api/usersOnTeamker', function (req, res) {
+
+});
+
+/**
+ * Given the page id, return a list of users that have not answered questions, given the page id
+ * 
+ * @param /api/usersNotOnTeamker?page_id="facebook page id"
+ */
+app.get('/api/usersNotOnTeamker', function (req, res) {
 
 });
 
