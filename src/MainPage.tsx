@@ -14,7 +14,7 @@ export interface MainPageStates {
 
 export default class MainPage extends React.Component<MainPageProps, MainPageStates> {
     userList: Utilities.User[] = [];
-    currentUserIndex: number = 0;
+    currentUserIndex: number = -1;
 
     constructor(props: MainPageProps) {
         super(props);
@@ -62,6 +62,6 @@ export default class MainPage extends React.Component<MainPageProps, MainPageSta
             shouldUserDetailOpen: false
         })
 
-        this.currentUserIndex = 0;
+        this.currentUserIndex = -1;
     }
 }

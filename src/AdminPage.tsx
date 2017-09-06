@@ -1,5 +1,6 @@
 import * as React from 'react';
 
+import UserDetails from "./UserDetails";
 import * as Utilities from "./Utilities";
 
 interface AdminPageProps {
@@ -12,11 +13,13 @@ interface AdminPageStates {
     isNewGroup: boolean;
     numOfInputs: number;
     matchMostSimilar: boolean;
+    shouldUserDetailsOpen: boolean;
 }
 
 export default class AdminPage extends React.Component<AdminPageProps, AdminPageStates> {
     usersOnTeamker: Utilities.User[];
     usersNotOnTeamker: Utilities.User[];
+    userDetailIndex: number;
 
     constructor(props: AdminPageProps) {
         super(props);
@@ -33,7 +36,8 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             selectIndex: this.props.index,
             isNewGroup: isNewGroup,
             numOfInputs: 3,
-            matchMostSimilar: false
+            matchMostSimilar: false,
+            shouldUserDetailsOpen: false
         });
     }
 
@@ -115,14 +119,31 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         })
     }
 
-    onUserListClicked(): void {
+    onUserListClicked(userDetailIndex: number): void {
+        this.userDetailIndex = userDetailIndex;
+        this.setState({
+            shouldUserDetailsOpen: true
+        });
+    }
 
+    closeUserDetails(): void {
+        this.setState({
+            shouldUserDetailsOpen: false
+        });
+
+        this.userDetailIndex = -1;
     }
 
     render() {
         let mainContent: JSX.Element = null;
         let groupList: JSX.Element[] = [];
         let inputs: JSX.Element[] = [];
+        let userDetails: JSX.Element = null;
+
+        if (this.state.shouldUserDetailsOpen) {
+            let user = this.usersOnTeamker[this.userDetailIndex];
+            userDetails = <UserDetails user={user} onCloseButtonClicked={this.closeUserDetails.bind(this)} />
+        }
 
         for (let i = 0; i < this.props.groupList.length; i++) {
             let groupStyle = (i == this.state.selectIndex) ? "GroupSelected" : "Group";
@@ -183,7 +204,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
 
             userListA = this.usersOnTeamker.map(user => {
                 return (
-                    <div className={"User"} key={i++} onClick={this.onUserListClicked.bind(this)}>
+                    <div className={"User"} key={i} onClick={this.onUserListClicked.bind(this, i++)}>
                         <img className={"Photo"} src={require("../resources/images/user.svg")} />
                         <div className={"Name"}>{user.name}</div>
                     </div>
@@ -217,6 +238,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         return (
             <div className={"AdminPage"}>
                 <div className={"Header"}>Hi Colin, welcome to the admin page.</div>
+                {userDetails}
                 <div className={"Main"}>
                     <div className={"Left"}>
                         <div className={"GroupPanel"}>
