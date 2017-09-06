@@ -169,8 +169,8 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                         </div>
                     </div>
                     <div className={"Right"}>
-                        <div className={this.getMessageStyle()}>{this.getMessage()}</div>
                         <div className={"Body"}>
+                            <div className={this.getMessageStyle()}>{this.getMessage()}</div>
                             {mainContent}
                             <div className={"BottomButton"}>
                                 <div className={this.getButtonStyle()}>{this.getButtonContent()}</div>
