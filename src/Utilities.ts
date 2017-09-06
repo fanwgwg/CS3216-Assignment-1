@@ -12,7 +12,7 @@ export class User {
     id: string = "";
     desc: string = "";
     matchScore: number = 0;
-    photoUrl: string = "";
+     photoUrl: string = "";
     questionAndAnswers: QuestionAndAnswer[] = [];
 }
 
@@ -177,5 +177,27 @@ export function getGroupList(userId: string): Promise<Group[]> {
 
             resolve(groupList);
         }, 2000);
+        // FB.api(
+        //     "/me/groups",
+        //     function (response: any) {
+        //       let groupList: Group[] = [];
+        //       if (response && !response.error) {
+        //         for(let grp of response.data){
+        //             groupList.push({name: grp.name, id: grp.id});
+        //         }
+        //       }
+        //       resolve(groupList);
+        //     }
+        // );
     });
+}
+
+export function openGraphShare(): void{
+    FB.ui({
+        method: 'share_open_graph',
+        action_type: 'og.likes',
+        action_properties: JSON.stringify({
+          object:'https://teamker.tk/',
+        })
+      }, function(response){});
 }

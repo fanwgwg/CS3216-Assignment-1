@@ -3,7 +3,7 @@ import * as React from 'react';
 import * as Utilities from "./Utilities";
 
 interface EntryPageProps {
-    invovledList: Utilities.Group[];
+    involvedList: Utilities.Group[];
     adminList: Utilities.Group[];
     onGroupEntrySelected: Function;
 }
@@ -14,17 +14,17 @@ export default class Entrypage extends React.Component<EntryPageProps>{
         let admGroupList: JSX.Element[] = [];
         let entry = "";
 
-        for (let grp of this.props.invovledList) {
+        for (let grp of this.props.involvedList) {
             //let groupStyle = (i == this.state.selectIndex) ? "GroupSelected" : "Group";
             invGroupList.push(
-                <div className={"Group"} onClick={this.props.onGroupEntrySelected.bind(this, "member", grp.id)}>
+                <div className={"Group"} onClick={this.props.onGroupEntrySelected.bind(this, "User", grp.id)}>
                     {grp.name}</div>
             );
         }
         for (let grp of this.props.adminList) {
             //let groupStyle = (i == this.state.selectIndex) ? "GroupSelected" : "Group";
             admGroupList.push(
-                <div className={"Group"} onClick={this.props.onGroupEntrySelected.bind(this, "admin", grp.id)}>
+                <div className={"Group"} onClick={this.props.onGroupEntrySelected.bind(this, "Admin", grp.id)}>
                     {grp.name}</div>
             );
         }

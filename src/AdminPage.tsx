@@ -140,7 +140,18 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             shouldUserDetailsOpen: true
         });
     }
-
+    
+    onBottomButtonClicked(): void{
+        if(this.isNewGroup){
+            Utilities.openGraphShare();
+            this.isNewGroup = false;
+            this.forceUpdate();
+        }else{
+            this.isNewGroup = true;
+            this.forceUpdate();
+        }
+    }
+    
     closeUserDetails(): void {
         this.setState({
             shouldUserDetailsOpen: false
@@ -269,7 +280,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                     <div className={this.getMessageStyle()}>{this.getMessage()}</div>
                     {mainContent}
                     <div className={"BottomButton"}>
-                        <div className={this.getButtonStyle()}>{this.getButtonContent()}</div>
+                        <div className={this.getButtonStyle()} onClick={this.onBottomButtonClicked.bind(this)}>{this.getButtonContent()}</div>
                         <div className={"ButtonMessage"}>{this.getButtonMessage()}</div>
                     </div>
                 </div>

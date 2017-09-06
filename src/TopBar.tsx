@@ -18,7 +18,8 @@ export default class TopBar extends React.Component<TopBarProps, TopBarStates> {
             return (
                 <div className={"TopBar"}>
                     <img className={"Logo"} src={require("../resources/images/logo.png")} />
-                    <div className={"fb-like"} data-href="https://teamker.tk" data-layout="standard" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+                    <div className={"fb-like"} data-href="https://teamker.tk" data-layout="standard"
+                     data-action="like" data-size="small" data-show-faces="false" data-share="true"></div>
                     {/* <div className={"Title"}>{this.props.appTitle}</div> */}
                 </div>
             )
@@ -27,7 +28,8 @@ export default class TopBar extends React.Component<TopBarProps, TopBarStates> {
             return (
                 <div className={"TopBar"}>
                     <img className={"Logo"} src={require("../resources/images/logo.png")} />
-                    <div className={"fb-like"} data-href="https://teamker.tk" data-layout="standard" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
+                    <div className={"fb-like"} data-href="https://teamker.tk" data-layout="standard"
+                     data-action="like" data-size="small" data-show-faces="false" data-share="true"></div>
                     {/* <div className={"Title"}>{this.props.appTitle}</div> */}
                     <img className={"ProfilePhoto"} src={photolink} />
                     <div className={"UserName"}>{this.props.userName}</div>

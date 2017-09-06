@@ -36,20 +36,17 @@ declare function fbCheckLoginState(): any;
 class App extends React.Component<AppProps, AppStates> {
 
   appTitle = "Teamker";
+  domain = "teamker.tk";
+  //domain = "localhost";
   jsonUrls = ["api/questions"]; // hardcoded for now
   userScores: number[] = [];
   userDesc: string = "";
   numberOfQuestions: number = 0;
-<<<<<<< HEAD
-  userId = "";
-  userName = "";
-  groupId = "";
-=======
   userId: string = "";
   userName: string = "";
+  groupId: string = "";
   userList: Utilities.User[] = [];
   groupList: Utilities.Group[] = [];
->>>>>>> 6caf17f90dbb80474c990d828b05524f2b44dad8
 
   constructor(props: AppProps) {
     super(props);
@@ -64,7 +61,7 @@ class App extends React.Component<AppProps, AppStates> {
       allQuestionsAnswered: false, // set to true to display adminPage for debugging use
       unfinishedQuestionIndex: -1,
       isWaitingForUserList: false,
-      entryType: "Admin"
+      entryType: "None"
     }
   }
 
@@ -105,12 +102,12 @@ class App extends React.Component<AppProps, AppStates> {
   checkLoginState(): void {
     // console.log(fbsdk);
     // console.log(fbsdk.checkLoginState);
-    console.log("check");
+    //console.log("check");
     // console.log(FB.getLoginStatus);
     FB.getLoginStatus(function (response: any) {
       console.log(response);
       if (response.status === "connected") {
-        console.log("logged in");
+        //console.log("logged in");
         FB.api('/me', function (response: any) {
           this.userId = response.id;
           this.userName = response.name;
@@ -125,7 +122,6 @@ class App extends React.Component<AppProps, AppStates> {
         //persist to database
 
       } else {
-        console.log("initially not connect..wtf???")
         this.setState({
           login: 0
         });
@@ -136,9 +132,7 @@ class App extends React.Component<AppProps, AppStates> {
 
   logUserIn(): void {
     FB.login(function (response: any) {
-      console.log("not connected");
       if (response.status == 'connected') {
-        console.log("connected");
         FB.api('/me', function (response: any) {
           this.userId = response.id;
           this.userName = response.name;
@@ -150,14 +144,13 @@ class App extends React.Component<AppProps, AppStates> {
       } else {
         console.log("cannot logged in");
       }
-    }.bind(this), { scope: 'public_profile' });
+    }.bind(this), { scope: 'public_profile,user_managed_groups' });
   }
 
   logUserOut(): void {
     FB.logout(function (response: any) {
       document.cookie.split(";").forEach(function (c) {
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain=teamker.tk;path=/");
-        // document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain=localhost;path=/");
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain="+this.domain+";path=/");
       });
 
       this.userId = "";
@@ -167,6 +160,7 @@ class App extends React.Component<AppProps, AppStates> {
 
       this.setState({
         login: 0,
+        entryType: "None",
         questions: null,
         unfinishedQuestionIndex: -1,
         allQuestionsAnswered: false,
@@ -175,7 +169,7 @@ class App extends React.Component<AppProps, AppStates> {
     }.bind(this));
   }
 
-  onGroupEntrySelected(entry: string, groupId: string): void{
+  onGroupEntrySelected(entry: EntryType, groupId: string): void{
     this.groupId = groupId;
     this.setState({
       entryType: entry
@@ -278,6 +272,12 @@ class App extends React.Component<AppProps, AppStates> {
       this.fetchQuestions();
     }
 
+    if (this.state.login == 1 && this.state.entryType === "None"){
+      this.fetchGroupList();
+      entryPage = <EntryPage involvedList={this.groupList} adminList={this.groupList} 
+                   onGroupEntrySelected={this.onGroupEntrySelected.bind(this)} />;
+    }
+
     if (this.state.login == 1 && this.state.entryType === "Admin") {
       if (this.groupList.length == 0) {
         this.fetchGroupList();
@@ -285,8 +285,8 @@ class App extends React.Component<AppProps, AppStates> {
         adminPage = <AdminPage index={0} groupList={this.groupList} />;
       }
     }
-
-    if (!(this.state.entryType === "Admin") && this.state.login == 1 && !this.state.allQuestionsAnswered && this.state.questions) {
+    
+    if (this.state.entryType === "User" && this.state.login == 1 && !this.state.allQuestionsAnswered && this.state.questions) {
       let index = 0;
       questions = this.state.questions.map(q => <QuestionView
         key={index}
@@ -316,11 +316,11 @@ class App extends React.Component<AppProps, AppStates> {
       );
     }
 
-    if (this.state.entryType !== "Admin" && this.state.login == 1 && this.state.allQuestionsAnswered && this.state.isWaitingForUserList) {
+    if (this.state.entryType === "User" && this.state.login == 1 && this.state.allQuestionsAnswered && this.state.isWaitingForUserList) {
       loaderPage = <LoaderPage message={"We are finding your best match now..."} color={"white"} containerStyle={{ height: "100vh" }} />
     }
 
-    if (this.state.entryType !== "Admin" && this.state.login == 1 && this.state.allQuestionsAnswered && !this.state.isWaitingForUserList) {
+    if (this.state.entryType === "User" && this.state.login == 1 && this.state.allQuestionsAnswered && !this.state.isWaitingForUserList) {
       mainPage = <MainPage userList={this.userList} />;
     }
 
@@ -329,6 +329,7 @@ class App extends React.Component<AppProps, AppStates> {
         {topBar}
         <div className="AppContainer">
           {loginPage}
+          {entryPage}
           {loaderPage}
           {questionPage}
           {adminPage}
