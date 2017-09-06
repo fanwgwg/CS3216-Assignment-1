@@ -17,6 +17,8 @@ import TopBar from './TopBar';
 require("../resources/app.css");
 // require("./fbsdk.js");
 
+type EntryType = "User" | "Admin" | "None";
+
 interface AppProps { };
 
 interface AppStates {
@@ -26,6 +28,7 @@ interface AppStates {
   allQuestionsAnswered: boolean;
   unfinishedQuestionIndex: number;
   isWaitingForUserList: boolean;
+  entryType: EntryType;
 };
 
 declare function fbCheckLoginState(): any;
@@ -37,9 +40,16 @@ class App extends React.Component<AppProps, AppStates> {
   userScores: number[] = [];
   userDesc: string = "";
   numberOfQuestions: number = 0;
+<<<<<<< HEAD
   userId = "";
   userName = "";
   groupId = "";
+=======
+  userId: string = "";
+  userName: string = "";
+  userList: Utilities.User[] = [];
+  groupList: Utilities.Group[] = [];
+>>>>>>> 6caf17f90dbb80474c990d828b05524f2b44dad8
 
   constructor(props: AppProps) {
     super(props);
@@ -51,9 +61,10 @@ class App extends React.Component<AppProps, AppStates> {
       login: -1,
       groupSelected: false,
       questions: null,
-      allQuestionsAnswered: true, // set to true to display adminPage for debugging use
+      allQuestionsAnswered: false, // set to true to display adminPage for debugging use
       unfinishedQuestionIndex: -1,
-      isWaitingForUserList: false
+      isWaitingForUserList: false,
+      entryType: "Admin"
     }
   }
 
@@ -61,7 +72,7 @@ class App extends React.Component<AppProps, AppStates> {
     this.checkLoginState();
   }
 
-  fetchData() {
+  fetchQuestions() {
     console.log("start fetching data");
 
     let downloader = Utilities.creteJsonDownloader(this.jsonUrls,
@@ -81,6 +92,14 @@ class App extends React.Component<AppProps, AppStates> {
         });
       }
     );
+  }
+
+  fetchGroupList() {
+    Utilities.getGroupList("")
+      .then(function (data: any) {
+        this.groupList = data;
+        this.forceUpdate();
+      }.bind(this));
   }
 
   checkLoginState(): void {
@@ -140,8 +159,12 @@ class App extends React.Component<AppProps, AppStates> {
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain=teamker.tk;path=/");
         // document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain=localhost;path=/");
       });
+
       this.userId = "";
       this.userName = "";
+      this.userList = [];
+      this.groupList = [];
+
       this.setState({
         login: 0,
         questions: null,
@@ -212,29 +235,23 @@ class App extends React.Component<AppProps, AppStates> {
       "responses": this.userScores
     }
 
-    fetch("/user", {
+    fetch("/api/response", {
       method: "POST",
       body: data
     }).then(function (res: any) {
-      return res.json();
-    }.bind(this)).then(function (data: any) {
-      alert(JSON.stringify(data));
-
-      // should receive a list of all the users here
-      // and then update the state to show the main page
-
-      /* this.setState({
-        isWaitingForUserList: false
-      }) */
-
+      if (res.ok) {
+        Utilities.getUserList(this.userId)
+          .then(function (data: any) {
+            console.log("userlist received: " + data);
+            this.userList = data;
+            this.setState({
+              isWaitingForUserList: false
+            });
+          }.bind(this));
+      } else {
+        console.log("Unable to get user list");
+      }
     }.bind(this));
-
-    // user setTimeOut for now
-    setTimeout(function () {
-      this.setState({
-        isWaitingForUserList: false
-      })
-    }.bind(this), 2000);
   }
 
   render() {
@@ -256,12 +273,20 @@ class App extends React.Component<AppProps, AppStates> {
 
     if (this.state.login === 0) {
       //this.checkLoginState();
-      loginPage = <LoginPage onLogin={this.logUserIn.bind(this)} />
+      loginPage = <LoginPage onLogin={this.logUserIn.bind(this)} />;
     } else if (!this.state.questions) {
-      this.fetchData();
+      this.fetchQuestions();
     }
 
-    if (this.state.login == 1 && !this.state.allQuestionsAnswered && this.state.questions) {
+    if (this.state.login == 1 && this.state.entryType === "Admin") {
+      if (this.groupList.length == 0) {
+        this.fetchGroupList();
+      } else {
+        adminPage = <AdminPage index={0} groupList={this.groupList} />;
+      }
+    }
+
+    if (!(this.state.entryType === "Admin") && this.state.login == 1 && !this.state.allQuestionsAnswered && this.state.questions) {
       let index = 0;
       questions = this.state.questions.map(q => <QuestionView
         key={index}
@@ -291,13 +316,12 @@ class App extends React.Component<AppProps, AppStates> {
       );
     }
 
-    if (this.state.login == 1 && this.state.allQuestionsAnswered && this.state.isWaitingForUserList) {
-      loaderPage = <LoaderPage />
+    if (this.state.entryType !== "Admin" && this.state.login == 1 && this.state.allQuestionsAnswered && this.state.isWaitingForUserList) {
+      loaderPage = <LoaderPage message={"We are finding your best match now..."} color={"white"} containerStyle={{ height: "100vh" }} />
     }
 
-    if (this.state.login == 1 && this.state.allQuestionsAnswered && !this.state.isWaitingForUserList) {
-      // mainPage = <MainPage />
-      adminPage = <AdminPage index={0} groupList={Utilities.getGroupList(0)} />
+    if (this.state.entryType !== "Admin" && this.state.login == 1 && this.state.allQuestionsAnswered && !this.state.isWaitingForUserList) {
+      mainPage = <MainPage userList={this.userList} />;
     }
 
     return (

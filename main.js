@@ -62,7 +62,7 @@ app.post('/api/admin', function (req, res) {
 		for (let i = 0; i < body.questions.length; i++) {
 			const question = {
 				page_id: body.page_id,
-				index: i+1,
+				index: i + 1,
 				attribute: body.questions[i]
 			}
 			database.addQuestion(question);
@@ -95,19 +95,22 @@ app.post('/api/admin', function (req, res) {
  */
 app.post('/api/response', function (req, res) {
 	try {
-		const body = req.body;
-		database.addDescription(body.user_id, body.user_desc);
-		for (let i = 0; i < body.responses.length; i++) {
-			const response = {
-				user_id: body.user_id,
-				page_id: body.page_id,
-				question_index: i+1,
-				score: body.responses[i]
-			}
-			database.addResponse(response);
-		}
-		res.writeHead(200);
-		res.end();
+		// const body = req.body;
+		// database.addDescription(body.user_id, body.user_desc);
+		// for (let i = 0; i < body.responses.length; i++) {
+		// 	const response = {
+		// 		user_id: body.user_id,
+		// 		page_id: body.page_id,
+		// 		question_index: i+1,
+		// 		score: body.responses[i]
+		// 	}
+		// 	database.addResponse(response);
+		// }
+
+		setTimeout(function () { // simulate the delay by setTimeout for now
+			res.writeHead(200);
+			res.end();
+		}, 1000);
 	} catch (error) {
 		console.log(error.message);
 		res.writeHead(500);
@@ -125,7 +128,7 @@ app.post('/api/response', function (req, res) {
 app.get('/api/frontpage', function (req, res) {
 	try {
 		const user_id = req.query.user_id;
-		database.getPagesUserInvolved(user_id, function(pages) {
+		database.getPagesUserInvolved(user_id, function (pages) {
 			res.writeHead(200, {
 				"Content-Type": "application/json"
 			});
@@ -136,6 +139,17 @@ app.get('/api/frontpage', function (req, res) {
 		res.writeHead(500);
 		res.end(error.message);
 	}
+});
+
+/**
+ * Return true if this group is on Teamker, false otherwise
+ * 
+ * request.body = {
+ * 		page_id: "facebook page id"
+ * }
+ */
+app.get('/api/checkNewGroup', function (req, res) {
+
 });
 
 app.listen(port, function () {

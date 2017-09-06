@@ -9,6 +9,7 @@ export class QuestionAndAnswer {
 
 export class User {
     name: string = "";
+    id: string = "";
     desc: string = "";
     matchScore: number = 0;
     photoUrl: string = "";
@@ -70,93 +71,111 @@ export function creteJsonDownloader(jsonUrls: string[], callback: Function) {
     return new JsonDownloader(jsonUrls, callback);
 }
 
-// Return true if this group is not on Teamker, true otherwise
-export function isNewGroup(groupId: string): boolean {
-    return true;
-}
-
-// Return the number of group members that have finished questions
-export function getNumOfGroupMemberOnTeamker(groupId: string) {
-    return 30;
-}
-
-// Return the number of group members
-export function getNumOfGroupMember(groupId: string): number {
-    return 34;
-}
-
-// Return a list of group that the user owns
-export function getGroupList(userId: string): Group[]{
-    let mockGroup = {
-        name: "CS3216 Software Engineering in Digital Platforms",
-        id: "0"
-    };
-
-    let groupList: Group[] = [];
-
-    for (let i = 0; i < 10; i++) {
-        groupList.push(mockGroup);
-    }
-
-    // return groupList;
-    //console.log(userId);
-    // let groupList: Group[] = [];
-    // FB.api(
-    //     "/me/groups",
-    //     function (response: any) {
-    //         if (response && !response.error) {
-    //             /* handle the result */
-    //             //console.log(response);
-    //             for (let grp of response.data) {
-    //                 groupList.push({ name: grp.name, id: grp.id });
-    //             }
-
-    //             // callback(groupList);
-    //             //console.log(groupList);
-    //         }
-    //     }
-    // );
-    // console.log(groupList);
-
-    return groupList;
-}
-
-// Return a list of group that the user owns
-export function getGroupMembers(groupId: string): Member[]{
-    // let mockGroup = {
-    //     name: "CS3216 Software Engineering in Digital Platforms",
-    //     id: 0
-    // };
-
-    // let groupList: Group[] = [];
-
-    // for (let i = 0; i < 10; i++) {
-    //     groupList.push(mockGroup);
-    // }
-
-    // return groupList;
-    console.log(groupId);
-    let memberList: Member[] = [];
-    FB.api(
-        "/" + groupId + "/members",
-        function (response: any) {
-            if (response && !response.error) {
-                /* handle the result */
-                console.log(response);
-                for (let mem of response.data) {
-                    console.log(mem);
-                    if (!mem.administrator){
-                        memberList.push({id: mem.id, name: mem.name });
-                    }
-                }
-
-                // callback(groupList);
-                console.log(memberList);
-            }
+// Return a list of users to display in the main page
+export function getUserList(userId: string): Promise<User[]> {
+    let questions: Question[] = [
+        {
+            "body": "How much do you know about Photoshop and design?"
+        },
+        {
+            "body": "How much do you know about Html and CSS?"
+        },
+        {
+            "body": "How much do you know about Javascript?"
+        },
+        {
+            "body": "How much do you know about server side languages?"
+        },
+        {
+            "body": "How much do you know about database?"
         }
-    );
-    // console.log(groupList);
+    ];
 
-    return memberList;
+    let questionAndAnswers: QuestionAndAnswer[] = questions.map(x => {
+        return {
+            question: x,
+            answer: Math.floor(Math.random() * 9 + 1)
+        }
+    })
 
+    let users = ["Li Zihan", "Ho Yi Hang", "Goh Wei Wen", "Chan Khan", "Stefano Chiesa Suryanto",
+        "Lau Shi Jie", "Yip Mun Kit Bernard", "Tan Zheng Wei", "Tan Kai Meng Wilson", "Jeremy Jee De Sheng",
+        "Ng Jun Wei", "Chan Jin Jia", "Chua Lin Jing", "Apoorva Ullas", "Charlton Lim", "WANG RIWU",
+        "Lim Jia Yee", "Lim Ta Eu", "Aaron Ong Chong Shi", "Danielle Chan Xin Yun", "Maximilianus Kusnadi",
+        "Oh Han Gyeol", "WON JUN RU DAPHNE", "Kushagra Goyal", "Curtis Tan Wei Jie", "See Soon Kiat", "See Loo Jane",
+        "Alan Lee Yung Chong", "Fan Weiguang", "Bai Chuan", "Chng Hui Yie", "Ong Jing Yin", "Ng Si Kai",
+        "Liew Yu Young Jovin", "Aaron Ong Chong Shi"];
+
+    let userList = users.map(name => {
+        return {
+            name: name,
+            id: "",
+            desc: "This is a description about myself",
+            matchScore: Math.floor(Math.random() * 99 + 1),
+            photoUrl: require("../resources/images/user.svg"),
+            questionAndAnswers: questionAndAnswers
+        };
+    });
+
+    userList.sort((a: User, b: User) => {
+        return a.matchScore < b.matchScore ? 1 : -1;
+    });
+
+    return new Promise<User[]>(resolve => {
+        setTimeout(function () {
+            resolve(userList);
+        }, 1000);
+    });
+}
+
+
+// Return true if this group is not on Teamker, true otherwise
+export function checkIsNewGroup(groupId: string): Promise<boolean> {
+    return new Promise<boolean>(resolve => {
+        setTimeout(function () {
+            resolve(Math.random() > 0.5);
+        }, 1000);
+    });
+}
+
+// Return a list of group members that have finished questions
+export function getGroupMembersOnTeamker(groupId: string): Promise<User[]> {
+    return new Promise<User[]>(resolve => {
+        setTimeout(function () {
+            getUserList("").then(function (data) {
+                resolve(data.slice(0, 10));
+            })
+        }, 1000);
+    });
+}
+
+// Return a list of group members that have not finished questions
+export function getGroupMembersNotOnTeamker(groupId: string): Promise<User[]> {
+    return new Promise<User[]>(resolve => {
+        setTimeout(function () {
+            getUserList("").then(function (data) {
+                resolve(data.slice(10, 25));
+            })
+        }, 1000);
+    });
+}
+
+// Return a list of group that the user owns
+export function getGroupList(userId: string): Promise<Group[]> {
+    return new Promise<Group[]>(resolve => {
+        setTimeout(function () {
+            let mockGroup = {
+                name: "CS3216 Software Engineering in Digital Platforms",
+                id: ""
+            };
+
+            let groupList: Group[] = [];
+
+            for (let i = 0; i < 10; i++) {
+                groupList.push(mockGroup);
+            }
+
+            resolve(groupList);
+        }, 2000);
+    });
 }
