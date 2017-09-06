@@ -67,7 +67,7 @@ export function creteJsonDownloader(jsonUrls: string[], callback: Function) {
 }
 
 // Return a list of users to display in the main page
-export function getUserList(userId: string): User[] {
+export function getUserList(userId: string): Promise<User[]> {
     let questions: Question[] = [
         {
             "body": "How much do you know about Photoshop and design?"
@@ -116,36 +116,61 @@ export function getUserList(userId: string): User[] {
         return a.matchScore < b.matchScore ? 1 : -1;
     });
 
-    return userList;
+    return new Promise<User[]>(resolve => {
+        setTimeout(function () {
+            resolve(userList);
+        }, 1000);
+    });
 }
 
+
 // Return true if this group is not on Teamker, true otherwise
-export function isNewGroup(groupId: string): boolean {
-    return Math.random() > 0.5;
+export function checkIsNewGroup(groupId: string): Promise<boolean> {
+    return new Promise<boolean>(resolve => {
+        setTimeout(function () {
+            resolve(Math.random() > 0.5);
+        }, 1000);
+    });
 }
 
 // Return a list of group members that have finished questions
-export function getGroupMembersOnTeamker(groupId: string): User[] {
-    return getUserList("").slice(0, 10);
+export function getGroupMembersOnTeamker(groupId: string): Promise<User[]> {
+    return new Promise<User[]>(resolve => {
+        setTimeout(function () {
+            getUserList("").then(function (data) {
+                resolve(data.slice(0, 10));
+            })
+        }, 1000);
+    });
 }
 
 // Return a list of group members that have not finished questions
-export function getGroupMembersNotOnTeamker(groupId: string): User[] {
-    return getUserList("").slice(11, 25);
+export function getGroupMembersNotOnTeamker(groupId: string): Promise<User[]> {
+    return new Promise<User[]>(resolve => {
+        setTimeout(function () {
+            getUserList("").then(function (data) {
+                resolve(data.slice(10, 25));
+            })
+        }, 1000);
+    });
 }
 
 // Return a list of group that the user owns
-export function getGroupList(userId: string): Group[] {
-    let mockGroup = {
-        name: "CS3216 Software Engineering in Digital Platforms",
-        id: ""
-    };
+export function getGroupList(userId: string): Promise<Group[]> {
+    return new Promise<Group[]>(resolve => {
+        setTimeout(function () {
+            let mockGroup = {
+                name: "CS3216 Software Engineering in Digital Platforms",
+                id: ""
+            };
 
-    let groupList: Group[] = [];
+            let groupList: Group[] = [];
 
-    for (let i = 0; i < 10; i++) {
-        groupList.push(mockGroup);
-    }
+            for (let i = 0; i < 10; i++) {
+                groupList.push(mockGroup);
+            }
 
-    return groupList;
+            resolve(groupList);
+        }, 2000);
+    });
 }

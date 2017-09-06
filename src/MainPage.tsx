@@ -13,7 +13,6 @@ export interface MainPageStates {
 }
 
 export default class MainPage extends React.Component<MainPageProps, MainPageStates> {
-    userList: Utilities.User[] = [];
     currentUserIndex: number = -1;
 
     constructor(props: MainPageProps) {
@@ -29,10 +28,10 @@ export default class MainPage extends React.Component<MainPageProps, MainPageSta
         let userDetails: JSX.Element = null;
 
         let index = 0;
-        userCards = this.userList.map(x => <UserCard key={index} user={x} index={++index} onUserCardClick={this.openUserDetails.bind(this)} />);
+        userCards = this.props.userList.map(x => <UserCard key={index} user={x} index={++index} onUserCardClick={this.openUserDetails.bind(this)} />);
 
         if (this.state.shouldUserDetailOpen) {
-            let user = this.userList[this.currentUserIndex];
+            let user = this.props.userList[this.currentUserIndex];
             userDetails = <UserDetails user={user} onCloseButtonClicked={this.closeUserDetails.bind(this)} />
         }
 

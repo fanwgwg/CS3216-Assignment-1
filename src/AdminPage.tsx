@@ -1,6 +1,7 @@
 import * as React from 'react';
 
 import UserDetails from "./UserDetails";
+import LoaderPage from "./LoaderPage";
 import * as Utilities from "./Utilities";
 
 interface AdminPageProps {
@@ -10,39 +11,61 @@ interface AdminPageProps {
 
 interface AdminPageStates {
     selectIndex: number;
-    isNewGroup: boolean;
     numOfInputs: number;
     matchMostSimilar: boolean;
     shouldUserDetailsOpen: boolean;
 }
 
 export default class AdminPage extends React.Component<AdminPageProps, AdminPageStates> {
-    usersOnTeamker: Utilities.User[];
-    usersNotOnTeamker: Utilities.User[];
-    userDetailIndex: number;
+    initialiseStatus: number = -1; // -1 for not initialised, 0 for initialising, 1 for initialised
+    isNewGroup: boolean = false;
+    usersOnTeamker: Utilities.User[] = [];
+    usersNotOnTeamker: Utilities.User[] = [];
+    userDetailIndex: number = -1;
 
     constructor(props: AdminPageProps) {
         super(props);
 
-        let isNewGroup = Utilities.isNewGroup(this.props.groupList[this.props.index].id);
-
-        if (!isNewGroup) {
-            let groupId = this.props.groupList[this.props.index].id;
-            this.usersOnTeamker = Utilities.getGroupMembersOnTeamker(groupId);
-            this.usersNotOnTeamker = Utilities.getGroupMembersNotOnTeamker(groupId);
-        }
-
         this.state = ({
             selectIndex: this.props.index,
-            isNewGroup: isNewGroup,
             numOfInputs: 3,
             matchMostSimilar: false,
             shouldUserDetailsOpen: false
         });
     }
 
+    fetchGroupMembers(index: number): void {
+        let groupId = this.props.groupList[index].id;
+        Promise.all([Utilities.getGroupMembersOnTeamker(groupId), Utilities.getGroupMembersNotOnTeamker(groupId)])
+            .then(function (res: any) {
+                this.usersOnTeamker = res[0];
+                this.usersNotOnTeamker = res[1];
+                this.initialiseStatus = 1;
+                this.forceUpdate();
+            }.bind(this));
+    }
+
+    fetchGroupStatus(index: number): void {
+        this.initialiseStatus = 0;
+        let groupId = this.props.groupList[index].id;
+
+        Utilities.checkIsNewGroup(groupId)
+            .then(function (isNewGroup: boolean) {
+                console.log("isNewGroup: " + isNewGroup);
+                this.isNewGroup = isNewGroup;
+                if (isNewGroup) {
+                    this.usersOnTeamker = [];
+                    this.usersNotOnTeamker = [];
+                    this.initialiseStatus = 1;
+                    this.forceUpdate();
+                } else {
+                    this.fetchGroupMembers(index);
+                }
+            }.bind(this));
+    }
+
     getMessageStyle(): string {
-        if (this.state.isNewGroup) {
+        if (this.isNewGroup) {
             return "MessageHighlight";
         } else {
             return "Message"
@@ -50,7 +73,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     }
 
     getButtonStyle(): string {
-        if (this.state.isNewGroup) {
+        if (this.isNewGroup) {
             return "Button";
         } else {
             return "ButtonHighlight";
@@ -58,7 +81,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     }
 
     getMessage(): string {
-        if (this.state.isNewGroup) {
+        if (this.isNewGroup) {
             return "This group is not on Teamker yet, set up by completing the form below.";
         } else {
             let numOnTeamker = this.usersOnTeamker.length;
@@ -68,7 +91,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     }
 
     getButtonContent(): string {
-        if (this.state.isNewGroup) {
+        if (this.isNewGroup) {
             return "Confirm";
         } else {
             return "Delete this group from Teamker";
@@ -76,7 +99,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     }
 
     getButtonMessage(): string {
-        if (this.state.isNewGroup) {
+        if (this.isNewGroup) {
             return "Once questions set up, you cannnot modify then anymore.";
         } else {
             return "All user data will be deleted from Teamker.";
@@ -101,22 +124,14 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         });
     }
 
-    onGroupListClicked(index: number): void {
-        let isNewGroup = Utilities.isNewGroup(this.props.groupList[index].id);
-
-        if (isNewGroup) {
-            this.usersOnTeamker = [];
-            this.usersNotOnTeamker = [];
-        } else {
-            let groupId = this.props.groupList[this.state.selectIndex].id;
-            this.usersOnTeamker = Utilities.getGroupMembersOnTeamker(groupId);
-            this.usersNotOnTeamker = Utilities.getGroupMembersNotOnTeamker(groupId);
+    onGroupListClicked(index: number) {
+        if (!(this.isNewGroup && index == this.state.selectIndex)) {
+            this.fetchGroupStatus(index);
+            this.initialiseStatus = 0;
+            this.setState({
+                selectIndex: index
+            });
         }
-
-        this.setState({
-            isNewGroup: isNewGroup,
-            selectIndex: index
-        })
     }
 
     onUserListClicked(userDetailIndex: number): void {
@@ -139,11 +154,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         let groupList: JSX.Element[] = [];
         let inputs: JSX.Element[] = [];
         let userDetails: JSX.Element = null;
-
-        if (this.state.shouldUserDetailsOpen) {
-            let user = this.usersOnTeamker[this.userDetailIndex];
-            userDetails = <UserDetails user={user} onCloseButtonClicked={this.closeUserDetails.bind(this)} />
-        }
+        let body: JSX.Element = null;
 
         for (let i = 0; i < this.props.groupList.length; i++) {
             let groupStyle = (i == this.state.selectIndex) ? "GroupSelected" : "Group";
@@ -152,7 +163,19 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             );
         }
 
-        if (this.state.isNewGroup) {
+        if (this.initialiseStatus <= 0) {
+            console.log("initialise status: " + this.initialiseStatus);
+
+            if (this.initialiseStatus < 0) {
+                this.fetchGroupStatus(this.state.selectIndex);
+            }
+
+            body = (
+                <LoaderPage message={"Wait for a moment..."} color={"#7B7B7B"} />
+            );
+        }
+
+        if (this.initialiseStatus > 0 && this.isNewGroup) {
             for (let i = 0; i < this.state.numOfInputs; i++) {
                 let addButton: JSX.Element = null;
                 let deleteButton: JSX.Element = null;
@@ -197,7 +220,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                     </div>
                 </div>
             );
-        } else {
+        } else if (this.initialiseStatus > 0) {
             let userListA: JSX.Element[] = [];
             let userListB: JSX.Element[] = [];
             let i = 0;
@@ -235,6 +258,24 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             );
         }
 
+        if (this.state.shouldUserDetailsOpen) {
+            let user = this.usersOnTeamker[this.userDetailIndex];
+            userDetails = <UserDetails user={user} onCloseButtonClicked={this.closeUserDetails.bind(this)} />
+        }
+
+        if (this.initialiseStatus > 0) {
+            body = (
+                <div className={"Body"}>
+                    <div className={this.getMessageStyle()}>{this.getMessage()}</div>
+                    {mainContent}
+                    <div className={"BottomButton"}>
+                        <div className={this.getButtonStyle()}>{this.getButtonContent()}</div>
+                        <div className={"ButtonMessage"}>{this.getButtonMessage()}</div>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <div className={"AdminPage"}>
                 <div className={"Header"}>Hi Colin, welcome to the admin page.</div>
@@ -247,14 +288,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                         </div>
                     </div>
                     <div className={"Right"}>
-                        <div className={"Body"}>
-                            <div className={this.getMessageStyle()}>{this.getMessage()}</div>
-                            {mainContent}
-                            <div className={"BottomButton"}>
-                                <div className={this.getButtonStyle()}>{this.getButtonContent()}</div>
-                                <div className={"ButtonMessage"}>{this.getButtonMessage()}</div>
-                            </div>
-                        </div>
+                        {body}
                     </div>
                 </div>
             </div>
