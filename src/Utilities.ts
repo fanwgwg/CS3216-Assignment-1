@@ -130,6 +130,15 @@ export function checkIsNewGroup(groupId: string): Promise<boolean> {
         setTimeout(function () {
             resolve(Math.random() > 0.5);
         }, 1000);
+
+        // fetch("/api/checkNewGroup?page_id=" + groupId)
+        //     .then(function (response: Response) {
+        //         return response.text();
+        //     }).then(function (data: any) {
+        //         resolve(data);
+        //     }).catch(function (error: any) {
+        //         console.error(error);
+        //     });
     });
 }
 
@@ -141,6 +150,15 @@ export function getGroupMembersOnTeamker(groupId: string): Promise<User[]> {
                 resolve(data.slice(0, 10));
             })
         }, 1000);
+
+        // fetch("/api/usersOnTeamker?page_id=" + groupId)
+        // .then(function (response: Response) {
+        //     return response.json();
+        // }).then(function (data: any) {
+        //     resolve(data);
+        // }).catch(function (error: any) {
+        //     console.error(error);
+        // });
     });
 }
 
@@ -152,10 +170,19 @@ export function getGroupMembersNotOnTeamker(groupId: string): Promise<User[]> {
                 resolve(data.slice(10, 25));
             })
         }, 1000);
+
+        // fetch("/api/usersNotOnTeamker?page_id=" + groupId)
+        // .then(function (response: Response) {
+        //     return response.json();
+        // }).then(function (data: any) {
+        //     resolve(data);
+        // }).catch(function (error: any) {
+        //     console.error(error);
+        // });
     });
 }
 
-// Return a list of group that the user owns
+// Return a list of group that the user owns (this is from Facebook but not our database)
 export function getGroupList(userId: string): Promise<Group[]> {
     return new Promise<Group[]>(resolve => {
         setTimeout(function () {

@@ -55,7 +55,7 @@ class App extends React.Component<AppProps, AppStates> {
       allQuestionsAnswered: false, // set to true to display adminPage for debugging use
       unfinishedQuestionIndex: -1,
       isWaitingForUserList: false,
-      entryType: "Admin"
+      entryType: "User"
     }
   }
 
