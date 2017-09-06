@@ -15,11 +15,19 @@ interface AdminPageStates {
 }
 
 export default class AdminPage extends React.Component<AdminPageProps, AdminPageStates> {
+    usersOnTeamker: Utilities.User[];
+    usersNotOnTeamker: Utilities.User[];
 
     constructor(props: AdminPageProps) {
         super(props);
 
         let isNewGroup = Utilities.isNewGroup(this.props.groupList[this.props.index].id);
+
+        if (!isNewGroup) {
+            let groupId = this.props.groupList[this.props.index].id;
+            this.usersOnTeamker = Utilities.getGroupMembersOnTeamker(groupId);
+            this.usersNotOnTeamker = Utilities.getGroupMembersNotOnTeamker(groupId);
+        }
 
         this.state = ({
             selectIndex: this.props.index,
@@ -49,9 +57,9 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         if (this.state.isNewGroup) {
             return "This group is not on Teamker yet, set up by completing the form below.";
         } else {
-            let numOnTeamker = Utilities.getNumOfGroupMemberOnTeamker(this.props.groupList[this.state.selectIndex].id);
-            let numOfMember = Utilities.getNumOfGroupMember(this.props.groupList[this.state.selectIndex].id);
-            return numOnTeamker + " of " + numOfMember + " group members have finished the questions.";
+            let numOnTeamker = this.usersOnTeamker.length;
+            let numOfAllMember = this.usersNotOnTeamker.length + numOnTeamker;
+            return numOnTeamker + " of " + numOfAllMember + " group members have finished the questions.";
         }
     }
 
@@ -91,10 +99,24 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
 
     onGroupListClicked(index: number): void {
         let isNewGroup = Utilities.isNewGroup(this.props.groupList[index].id);
+
+        if (isNewGroup) {
+            this.usersOnTeamker = [];
+            this.usersNotOnTeamker = [];
+        } else {
+            let groupId = this.props.groupList[this.state.selectIndex].id;
+            this.usersOnTeamker = Utilities.getGroupMembersOnTeamker(groupId);
+            this.usersNotOnTeamker = Utilities.getGroupMembersNotOnTeamker(groupId);
+        }
+
         this.setState({
             isNewGroup: isNewGroup,
             selectIndex: index
         })
+    }
+
+    onUserListClicked(): void {
+
     }
 
     render() {
@@ -155,7 +177,41 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                 </div>
             );
         } else {
-            mainContent = null;
+            let userListA: JSX.Element[] = [];
+            let userListB: JSX.Element[] = [];
+            let i = 0;
+
+            userListA = this.usersOnTeamker.map(user => {
+                return (
+                    <div className={"User"} key={i++} onClick={this.onUserListClicked.bind(this)}>
+                        <img className={"Photo"} src={require("../resources/images/user.svg")} />
+                        <div className={"Name"}>{user.name}</div>
+                    </div>
+                );
+            });
+
+            i = 0;
+            userListB = this.usersNotOnTeamker.map(user => {
+                return (
+                    <div className={"User"} key={i++}>
+                        <img className={"Photo"} src={require("../resources/images/user.svg")} />
+                        <div className={"Name"}>{user.name}</div>
+                    </div>
+                );
+            });
+
+            mainContent = (
+                <div className={"MainContent"}>
+                    <div className={"PartA"}>
+                        <div className={"Title"}>They have answered questions</div>
+                        <div className={"UserList"}>{userListA}</div>
+                    </div>
+                    <div className={"PartB"}>
+                        <div className={"Title"}>They haven't answered questions</div>
+                        <div className={"UserList"}>{userListB}</div>
+                    </div>
+                </div>
+            );
         }
 
         return (

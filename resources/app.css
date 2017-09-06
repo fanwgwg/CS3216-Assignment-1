@@ -644,6 +644,36 @@ body {
     border-radius: 5px;
 }
 
+.AdminPage .UserList {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+.AdminPage .User {
+    display: flex;
+    width: 180px;
+    max-width: 180px;
+    margin-right: 20px;
+    margin-bottom: 10px;
+}
+
+.AdminPage .User:hover {
+    color: #4e4e4e;
+    cursor: pointer;
+}
+
+.AdminPage .User .Photo {
+    width: 30px;
+    height: 30px;
+}
+
+.AdminPage .User .Name {
+    padding: 5px 10px 0px 10px;
+    line-height: 20px;
+    height: 40px;
+}
+
 .AdminPage .BottomButton {
     display: flex;
     justify-content: left;
@@ -652,18 +682,18 @@ body {
 }
 
 .AdminPage .Button,
-.AdminPage .ButtonHighght {
+.AdminPage .ButtonHighlight {
     border-radius: 5px;
     color: white;
-    font-size: 36px;
-    padding: 10px 20px;
+    font-size: 24px;
+    padding: 14px 20px 10px 20px;
     transition: 0.2s;
     user-select: none;
     cursor: pointer;
 }
 
 .AdminPage .Button:hover,
-.AdminPage .ButtonHighght:hover {
+.AdminPage .ButtonHighlight:hover {
     box-shadow: 3px 3px 17px 0px #b5b5b5;
 }
 
@@ -671,7 +701,7 @@ body {
     background-color: #60758A;
 }
 
-.AdminPage .ButtonHighght {
+.AdminPage .ButtonHighlight {
     background-color: #D45353;
 }
 

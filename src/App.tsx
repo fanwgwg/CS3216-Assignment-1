@@ -35,8 +35,9 @@ class App extends React.Component<AppProps, AppStates> {
   userScores: number[] = [];
   userDesc: string = "";
   numberOfQuestions: number = 0;
-  userId = "";
-  userName = "";
+  userId: string = "";
+  userName: string = "";
+  userlist: Utilities.User[] = [];
 
   constructor(props: AppProps) {
     super(props);
@@ -136,8 +137,11 @@ class App extends React.Component<AppProps, AppStates> {
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain=teamker.tk;path=/");
         // document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain=localhost;path=/");
       });
+
       this.userId = "";
       this.userName = "";
+      this.userList = [];
+
       this.setState({
         login: 0,
         questions: null,
@@ -180,6 +184,8 @@ class App extends React.Component<AppProps, AppStates> {
 
     if (allQuestionsAnswered) {
       this.submitData();
+
+      this.userlist = Utilities.getUserList(this.userId);
 
       this.setState({
         allQuestionsAnswered: true,
@@ -284,8 +290,8 @@ class App extends React.Component<AppProps, AppStates> {
     }
 
     if (this.state.login == 1 && this.state.allQuestionsAnswered && !this.state.isWaitingForUserList) {
-      // mainPage = <MainPage />
-      adminPage = <AdminPage index={0} groupList={Utilities.getGroupList(0)} />
+      // mainPage = <MainPage userList={this.userlist}/>
+      adminPage = <AdminPage index={0} groupList={Utilities.getGroupList("")} />
     }
 
     return (
