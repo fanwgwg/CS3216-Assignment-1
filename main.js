@@ -24,8 +24,7 @@ app.get('/api/questions', function (req, res) {
 	// from database
 	// try {
 	// 	const page_id = req.query.page_id;
-	// 	// data = JSON.stringify(database.getQuestions(page_id));
-	// 	database.getQuestions('page_id', function(questions){
+	// 	database.getQuestions(page_id, function(questions){
 	// 		res.writeHead(200, {
 	// 			"Content-Type": "application/json"
 	// 		});
@@ -145,27 +144,68 @@ app.get('/api/frontpage', function (req, res) {
  * Return true if this group is on Teamker, false otherwise
  * 
  * @param /api/checkNewGroup?page_id="facebook page id"
+ * @return response = "true" OR "false" string
  */
 app.get('/api/checkNewGroup', function (req, res) {
-
+	try {
+		const page_id = req.query.page_id;
+		database.checkPageExist(page_id, function (exist) {
+			res.writeHead(200, {
+				"Content-Type": "application/json"
+			});
+			res.end(JSON.stringify(exist));
+		});
+	} catch (error) {
+		console.log(error.message);
+		res.writeHead(500);
+		res.end(error.message);
+	}
 });
 
 /**
  * Given the page id, return a list of users that have answered all the questions, given the page id
  * 
  * @param /api/usersOnTeamker?page_id="facebook page id"
+ * @return list of registered users
+ * 			response = { users: [{id: "user id", name: "user name", desc: "user desc"}, ...] }
  */
 app.get('/api/usersOnTeamker', function (req, res) {
-
+	try {
+		const page_id = req.query.page_id;
+		database.getRegisteredUsersFromPage(page_id, function (users) {
+			res.writeHead(200, {
+				"Content-Type": "application/json"
+			});
+			res.end(JSON.stringify(users));
+		});
+	} catch (error) {
+		console.log(error.message);
+		res.writeHead(500);
+		res.end(error.message);
+	}
 });
 
 /**
  * Given the page id, return a list of users that have not answered questions, given the page id
  * 
  * @param /api/usersNotOnTeamker?page_id="facebook page id"
+ * @return list of non-registered users
+ * 			response = { users: [{id: "user id", name: "user name", desc: "user desc"}, ...] }
  */
 app.get('/api/usersNotOnTeamker', function (req, res) {
-
+	try {
+		const page_id = req.query.page_id;
+		database.getNotRegisteredUsersFromPage(page_id, function (users) {
+			res.writeHead(200, {
+				"Content-Type": "application/json"
+			});
+			res.end(JSON.stringify(users));
+		});
+	} catch (error) {
+		console.log(error.message);
+		res.writeHead(500);
+		res.end(error.message);
+	}
 });
 
 app.listen(port, function () {
