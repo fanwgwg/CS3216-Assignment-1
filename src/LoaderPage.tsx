@@ -10,7 +10,6 @@ interface LoaderPageStates { }
 
 export default class LoaderPage extends React.Component<LoaderPageProps, LoaderPageStates> {
     render() {
-        let containerStyle 
         return (
             <div className={"LoaderPage"} style={this.props.containerStyle}>
                 <div className={"LoaderIcon"}>
