@@ -264,16 +264,19 @@ export function getGroupList(userId: string): Promise<Group[]> {
 
             resolve(groupList);
         }, 2000);
+
         // FB.api(
         //     "/me/groups",
         //     function (response: any) {
-        //       let groupList: Group[] = [];
-        //       if (response && !response.error) {
-        //         for(let grp of response.data){
-        //             groupList.push({name: grp.name, id: grp.id});
+        //         console.log("getGroupList");
+        //         let groupList: Group[] = [];
+        //         if (response && !response.error) {
+        //             for (let grp of response.data) {
+        //                 groupList.push({ name: grp.name, id: grp.id });
+        //             }
         //         }
-        //       }
-        //       resolve(groupList);
+        //         console.log("groupList: " + groupList);
+        //         resolve(groupList);
         //     }
         // );
     });

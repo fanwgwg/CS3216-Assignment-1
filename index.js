@@ -10,6 +10,10 @@ app.use(function (req, res, next) {
     next();
 });
 
+// app.get('/api/response', function (req, res) {
+// 	console.log("call /api/response");
+// });
+
 app.get('/', function (req, res) {
     res.render("./index.html");
 });

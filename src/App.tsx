@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-// import * as FB from 'FB';
 
 import * as Utilities from './Utilities';
 
@@ -51,6 +50,7 @@ class App extends React.Component<AppProps, AppStates> {
   user: Utilities.User = new Utilities.User();
   userList: Utilities.User[] = [];
   groupList: Utilities.Group[] = [];
+  fetchGroupListStatus: number = -1; // -1 for haven't fetched yet, 0 for fetching, 1 for fetched
 
   constructor(props: AppProps) {
     super(props);
@@ -112,9 +112,11 @@ class App extends React.Component<AppProps, AppStates> {
   }
 
   fetchGroupList() {
-    Utilities.getGroupList("")
+    this.fetchGroupListStatus = 0;
+    Utilities.getGroupList(this.user.id)
       .then(function (data: any) {
         this.groupList = data;
+        this.fetchGroupListStatus = 1;
         this.forceUpdate();
       }.bind(this));
   }
@@ -261,9 +263,13 @@ class App extends React.Component<AppProps, AppStates> {
 
     console.log(data);
 
+    // fetch("/api/response", {
     fetch("http://teamker.tk/api/response", {
-      method: "POST",
-      body: data
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
     }).then(function (res: any) {
       if (res.ok) {
         Utilities.getUserList(this.user.id)
@@ -299,7 +305,7 @@ class App extends React.Component<AppProps, AppStates> {
       userId={this.user.id}
       userName={this.user.name}
       onLogout={this.logUserOut.bind(this)}
-    />
+    />;
 
     if (this.state.login === 0) {
       //this.checkLoginState();
@@ -309,13 +315,17 @@ class App extends React.Component<AppProps, AppStates> {
     }
 
     if (this.state.login == 1 && this.state.entryType === "None") {
-      this.fetchGroupList();
+      if (this.fetchGroupListStatus < 0 && this.groupList.length == 0) {
+        console.log("fetch in none");
+        this.fetchGroupList();
+      }
       entryPage = <EntryPage involvedList={this.groupList} adminList={this.groupList}
         onGroupEntrySelected={this.onGroupEntrySelected.bind(this)} />;
     }
 
     if (this.state.login == 1 && this.state.entryType === "Admin") {
-      if (this.groupList.length == 0) {
+      if (this.fetchGroupListStatus < 0 && this.groupList.length == 0) {
+        console.log("fetch in admin");
         this.fetchGroupList();
       } else {
         adminPage = <AdminPage user={this.user} index={0} groupList={this.groupList} />;
