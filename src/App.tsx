@@ -149,9 +149,9 @@ class App extends React.Component<AppProps, AppStates> {
 
   logUserOut(): void {
     FB.logout(function (response: any) {
-      document.cookie.split(";").forEach(function (c) {
+      document.cookie.split(";").forEach(function (c: any) {
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain="+this.domain+";path=/");
-      });
+      }.bind(this));
 
       this.userId = "";
       this.userName = "";
