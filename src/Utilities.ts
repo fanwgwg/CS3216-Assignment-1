@@ -226,5 +226,5 @@ export function openGraphShare(): void{
         action_properties: JSON.stringify({
           object:'https://teamker.tk/',
         })
-      }, function(response){});
+      }, function(response: any){});
 }

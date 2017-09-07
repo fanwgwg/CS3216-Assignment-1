@@ -1,4 +1,4 @@
-/// <reference path='../node_modules/@types/facebook-js-sdk/index.d.ts'/>
+/// <reference path='../resources/facebook-js-sdk/index.d.ts'/>
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
@@ -15,7 +15,6 @@ import AdminPage from './AdminPage';
 import TopBar from './TopBar';
 
 require("../resources/app.css");
-// require("./fbsdk.js");
 
 type EntryType = "User" | "Admin" | "None";
 
@@ -36,8 +35,8 @@ declare function fbCheckLoginState(): any;
 class App extends React.Component<AppProps, AppStates> {
 
   appTitle = "Teamker";
-  domain = "teamker.tk";
-  //domain = "localhost";
+  // domain = "teamker.tk";
+  domain = "localhost";
   jsonUrls = ["api/questions"]; // hardcoded for now
   userScores: number[] = [];
   userDesc: string = "";
