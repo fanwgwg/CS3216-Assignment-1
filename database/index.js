@@ -98,6 +98,19 @@ module.exports = {
         });
     },
 
+    getAdminId: function (page_id) {
+        return new Promise((resolve, reject) => {
+            pool.query(`SELECT admin_id FROM Teamker.pages
+            WHERE id=${pool.escape(page_id)};`, function (error, results, fields) {
+                if (error) reject(error);
+                else {
+                    const data = results[0].admin_id;
+                    resolve(data);
+                }
+            });
+        });
+    },
+
     getQuestions: function (page_id, callback) {
         pool.query(`SELECT * FROM Teamker.questions
                     WHERE page_id=${pool.escape(page_id)}
@@ -113,18 +126,6 @@ module.exports = {
                         "body": row.attribute
                     });
                 });
-                callback(data);
-            }
-        });
-    },
-
-    getAdminId: function (page_id, callback) {
-        pool.query(`SELECT admin_id FROM Teamker.pages
-                    WHERE id=${pool.escape(page_id)};`, function (error, results, fields) {
-            if (error) {
-                throw error;
-            } else {
-                const data = results[0].admin_id;
                 callback(data);
             }
         });
