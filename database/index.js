@@ -11,7 +11,7 @@ module.exports = {
 
     addPage: function (page) {
         return new Promise((resolve, reject) => {
-            pool.query(`INSERT INTO Teamker.pages VALUES(
+            pool.query(`INSERT IGNORE INTO Teamker.pages VALUES(
                         ${pool.escape(page.id)},
                         ${pool.escape(page.name)},
                         ${pool.escape(page.admin_id)});`, function (error, results, fields) {
@@ -26,7 +26,7 @@ module.exports = {
 
     addUser: function (user) {
         return new Promise((resolve, reject) => {
-            pool.query(`INSERT INTO Teamker.users VALUES(
+            pool.query(`INSERT IGNORE INTO Teamker.users VALUES(
                         ${pool.escape(user.id)},
                         ${pool.escape(user.name)});`, function (error, results, fields) {
                 if (error) reject(error);
@@ -40,7 +40,7 @@ module.exports = {
 
     addInvolved: function (involved) {
         return new Promise((resolve, reject) => {
-            pool.query(`INSERT INTO Teamker.involved VALUES(
+            pool.query(`INSERT IGNORE INTO Teamker.involved VALUES(
                         ${pool.escape(involved.user_id)},
                         ${pool.escape(involved.page_id)},
                         'temp_desc');`, function (error, results, fields) {
@@ -69,7 +69,7 @@ module.exports = {
 
     addQuestion: function (question) {
         return new Promise((resolve, reject) => {
-            pool.query(`INSERT INTO Teamker.questions VALUES(
+            pool.query(`INSERT IGNORE INTO Teamker.questions VALUES(
                         ${pool.escape(question.page_id)},
                         ${pool.escape(question.index)},
                         ${pool.escape(question.attribute)});`, function (error, results, fields) {
@@ -84,7 +84,7 @@ module.exports = {
 
     addResponse: function (response) {
         return new Promise((resolve, reject) => {
-            pool.query(`INSERT INTO Teamker.responses VALUES(
+            pool.query(`INSERT IGNORE INTO Teamker.responses VALUES(
                         ${pool.escape(response.user_id)},
                         ${pool.escape(response.page_id)},
                         ${pool.escape(response.question_index)},
@@ -104,6 +104,7 @@ module.exports = {
             WHERE id=${pool.escape(page_id)};`, function (error, results, fields) {
                 if (error) reject(error);
                 else {
+			console.log(results);
                     const data = results[0].admin_id;
                     resolve(data);
                 }
