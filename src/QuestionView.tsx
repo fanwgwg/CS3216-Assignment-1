@@ -41,6 +41,11 @@ export default class QuestionView extends React.Component<QuestionViewProps, Que
     }
 
     render() {
+
+        Utilities.initGA();
+        Utilities.logPageView("placeholder", "/questions");
+        
+
         if (this.props.isDescriptionQuestion) {
             return (
                 <div className={"QuestionContainer"}>

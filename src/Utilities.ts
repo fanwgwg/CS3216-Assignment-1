@@ -1,3 +1,14 @@
+var ReactGA = require('react-ga');
+
+export const initGA = () => {
+  ReactGA.initialize('UA-106049419-1');
+}
+
+export const logPageView = (username : string, path : string) => {
+    ReactGA.set({user: username})
+    ReactGA.pageview(path)
+}
+
 export class Question {
     body: string = "";
 }

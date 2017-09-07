@@ -10,6 +10,10 @@ interface EntryPageProps {
 
 export default class Entrypage extends React.Component<EntryPageProps>{
     render() {
+
+        Utilities.initGA();
+        Utilities.logPageView("placeholder", "/entry");
+
         let invGroupList: JSX.Element[] = [];
         let admGroupList: JSX.Element[] = [];
         let entry = "";

@@ -14,9 +14,6 @@ import MainPage from './MainPage';
 import AdminPage from './AdminPage';
 import TopBar from './TopBar';
 
-var ReactGA = require("react-ga");
-
-ReactGA.initialize('UA-106049419-1'); //Unique Google Analytics tracking number
 
 require("../resources/app.css");
 
@@ -281,10 +278,7 @@ class App extends React.Component<AppProps, AppStates> {
   }
 
   render() {
-    (function fireTracking() {
-      ReactGA.set({ page: window.location.pathname + window.location.search });
-      ReactGA.pageview(window.location.pathname + window.location.search);
-    })();
+
 
     let topBar: JSX.Element = null;
     let loginPage: JSX.Element = null;

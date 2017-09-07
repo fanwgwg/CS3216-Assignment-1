@@ -192,6 +192,10 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     }
 
     render() {
+
+        Utilities.initGA();
+        Utilities.logPageView("placeholder", "/admin");
+        
         let mainContent: JSX.Element = null;
         let groupList: JSX.Element[] = [];
         let inputs: JSX.Element[] = [];

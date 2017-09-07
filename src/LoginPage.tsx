@@ -6,6 +6,10 @@ interface LoginPageProps {
 
 export default class LoginPage extends React.Component<LoginPageProps>{
     render() {
+
+        Utilities.initGA();
+        Utilities.logPageView("placeholder", "/login");
+
         console.log("start rendering login page");
         return (
             <div className={"LoginPage"}>
