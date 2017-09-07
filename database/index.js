@@ -10,73 +10,104 @@ pool.getConnection(function (error, connection) {
 module.exports = {
 
     addPage: function (page) {
-        pool.query(`INSERT INTO Teamker.pages VALUES(
-                    ${pool.escape(page.id)},
-                    ${pool.escape(page.name)},
-                    ${pool.escape(page.admin_id)});`, function (error, results, fields) {
-            if (error) throw error;
-            else {
-                console.log("New page added: " + page.name);
-            }
+        return new Promise((resolve, reject) => {
+            pool.query(`INSERT INTO Teamker.pages VALUES(
+                        ${pool.escape(page.id)},
+                        ${pool.escape(page.name)},
+                        ${pool.escape(page.admin_id)});`, function (error, results, fields) {
+                if (error) reject(error);
+                else {
+                    console.log("New page added: " + page.name);
+                    resolve();
+                }
+            });
         });
     },
 
     addUser: function (user) {
-        pool.query(`INSERT INTO Teamker.users VALUES(
-                    ${pool.escape(user.id)},
-                    ${pool.escape(user.name)});`, function (error, results, fields) {
-            if (error) throw error;
-            else {
-                console.log("New user added: " + user.name);
-            }
+        return new Promise((resolve, reject) => {
+            pool.query(`INSERT INTO Teamker.users VALUES(
+                        ${pool.escape(user.id)},
+                        ${pool.escape(user.name)});`, function (error, results, fields) {
+                if (error) reject(error);
+                else {
+                    console.log("New user added: " + user.name);
+                    resolve();
+                }
+            });
         });
     },
 
     addInvolved: function (involved) {
-        pool.query(`INSERT INTO Teamker.involved VALUES(
-                    ${pool.escape(involved.user_id)},
-                    ${pool.escape(involved.page_id)},
-                    'temp_desc');`, function (error, results, fields) {
-            if (error) throw error;
-            else {
-                console.log("New involved added: " + involved.user_id);
-            }
+        return new Promise((resolve, reject) => {
+            pool.query(`INSERT INTO Teamker.involved VALUES(
+                        ${pool.escape(involved.user_id)},
+                        ${pool.escape(involved.page_id)},
+                        'temp_desc');`, function (error, results, fields) {
+                if (error) reject(error);
+                else {
+                    console.log("New involved added: " + involved.user_id);
+                    resolve();
+                }
+            });
         });
     },
 
     addDescription: function (user_id, user_desc) {
-        pool.query(`UPDATE Teamker.involved
-                    SET user_desc=${pool.escape(user_desc)}
-                    WHERE user_id=${pool.escape(user_id)};`, function (error, results, fields) {
-            if (error) throw error;
-            else {
-                console.log("Description added: " + user_id);
-            }
+        return new Promise((resolve, reject) => {
+            pool.query(`UPDATE Teamker.involved
+                        SET user_desc=${pool.escape(user_desc)}
+                        WHERE user_id=${pool.escape(user_id)};`, function (error, results, fields) {
+                if (error) reject(error);
+                else {
+                    console.log("Description added: " + user_id);
+                    resolve();
+                }
+            });
         });
     },
 
     addQuestion: function (question) {
-        pool.query(`INSERT INTO Teamker.questions VALUES(
-                    ${pool.escape(question.page_id)},
-                    ${pool.escape(question.index)},
-                    ${pool.escape(question.attribute)});`, function (error, results, fields) {
-            if (error) throw error;
-            else {
-                console.log("New question added: " + question.attribute);
-            }
+        return new Promise((resolve, reject) => {
+            pool.query(`INSERT INTO Teamker.questions VALUES(
+                        ${pool.escape(question.page_id)},
+                        ${pool.escape(question.index)},
+                        ${pool.escape(question.attribute)});`, function (error, results, fields) {
+                if (error) reject(error);
+                else {
+                    console.log("New question added: " + question.attribute);
+                    resolve();
+                }
+            });
         });
     },
 
     addResponse: function (response) {
-        pool.query(`INSERT INTO Teamker.responses VALUES(
-                    ${pool.escape(response.user_id)},
-                    ${pool.escape(response.page_id)},
-                    ${pool.escape(response.question_index)},
-                    ${pool.escape(response.score)});`, function (error, results, fields) {
-            if (error) throw error;
-            else {
-                console.log("New response added: " + response.user_id);
-            }
+        return new Promise((resolve, reject) => {
+            pool.query(`INSERT INTO Teamker.responses VALUES(
+                        ${pool.escape(response.user_id)},
+                        ${pool.escape(response.page_id)},
+                        ${pool.escape(response.question_index)},
+                        ${pool.escape(response.score)});`, function (error, results, fields) {
+                if (error) reject(error);
+                else {
+                    console.log("New response added: " + response.user_id);
+                    resolve();
+                }
+            });
+        });
+    },
+
+    getAdminId: function (page_id) {
+        return new Promise((resolve, reject) => {
+            pool.query(`SELECT admin_id FROM Teamker.pages
+            WHERE id=${pool.escape(page_id)};`, function (error, results, fields) {
+                if (error) reject(error);
+                else {
+                    const data = results[0].admin_id;
+                    resolve(data);
+                }
+            });
         });
     },
 
@@ -95,18 +126,6 @@ module.exports = {
                         "body": row.attribute
                     });
                 });
-                callback(data);
-            }
-        });
-    },
-
-    getAdminId: function (page_id, callback) {
-        pool.query(`SELECT admin_id FROM Teamker.pages
-                    WHERE id=${pool.escape(page_id)};`, function (error, results, fields) {
-            if (error) {
-                throw error;
-            } else {
-                const data = row[0].admin_id;
                 callback(data);
             }
         });

@@ -2,13 +2,26 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 const port = process.env.port || process.env.PORT || 8000
-// const database = require('./database');
+const database = require('./database');
+const bodyParser = require('body-parser');
 
 app.use(express.static(__dirname));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(function(req, res, next) {
+	res.header("Access-Control-Allow-Origin", "*");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	next();
+});
 
 app.get('/', function (req, res) {
 	res.render("./index.html");
 });
+
+app.get('/logo', function (req, res) {
+	res.sendFile(__dirname + '/resources/images/logo_square.jpeg');
+});
+
 
 /** 
  * Register a new user to database
@@ -19,22 +32,22 @@ app.get('/', function (req, res) {
  */
 app.get('/api/questions', function (req, res) {
 	// stub
-	loadJsonFromFile("./resources/mock-data/questions.json", req, res);
+	// loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 
 	// from database
-	// try {
-	// 	const page_id = req.query.page_id;
-	// 	database.getQuestions(page_id, function(questions){
-	// 		res.writeHead(200, {
-	// 			"Content-Type": "application/json"
-	// 		});
-	// 		res.end(JSON.stringify(questions));
-	// 	});
-	// } catch (error) {
-	// 	console.log("Failed to fetch questions: " + error.message);
-	// 	res.writeHead(404);
-	// 	res.end();
-	// }
+	try {
+		const page_id = req.query.page_id;
+		database.getQuestions(page_id, function(questions){
+			res.writeHead(200, {
+				"Content-Type": "application/json"
+			});
+			res.end(JSON.stringify(questions));
+		});
+	} catch (error) {
+		console.log("Failed to fetch questions: " + error.message);
+		res.writeHead(404);
+		res.end();
+	}
 });
 
 /** 
@@ -49,7 +62,7 @@ app.get('/api/questions', function (req, res) {
  *		user_names: [user_name_1, user_name_2, ...]
  * }
  */
-app.post('/api/admin', function (req, res) {
+app.post('/api/admin', async function (req, res) {
 	try {
 		const body = req.body;
 		const page = {
@@ -57,26 +70,26 @@ app.post('/api/admin', function (req, res) {
 			name: body.page_name,
 			admin_id: body.admin_id
 		}
-		database.addPage(page);
+		await database.addPage(page);
 		for (let i = 0; i < body.questions.length; i++) {
 			const question = {
 				page_id: body.page_id,
 				index: i + 1,
 				attribute: body.questions[i]
 			}
-			database.addQuestion(question);
+			await database.addQuestion(question);
 		}
 		for (let i = 0; i < body.user_ids.length; i++) {
 			const user = {
 				id: body.user_ids[i],
 				name: body.user_names[i]
 			}
-			database.addUser(user);
+			await database.addUser(user);
 		}
 		res.writeHead(200);
 		res.end();
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
@@ -91,11 +104,15 @@ app.post('/api/admin', function (req, res) {
  *		page_id: "facebook page id",
  *		responses: [q1_score, q2_score, ...]
  * }
+ * 
+ * @returns Matched user list
+ * 		 	response = {admin_id: "admin ID",
+ * 						users: [{ id: "user_id", name: "user_name", "desc": "user_desc", "score": "match_score" }, ...]}
  */
-app.post('/api/response', function (req, res) {
+app.post('/api/response', async function (req, res) {
 	try {
 		const body = req.body;
-		database.addDescription(body.user_id, body.user_desc);
+		await database.addDescription(body.user_id, body.user_desc);
 		for (let i = 0; i < body.responses.length; i++) {
 			const response = {
 				user_id: body.user_id,
@@ -103,10 +120,19 @@ app.post('/api/response', function (req, res) {
 				question_index: i+1,
 				score: body.responses[i]
 			}
-			database.addResponse(response);
+			await database.addResponse(response);
 		}
+		const admin_id = await database.getAdminId(body.page_id);
+		database.getMatchedList(body.user_id, body.page_id, function(data){
+			const users = {
+				"admin_id": admin_id,
+				"users": data
+			}
+			res.writeHead(200);
+			res.end(JSON.stringify(users));
+		});
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
@@ -129,7 +155,7 @@ app.get('/api/frontpage', function (req, res) {
 			res.end(JSON.stringify(pages));
 		});
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
@@ -151,7 +177,7 @@ app.get('/api/checkNewGroup', function (req, res) {
 			res.end(JSON.stringify(exist));
 		});
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
@@ -174,7 +200,7 @@ app.get('/api/usersOnTeamker', function (req, res) {
 			res.end(JSON.stringify(users));
 		});
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
@@ -197,7 +223,7 @@ app.get('/api/usersNotOnTeamker', function (req, res) {
 			res.end(JSON.stringify(users));
 		});
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
