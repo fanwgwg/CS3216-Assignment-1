@@ -2,7 +2,7 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 const port = process.env.port || process.env.PORT || 8000
-// const database = require('./database');
+const database = require('./database');
 
 app.use(express.static(__dirname));
 app.use(function(req, res, next) {
@@ -24,22 +24,21 @@ app.get('/', function (req, res) {
  */
 app.get('/api/questions', function (req, res) {
 	// stub
-	loadJsonFromFile("./resources/mock-data/questions.json", req, res);
+	// loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 
-	// from database
-	// try {
-	// 	const page_id = req.query.page_id;
-	// 	database.getQuestions(page_id, function(questions){
-	// 		res.writeHead(200, {
-	// 			"Content-Type": "application/json"
-	// 		});
-	// 		res.end(JSON.stringify(questions));
-	// 	});
-	// } catch (error) {
-	// 	console.log("Failed to fetch questions: " + error.message);
-	// 	res.writeHead(404);
-	// 	res.end();
-	// }
+	try {
+		const page_id = req.query.page_id;
+		database.getQuestions(page_id, function(questions){
+			res.writeHead(200, {
+				"Content-Type": "application/json"
+			});
+			res.end(JSON.stringify(questions));
+		});
+	} catch (error) {
+		console.log("Failed to fetch questions: " + error.message);
+		res.writeHead(404);
+		res.end();
+	}
 });
 
 /** 
@@ -99,22 +98,19 @@ app.post('/api/admin', function (req, res) {
  */
 app.post('/api/response', function (req, res) {
 	try {
-		// const body = req.body;
-		// database.addDescription(body.user_id, body.user_desc);
-		// for (let i = 0; i < body.responses.length; i++) {
-		// 	const response = {
-		// 		user_id: body.user_id,
-		// 		page_id: body.page_id,
-		// 		question_index: i+1,
-		// 		score: body.responses[i]
-		// 	}
-		// 	database.addResponse(response);
-		// }
-
-		setTimeout(function () { // simulate the delay by setTimeout for now
-			res.writeHead(200);
-			res.end();
-		}, 1000);
+		const body = req.body;
+		database.addDescription(body.user_id, body.user_desc);
+		for (let i = 0; i < body.responses.length; i++) {
+			const response = {
+				user_id: body.user_id,
+				page_id: body.page_id,
+				question_index: i+1,
+				score: body.responses[i]
+			}
+			database.addResponse(response);
+		}
+		res.writeHead(200);
+		res.end();
 	} catch (error) {
 		console.log(error.message);
 		res.writeHead(500);
