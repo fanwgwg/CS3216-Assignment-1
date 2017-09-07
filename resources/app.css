@@ -188,6 +188,17 @@ body {
     font-size: 20px;
 }
 
+.EntryPage .Message {
+    background: #da6f6f;
+    color: white;
+    border-radius: 5px;
+    padding: 12px 15px;
+    display: inline-block;
+    margin-top: 10%;
+    box-shadow: 3px 3px 10px 0px #cecece;
+    text-align: center;
+}
+
 .EntryPage .GroupPanel {
     border-radius: 5px;
     background: whitesmoke;
@@ -196,6 +207,7 @@ body {
     margin-left: 5%;
     margin-right: 5%;
     min-height: -webkit-fill-available;
+    text-align: center;
 }
 
 .EntryPage .Title {

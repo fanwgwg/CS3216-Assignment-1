@@ -16,11 +16,6 @@ export class User {
     questionAndAnswers: QuestionAndAnswer[] = [];
 }
 
-export class Member {
-    id: string = "";
-    name: string = "";
-}
-
 export class Group {
     name: string = "";
     id: string = "";
@@ -138,7 +133,7 @@ export function getQuestions(groupId: string): Promise<Question[]> {
                 console.log("response from getQuestions: " + data);
                 let questions = data.map(function (q: any) {
                     return {
-                        body: "How good at you at " + q
+                        body: "How good at you at " + q.body + " ?"
                     }
                 });
 
@@ -222,19 +217,22 @@ export function getGroupMembersNotOnTeamker(groupId: string): Promise<User[]> {
     });
 }
 
-export function getMembersOfGroup(groupId: string): Promise<Member[]> {
-    return new Promise<Member[]>(resolve => {
+export function getMembersOfGroup(groupId: string): Promise<User[]> {
+    return new Promise<User[]>(resolve => {
         FB.api(
             "/" + groupId + "/members",
             function (response: any) {
-                let memberList: Member[] = [];
+                let memberList: User[] = [];
                 if (response && !response.error) {
                     /* handle the result */
                     console.log(response);
                     for (let mem of response.data) {
                         console.log(mem);
                         // if (!mem.administrator){
-                        memberList.push({ id: mem.id, name: mem.name });
+                        let user = new User();
+                        user.id = mem.id;
+                        user.name = mem.name;
+                        memberList.push(user);
                         // }
                     }
 
@@ -250,35 +248,36 @@ export function getMembersOfGroup(groupId: string): Promise<Member[]> {
 // Return a list of group that the user owns (this is from Facebook but not our database)
 export function getGroupList(userId: string): Promise<Group[]> {
     return new Promise<Group[]>(resolve => {
-        setTimeout(function () {
-            let mockGroup = {
-                name: "CS3216 Software Engineering in Digital Platforms",
-                id: ""
-            };
 
-            let groupList: Group[] = [];
+        // setTimeout(function () {
+        //     let mockGroup = {
+        //         name: "CS3216 Software Engineering in Digital Platforms",
+        //         id: ""
+        //     };
 
-            for (let i = 0; i < 10; i++) {
-                groupList.push(mockGroup);
-            }
+        //     let groupList: Group[] = [];
 
-            resolve(groupList);
-        }, 2000);
-
-        // FB.api(
-        //     "/me/groups",
-        //     function (response: any) {
-        //         console.log("getGroupList");
-        //         let groupList: Group[] = [];
-        //         if (response && !response.error) {
-        //             for (let grp of response.data) {
-        //                 groupList.push({ name: grp.name, id: grp.id });
-        //             }
-        //         }
-        //         console.log("groupList: " + groupList);
-        //         resolve(groupList);
+        //     for (let i = 0; i < 10; i++) {
+        //         groupList.push(mockGroup);
         //     }
-        // );
+
+        //     resolve(groupList);
+        // }, 2000);
+
+        FB.api(
+            "/me/groups",
+            function (response: any) {
+                console.log("getGroupList");
+                let groupList: Group[] = [];
+                if (response && !response.error) {
+                    for (let grp of response.data) {
+                        groupList.push({ name: grp.name, id: grp.id });
+                    }
+                }
+                console.log("groupList: " + groupList);
+                resolve(groupList);
+            }
+        );
     });
 }
 

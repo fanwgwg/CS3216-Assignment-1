@@ -20,8 +20,9 @@ interface AdminPageStates {
 export default class AdminPage extends React.Component<AdminPageProps, AdminPageStates> {
     initialiseStatus: number = -1; // -1 for not initialised, 0 for initialising, 1 for initialised
     isNewGroup: boolean = false;
-    usersOnTeamker: Utilities.User[] = [];
-    usersNotOnTeamker: Utilities.User[] = [];
+    usersOnTeamker: Utilities.User[] = []; // for group already on Teamker
+    usersNotOnTeamker: Utilities.User[] = []; // for group already on Teamker
+    membersInGroup: Utilities.User[] = []; // for new group
     userDetailIndex: number = -1;
     attributeInputs: string[] = [];
 
@@ -43,6 +44,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                 this.usersOnTeamker = res[0];
                 this.usersNotOnTeamker = res[1];
                 this.initialiseStatus = 1;
+                this.membersInGroup = [];
                 this.forceUpdate();
             }.bind(this));
     }
@@ -56,10 +58,13 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                 console.log("isNewGroup: " + isNewGroup);
                 this.isNewGroup = isNewGroup;
                 if (isNewGroup) {
-                    this.usersOnTeamker = [];
-                    this.usersNotOnTeamker = [];
-                    this.initialiseStatus = 1;
-                    this.forceUpdate();
+                    Utilities.getMembersOfGroup(groupId).then(function (users: Utilities.User[]) {
+                        this.membersInGroup = users;
+                        this.usersOnTeamker = [];
+                        this.usersNotOnTeamker = [];
+                        this.initialiseStatus = 1;
+                        this.forceUpdate();
+                    }.bind(this));
                 } else {
                     this.fetchGroupMembers(index);
                 }
@@ -163,18 +168,29 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     }
 
     submitGroupData(): void {
+        let user_ids = this.membersInGroup.map(user => user.id);
+        let user_names = this.membersInGroup.map(user => user.name);
+
+        console.log(this.props.user);
+
         let data = {
             page_id: this.props.groupList[this.state.selectIndex].id,
             page_name: this.props.groupList[this.state.selectIndex].name,
             admin_id: this.props.user.id,
             questions: this.attributeInputs,
-            user_id: [""],
-            user_names: [""]
+            user_ids: user_ids,
+            user_names: user_names
         }
+
+        console.log("submit data: " + JSON.stringify(data));
 
         fetch("http://teamker.tk/api/admin", {
             method: "POST",
-            body: data
+            mode: "cors",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
         }).then(function (res: any) {
             if (res.ok) {
                 if (this.isNewGroup) {
@@ -326,7 +342,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
 
         return (
             <div className={"AdminPage"}>
-                <div className={"Header"}>Hi Colin, welcome to the admin page.</div>
+                <div className={"Header"}>Welcome to the admin page.</div>
                 {userDetails}
                 <div className={"Main"}>
                     <div className={"Left"}>

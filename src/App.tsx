@@ -84,9 +84,10 @@ class App extends React.Component<AppProps, AppStates> {
   }
 
   fetchQuestions() {
-    console.log("start fetching data");
+    console.log("start fetching questions");
 
     Utilities.getQuestions(this.groupId).then(function (questions: any) {
+      console.log("questions: " + questions);
       this.setState({
         questions: questions
       });
@@ -253,24 +254,31 @@ class App extends React.Component<AppProps, AppStates> {
   }
 
   submitData(): void {
+    // let data = {
+    //   "page_id": this.groupId,
+    //   "user_id": this.user.id,
+    //   "user_name": this.user.name,
+    //   "user_desc": "",
+    //   "responses": this.userScores
+    // };
+
     let data = {
-      "page_id": 0,
-      "user_id": this.user.id,
-      "user_name": this.user.name,
-      "user_desc": "",
-      "responses": this.userScores
+      "page_id": 'page_id',
+      "user_id": 'non-registered-1',
+      "user_name": 'temp_name',
+      "user_desc": "temp_desc",
+      "responses": [1, 2, 3, 4, 5]
     }
 
-    console.log(data);
-
-    // fetch("/api/response", {
     fetch("http://teamker.tk/api/response", {
-      method: 'POST',
+      method: "POST",
+      mode: "cors",
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(data)
     }).then(function (res: any) {
+      console.log("response received: " + res);
       if (res.ok) {
         Utilities.getUserList(this.user.id)
           .then(function (data: any) {
@@ -283,7 +291,9 @@ class App extends React.Component<AppProps, AppStates> {
       } else {
         console.log("Unable to get user list");
       }
-    }.bind(this));
+    }.bind(this)).catch(function (e) {
+      console.log("error: unable to get user list");
+    });
   }
 
   render() {
@@ -319,8 +329,13 @@ class App extends React.Component<AppProps, AppStates> {
         console.log("fetch in none");
         this.fetchGroupList();
       }
-      entryPage = <EntryPage involvedList={this.groupList} adminList={this.groupList}
-        onGroupEntrySelected={this.onGroupEntrySelected.bind(this)} />;
+
+      entryPage = <EntryPage
+        involvedList={this.groupList}
+        adminList={this.groupList}
+        isLoading={this.fetchGroupListStatus <= 0}
+        onGroupEntrySelected={this.onGroupEntrySelected.bind(this)}
+      />;
     }
 
     if (this.state.login == 1 && this.state.entryType === "Admin") {
