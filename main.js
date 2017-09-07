@@ -3,8 +3,11 @@ const express = require('express');
 const app = express();
 const port = process.env.port || process.env.PORT || 8000
 const database = require('./database');
+const bodyParser = require('body-parser');
 
 app.use(express.static(__dirname));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
@@ -14,6 +17,11 @@ app.use(function(req, res, next) {
 app.get('/', function (req, res) {
 	res.render("./index.html");
 });
+
+app.get('/', function (req, res) {
+	res.render("./index.html");
+});
+
 
 /** 
  * Register a new user to database
@@ -80,7 +88,7 @@ app.post('/api/admin', async function (req, res) {
 		res.writeHead(200);
 		res.end();
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
@@ -123,7 +131,7 @@ app.post('/api/response', async function (req, res) {
 			});
 		});
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
@@ -146,7 +154,7 @@ app.get('/api/frontpage', function (req, res) {
 			res.end(JSON.stringify(pages));
 		});
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
@@ -168,7 +176,7 @@ app.get('/api/checkNewGroup', function (req, res) {
 			res.end(JSON.stringify(exist));
 		});
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
@@ -191,7 +199,7 @@ app.get('/api/usersOnTeamker', function (req, res) {
 			res.end(JSON.stringify(users));
 		});
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}
@@ -214,7 +222,7 @@ app.get('/api/usersNotOnTeamker', function (req, res) {
 			res.end(JSON.stringify(users));
 		});
 	} catch (error) {
-		console.log(error.message);
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}

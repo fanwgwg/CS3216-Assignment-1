@@ -106,7 +106,7 @@ module.exports = {
             if (error) {
                 throw error;
             } else {
-                const data = row[0].admin_id;
+                const data = results[0].admin_id;
                 callback(data);
             }
         });
