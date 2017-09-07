@@ -12,7 +12,7 @@ export class User {
     id: string = "";
     desc: string = "";
     matchScore: number = 0;
-     photoUrl: string = "";
+    photoUrl: string = "";
     questionAndAnswers: QuestionAndAnswer[] = [];
 }
 
@@ -128,62 +128,87 @@ export function getUserList(userId: string): Promise<User[]> {
     });
 }
 
-
 // Return true if this group is not on Teamker, true otherwise
 export function checkIsNewGroup(groupId: string): Promise<boolean> {
     return new Promise<boolean>(resolve => {
-        setTimeout(function () {
-            resolve(Math.random() > 0.5);
-        }, 1000);
+        // setTimeout(function () {
+        //     resolve(Math.random() > 0.5);
+        // }, 1000);
 
-        // fetch("/api/checkNewGroup?page_id=" + groupId)
-        //     .then(function (response: Response) {
-        //         return response.text();
-        //     }).then(function (data: any) {
-        //         resolve(data);
-        //     }).catch(function (error: any) {
-        //         console.error(error);
-        //     });
+        console.log("checkIsNewGroup");
+
+        // let header = new Headers({
+        //     'Access-Control-Allow-Origin': '*',
+        //     'Content-Type': 'text/plain'
+        // });
+
+        // var myInit = {
+        //     method: 'GET',
+        //     headers: header
+        // };
+
+        fetch("http://teamker.tk/api/checkNewGroup?page_id=page_id")
+            // fetch("/api/checkNewGroup?page_id=" + groupId)
+            .then(function (response: Response) {
+                let data = response.text();
+                console.log("response from checkIsNewGroup: " + data);
+                return data;
+            }).then(function (data: any) {
+                resolve(data === "true");
+            }).catch(function (error: any) {
+                console.error(error);
+            });
     });
 }
 
 // Return a list of group members that have finished questions
 export function getGroupMembersOnTeamker(groupId: string): Promise<User[]> {
     return new Promise<User[]>(resolve => {
-        setTimeout(function () {
-            getUserList("").then(function (data) {
-                resolve(data.slice(0, 10));
-            })
-        }, 1000);
+        // setTimeout(function () {
+        //     getUserList("").then(function (data) {
+        //         resolve(data.slice(0, 10));
+        //     })
+        // }, 1000);
 
-        // fetch("/api/usersOnTeamker?page_id=" + groupId)
-        // .then(function (response: Response) {
-        //     return response.json();
-        // }).then(function (data: any) {
-        //     resolve(data);
-        // }).catch(function (error: any) {
-        //     console.error(error);
-        // });
+        console.log("getGroupMembersOnTeamker");
+
+        fetch("http://teamker.tk/api/usersOnTeamker?page_id=page_id")
+            // fetch("/api/usersOnTeamker?page_id=" + groupId)
+            .then(function (response: Response) {
+                return response.text();
+            }).then(function (jsonString: any) {
+                let data = JSON.parse(jsonString).users;
+                console.log("response from usersNotOnTeamker: " + data);
+                // return data;
+                resolve(data);
+            }).catch(function (error: any) {
+                console.error(error);
+            });
     });
 }
 
 // Return a list of group members that have not finished questions
 export function getGroupMembersNotOnTeamker(groupId: string): Promise<User[]> {
     return new Promise<User[]>(resolve => {
-        setTimeout(function () {
-            getUserList("").then(function (data) {
-                resolve(data.slice(10, 25));
-            })
-        }, 1000);
+        // setTimeout(function () {
+        //     getUserList("").then(function (data) {
+        //         resolve(data.slice(10, 25));
+        //     })
+        // }, 1000);
 
-        // fetch("/api/usersNotOnTeamker?page_id=" + groupId)
-        // .then(function (response: Response) {
-        //     return response.json();
-        // }).then(function (data: any) {
-        //     resolve(data);
-        // }).catch(function (error: any) {
-        //     console.error(error);
-        // });
+        console.log("getGroupMembersNotOnTeamker");
+
+        fetch("http://teamker.tk/api/usersNotOnTeamker?page_id=page_id")
+            // fetch("/api/usersNotOnTeamker?page_id=" + groupId)
+            .then(function (response: Response) {
+                return response.text();
+            }).then(function (jsonString: any) {
+                let data = JSON.parse(jsonString).users;
+                console.log("response from usersNotOnTeamker: " + data);
+                resolve(data);
+            }).catch(function (error: any) {
+                console.error(error);
+            });
     });
 }
 
@@ -219,12 +244,12 @@ export function getGroupList(userId: string): Promise<Group[]> {
     });
 }
 
-export function openGraphShare(): void{
+export function openGraphShare(): void {
     FB.ui({
         method: 'share_open_graph',
         action_type: 'og.likes',
         action_properties: JSON.stringify({
-          object:'https://teamker.tk/',
+            object: 'https://teamker.tk/',
         })
-      }, function(response: any){});
+    }, function (response: any) { });
 }

@@ -94,22 +94,17 @@ app.post('/api/admin', function (req, res) {
  */
 app.post('/api/response', function (req, res) {
 	try {
-		// const body = req.body;
-		// database.addDescription(body.user_id, body.user_desc);
-		// for (let i = 0; i < body.responses.length; i++) {
-		// 	const response = {
-		// 		user_id: body.user_id,
-		// 		page_id: body.page_id,
-		// 		question_index: i+1,
-		// 		score: body.responses[i]
-		// 	}
-		// 	database.addResponse(response);
-		// }
-
-		setTimeout(function () { // simulate the delay by setTimeout for now
-			res.writeHead(200);
-			res.end();
-		}, 1000);
+		const body = req.body;
+		database.addDescription(body.user_id, body.user_desc);
+		for (let i = 0; i < body.responses.length; i++) {
+			const response = {
+				user_id: body.user_id,
+				page_id: body.page_id,
+				question_index: i+1,
+				score: body.responses[i]
+			}
+			database.addResponse(response);
+		}
 	} catch (error) {
 		console.log(error.message);
 		res.writeHead(500);

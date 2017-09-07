@@ -13,7 +13,6 @@ FB.init({
 //   document.body.appendChild(script);
 // }
 
-
 // window.fbAsyncInit = function () {
 //   FB.init({
 //     //appId: '196392960900707',
