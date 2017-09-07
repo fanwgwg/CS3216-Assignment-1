@@ -100,6 +100,18 @@ module.exports = {
         });
     },
 
+    getAdminId: function (page_id, callback) {
+        pool.query(`SELECT admin_id FROM Teamker.pages
+                    WHERE id=${pool.escape(page_id)};`, function (error, results, fields) {
+            if (error) {
+                throw error;
+            } else {
+                const data = row[0].admin_id;
+                callback(data);
+            }
+        });
+    },
+
     checkPageExist: function (page_id, callback) {
         pool.query(`SELECT EXISTS (
                     SELECT * FROM Teamker.pages
