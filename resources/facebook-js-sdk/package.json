@@ -1,0 +1,48 @@
+{
+  "_from": "@types/facebook-js-sdk",
+  "_id": "@types/facebook-js-sdk@2.8.3",
+  "_inBundle": false,
+  "_integrity": "sha512-+c5ontoZn812+7fLnPSbeHWJ6ueqN2FZNTEVVYK8UYRHvIkPHmYorj9qqsp6zNTUrYALVfn9E1zlEBPmPgLJog==",
+  "_location": "/@types/facebook-js-sdk",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@types/facebook-js-sdk",
+    "name": "@types/facebook-js-sdk",
+    "escapedName": "@types%2ffacebook-js-sdk",
+    "scope": "@types",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/@types/facebook-js-sdk/-/facebook-js-sdk-2.8.3.tgz",
+  "_shasum": "28db179c28bcd4faca13d38f27f72e1702f330f6",
+  "_spec": "@types/facebook-js-sdk",
+  "_where": "/Users/FanWeiguang/Documents/Github/CS3216-Assignment-1",
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Amrit Kahlon",
+      "url": "https://github.com/amritk"
+    }
+  ],
+  "dependencies": {},
+  "deprecated": false,
+  "description": "TypeScript definitions for the Facebook Javascript SDK",
+  "license": "MIT",
+  "main": "",
+  "name": "@types/facebook-js-sdk",
+  "repository": {
+    "type": "git",
+    "url": "https://www.github.com/DefinitelyTyped/DefinitelyTyped.git"
+  },
+  "scripts": {},
+  "typeScriptVersion": "2.0",
+  "typesPublisherContentHash": "94c914426c40f0ef0660c9f652940839811b48e6629061220e9be8ab4e7b955a",
+  "version": "2.8.3"
+}

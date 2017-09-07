@@ -1,7 +1,7 @@
 console.log("remember to change app Id in fbsdk.js and domain in class variable of App.tsx while testing");
 FB.init({
-  appId: '196392960900707',
-  //appId: '847275338755067',
+  // appId: '196392960900707',
+  appId: '847275338755067',
   xfbml: true,
   version: 'v2.10'
 });

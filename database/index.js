@@ -100,6 +100,91 @@ module.exports = {
         });
     },
 
+    checkPageExist: function (page_id, callback) {
+        pool.query(`SELECT EXISTS (
+                    SELECT * FROM Teamker.pages
+                    WHERE id=\'${pool.escape(page_id)}\');`, function (error, results, fields) {
+            if (error) {
+                throw error;
+            } else {
+                const exist = (resutls.length > 0) ? true : false;
+                callback(exist);
+            }
+        });
+    },
+
+    getAllUsersFromPage: function (page_id, callback) {
+        pool.query(`SELECT * FROM Teamker.involved
+                    INNER JOIN Teamker.users ON user_id=id
+                    WHERE page_id=\'${pool.escape(page_id)}\';`, function (error, results, fields) {
+            if (error) {
+                throw error;
+            } else {
+                let data = {
+                    users: []
+                };
+                results.forEach(function (row) {
+                    data.users.push({
+                        "id": row.id,
+                        "name": row.name,
+                        "desc": row.user_desc
+                    });
+                });
+                callback(data);
+            }
+        });
+    },
+
+    getRegisteredUsersFromPage: function (page_id, callback) {
+        pool.query(`SELECT DISTINCT users.id, users.name, involved.user_desc FROM Teamker.users AS users
+                    INNER JOIN Teamker.involved AS involved ON users.id=involved.user_id
+                    INNER JOIN Teamker.responses AS responses ON users.id=responses.user_id
+                    INNER JOIN Teamker.questions AS questions ON involved.page_id=questions.page_id
+                    WHERE involved.page_id=\'${pool.escape(page_id)}\';`, function (error, results, fields) {
+            if (error) {
+                throw error;
+            } else {
+                let data = {
+                    users: []
+                };
+                results.forEach(function (row) {
+                    data.users.push({
+                        "id": row.id,
+                        "name": row.name,
+                        "desc": row.user_desc
+                    });
+                });
+                callback(data);
+            }
+        });
+    },
+
+    getNotRegisteredUsersFromPage: function (page_id, callback) {
+        pool.query(`SELECT DISTINCT users.id, users.name, involved.user_desc, questions.page_id FROM Teamker.users AS users
+                    INNER JOIN Teamker.involved AS involved ON users.id=involved.user_id
+                    LEFT JOIN Teamker.responses AS responses ON users.id=responses.user_id
+                    LEFT JOIN Teamker.questions AS questions ON responses.page_id=questions.page_id
+                    WHERE involved.page_id=\'${pool.escape(page_id)}\'
+                    AND questions.page_id is NULL;`, function (error, results, fields) {
+            if (error) {
+                throw error;
+            } else {
+                let data = {
+                    users: []
+                };
+                results.forEach(function (row) {
+                    data.users.push({
+                        "id": row.id,
+                        "name": row.name,
+                        "desc": row.user_desc
+                    });
+                });
+                callback(data);
+            }
+        });
+    },
+    
+
     getPagesUserInvolved: function (user_id, callback) {
         pool.query(`SELECT * FROM Teamker.involved
                     INNER JOIN Teamker.pages ON page_id=id
