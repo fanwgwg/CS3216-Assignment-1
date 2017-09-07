@@ -53,7 +53,7 @@ app.get('/api/questions', function (req, res) {
  *		user_names: [user_name_1, user_name_2, ...]
  * }
  */
-app.post('/api/admin', function (req, res) {
+app.post('/api/admin', async function (req, res) {
 	try {
 		const body = req.body;
 		const page = {
@@ -61,21 +61,21 @@ app.post('/api/admin', function (req, res) {
 			name: body.page_name,
 			admin_id: body.admin_id
 		}
-		database.addPage(page);
+		await database.addPage(page);
 		for (let i = 0; i < body.questions.length; i++) {
 			const question = {
 				page_id: body.page_id,
 				index: i + 1,
 				attribute: body.questions[i]
 			}
-			database.addQuestion(question);
+			await database.addQuestion(question);
 		}
 		for (let i = 0; i < body.user_ids.length; i++) {
 			const user = {
 				id: body.user_ids[i],
 				name: body.user_names[i]
 			}
-			database.addUser(user);
+			await database.addUser(user);
 		}
 		res.writeHead(200);
 		res.end();
@@ -96,10 +96,10 @@ app.post('/api/admin', function (req, res) {
  *		responses: [q1_score, q2_score, ...]
  * }
  */
-app.post('/api/response', function (req, res) {
+app.post('/api/response', async function (req, res) {
 	try {
 		const body = req.body;
-		database.addDescription(body.user_id, body.user_desc);
+		await database.addDescription(body.user_id, body.user_desc);
 		for (let i = 0; i < body.responses.length; i++) {
 			const response = {
 				user_id: body.user_id,
@@ -107,7 +107,7 @@ app.post('/api/response', function (req, res) {
 				question_index: i+1,
 				score: body.responses[i]
 			}
-			database.addResponse(response);
+			await database.addResponse(response);
 		}
 		res.writeHead(200);
 		res.end();

@@ -107,7 +107,7 @@ module.exports = {
             if (error) {
                 throw error;
             } else {
-                const exist = (resutls.length > 0) ? true : false;
+                const exist = (results.length > 0) ? true : false;
                 callback(exist);
             }
         });
