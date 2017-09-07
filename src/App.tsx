@@ -282,7 +282,8 @@ class App extends React.Component<AppProps, AppStates> {
 
   render() {
     (function fireTracking() {
-      ReactGA.pageview(window.location.hash);
+      ReactGA.set({ page: window.location.pathname + window.location.search });
+      ReactGA.pageview(window.location.pathname + window.location.search);
     })();
 
     let topBar: JSX.Element = null;
