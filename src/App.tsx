@@ -14,6 +14,10 @@ import MainPage from './MainPage';
 import AdminPage from './AdminPage';
 import TopBar from './TopBar';
 
+var ReactGA = require("react-ga");
+
+ReactGA.initialize('UA-106049419-1'); //Unique Google Analytics tracking number
+
 require("../resources/app.css");
 
 type EntryType = "User" | "Admin" | "None";
@@ -82,23 +86,29 @@ class App extends React.Component<AppProps, AppStates> {
   fetchQuestions() {
     console.log("start fetching data");
 
-    let downloader = Utilities.creteJsonDownloader(this.jsonUrls,
-      () => {
-        let downloadedObjects = downloader.getDownloadedJsonObjects();
+    Utilities.getQuestions(this.groupId).then(function (questions: any) {
+      this.setState({
+        questions: questions
+      });
+    }.bind(this));
 
-        let questions = downloadedObjects["api/questions"].questions;
+    // let downloader = Utilities.creteJsonDownloader(this.jsonUrls,
+    //   () => {
+    //     let downloadedObjects = downloader.getDownloadedJsonObjects();
 
-        if (!questions) {
-          return; // Not fully downloaded yet
-        }
+    //     let questions = downloadedObjects["api/questions"].questions;
 
-        this.numberOfQuestions = questions.length;
+    //     if (!questions) {
+    //       return; // Not fully downloaded yet
+    //     }
 
-        this.setState({
-          questions: questions
-        });
-      }
-    );
+    //     this.numberOfQuestions = questions.length;
+
+    //     this.setState({
+    //       questions: questions
+    //     });
+    //   }
+    // );
   }
 
   fetchGroupList() {
@@ -163,9 +173,9 @@ class App extends React.Component<AppProps, AppStates> {
 
   logUserOut(): void {
     FB.logout(function (response: any) {
-      document.cookie.split(";").forEach(function (c) {
+      document.cookie.split(";").forEach(function (c: any) {
         document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain=" + this.domain + ";path=/");
-      });
+      }.bind(this));
 
       this.user = new Utilities.User();
       // this.userId = "";
@@ -271,6 +281,10 @@ class App extends React.Component<AppProps, AppStates> {
   }
 
   render() {
+    (function fireTracking() {
+      ReactGA.pageview(window.location.hash);
+    })();
+
     let topBar: JSX.Element = null;
     let loginPage: JSX.Element = null;
     let entryPage: JSX.Element = null;
@@ -290,7 +304,7 @@ class App extends React.Component<AppProps, AppStates> {
     if (this.state.login === 0) {
       //this.checkLoginState();
       loginPage = <LoginPage onLogin={this.logUserIn.bind(this)} />;
-    } else if (!this.state.questions) {
+    } else if (this.state.entryType === "User" && !this.state.allQuestionsAnswered && !this.state.questions) {
       this.fetchQuestions();
     }
 

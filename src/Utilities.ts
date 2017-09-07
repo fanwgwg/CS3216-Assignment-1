@@ -128,6 +128,26 @@ export function getUserList(userId: string): Promise<User[]> {
     });
 }
 
+export function getQuestions(groupId: string): Promise<Question[]> {
+    return new Promise<Question[]>(resolve => {
+        fetch("http://teamker.tk/api/questions?page_id=page_id")
+            .then(function (response: Response) {
+                return response.text();
+            }).then(function (jsonString: any) {
+                let data = JSON.parse(jsonString).questions;
+                console.log("response from getQuestions: " + data);
+                let questions = data.map(function (q: any) {
+                    return {
+                        body: "How good at you at " + q
+                    }
+                });
+
+                resolve(questions);
+            })
+    });
+}
+
+
 // Return true if this group is not on Teamker, true otherwise
 export function checkIsNewGroup(groupId: string): Promise<boolean> {
     return new Promise<boolean>(resolve => {
@@ -136,16 +156,6 @@ export function checkIsNewGroup(groupId: string): Promise<boolean> {
         // }, 1000);
 
         console.log("checkIsNewGroup");
-
-        // let header = new Headers({
-        //     'Access-Control-Allow-Origin': '*',
-        //     'Content-Type': 'text/plain'
-        // });
-
-        // var myInit = {
-        //     method: 'GET',
-        //     headers: header
-        // };
 
         fetch("http://teamker.tk/api/checkNewGroup?page_id=page_id")
             // fetch("/api/checkNewGroup?page_id=" + groupId)
@@ -210,6 +220,31 @@ export function getGroupMembersNotOnTeamker(groupId: string): Promise<User[]> {
                 console.error(error);
             });
     });
+}
+
+export function getMembersOfGroup(groupId: string): Promise<Member[]> {
+    return new Promise<Member[]>(resolve => {
+        FB.api(
+            "/" + groupId + "/members",
+            function (response: any) {
+                let memberList: Member[] = [];
+                if (response && !response.error) {
+                    /* handle the result */
+                    console.log(response);
+                    for (let mem of response.data) {
+                        console.log(mem);
+                        // if (!mem.administrator){
+                        memberList.push({ id: mem.id, name: mem.name });
+                        // }
+                    }
+
+                    // callback(groupList);
+                    console.log(memberList);
+                }
+                resolve(memberList);
+            }
+        );
+    })
 }
 
 // Return a list of group that the user owns (this is from Facebook but not our database)
