@@ -39,8 +39,8 @@ declare function fbCheckLoginState(): any;
 class App extends React.Component<AppProps, AppStates> {
 
   appTitle = "Teamker";
-  // domain = "teamker.tk";
-  domain = "localhost";
+  domain = "teamker.tk";
+  // domain = "localhost";
   jsonUrls = ["api/questions"]; // hardcoded for now
   userScores: number[] = [];
   userDesc: string = "";
@@ -48,6 +48,7 @@ class App extends React.Component<AppProps, AppStates> {
   userId: string = "";
   userName: string = "";
   groupId: string = "";
+  user: Utilities.User = new Utilities.User();
   userList: Utilities.User[] = [];
   groupList: Utilities.Group[] = [];
 
@@ -56,6 +57,16 @@ class App extends React.Component<AppProps, AppStates> {
 
     // console.log(FB);
     // login part
+
+    // let cookie = document.cookie.split(";");
+    // let entryType = "None";
+    // cookie.forEach(c => {
+    //   let name = c.split('=')[0];
+    //   if (name === "entryType") {
+    //     let value = <EntryType>(c.split('=')[1]);
+    //     entryType = value;
+    //   }
+    // });
 
     this.state = {
       login: -1,
@@ -75,23 +86,29 @@ class App extends React.Component<AppProps, AppStates> {
   fetchQuestions() {
     console.log("start fetching data");
 
-    let downloader = Utilities.creteJsonDownloader(this.jsonUrls,
-      () => {
-        let downloadedObjects = downloader.getDownloadedJsonObjects();
+    Utilities.getQuestions(this.groupId).then(function (questions: any) {
+      this.setState({
+        questions: questions
+      });
+    }.bind(this));
 
-        let questions = downloadedObjects["api/questions"].questions;
+    // let downloader = Utilities.creteJsonDownloader(this.jsonUrls,
+    //   () => {
+    //     let downloadedObjects = downloader.getDownloadedJsonObjects();
 
-        if (!questions) {
-          return; // Not fully downloaded yet
-        }
+    //     let questions = downloadedObjects["api/questions"].questions;
 
-        this.numberOfQuestions = questions.length;
+    //     if (!questions) {
+    //       return; // Not fully downloaded yet
+    //     }
 
-        this.setState({
-          questions: questions
-        });
-      }
-    );
+    //     this.numberOfQuestions = questions.length;
+
+    //     this.setState({
+    //       questions: questions
+    //     });
+    //   }
+    // );
   }
 
   fetchGroupList() {
@@ -112,8 +129,10 @@ class App extends React.Component<AppProps, AppStates> {
       if (response.status === "connected") {
         //console.log("logged in");
         FB.api('/me', function (response: any) {
-          this.userId = response.id;
-          this.userName = response.name;
+          this.user.id = response.id;
+          this.user.name = response.name;
+          // this.userId = response.id;
+          // this.userName = response.name;
           this.setState({
             login: 1
           });
@@ -137,8 +156,10 @@ class App extends React.Component<AppProps, AppStates> {
     FB.login(function (response: any) {
       if (response.status == 'connected') {
         FB.api('/me', function (response: any) {
-          this.userId = response.id;
-          this.userName = response.name;
+          this.user.id = response.id;
+          this.user.name = response.name;
+          // this.userId = response.id;
+          // this.userName = response.name;
           this.setState({
             login: true
           });
@@ -153,13 +174,16 @@ class App extends React.Component<AppProps, AppStates> {
   logUserOut(): void {
     FB.logout(function (response: any) {
       document.cookie.split(";").forEach(function (c: any) {
-        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain="+this.domain+";path=/");
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";domain=" + this.domain + ";path=/");
       }.bind(this));
 
-      this.userId = "";
-      this.userName = "";
+      this.user = new Utilities.User();
+      // this.userId = "";
+      // this.userName = "";
       this.userList = [];
       this.groupList = [];
+
+      document.cookie = "entryType=;expires=Thu, 01 Jan 1970 00:00:01 GMT;";
 
       this.setState({
         login: 0,
@@ -172,8 +196,11 @@ class App extends React.Component<AppProps, AppStates> {
     }.bind(this));
   }
 
-  onGroupEntrySelected(entry: EntryType, groupId: string): void{
+  onGroupEntrySelected(entry: EntryType, groupId: string): void {
     this.groupId = groupId;
+
+    document.cookie = "entryType=" + entry;
+
     this.setState({
       entryType: entry
     });
@@ -226,18 +253,20 @@ class App extends React.Component<AppProps, AppStates> {
   submitData(): void {
     let data = {
       "page_id": 0,
-      "user_id": this.userId,
-      "user_name": this.userName,
+      "user_id": this.user.id,
+      "user_name": this.user.name,
       "user_desc": "",
       "responses": this.userScores
     }
 
-    fetch("/api/response", {
+    console.log(data);
+
+    fetch("http://teamker.tk/api/response", {
       method: "POST",
       body: data
     }).then(function (res: any) {
       if (res.ok) {
-        Utilities.getUserList(this.userId)
+        Utilities.getUserList(this.user.id)
           .then(function (data: any) {
             console.log("userlist received: " + data);
             this.userList = data;
@@ -258,7 +287,7 @@ class App extends React.Component<AppProps, AppStates> {
 
     let topBar: JSX.Element = null;
     let loginPage: JSX.Element = null;
-    let entryPage: JSX.Element = null; 
+    let entryPage: JSX.Element = null;
     let mainPage: JSX.Element = null;
     let adminPage: JSX.Element = null;
     let questions: JSX.Element[] = [];
@@ -267,32 +296,32 @@ class App extends React.Component<AppProps, AppStates> {
 
     topBar = <TopBar
       appTitle={this.appTitle}
-      userId={this.userId}
-      userName={this.userName}
+      userId={this.user.id}
+      userName={this.user.name}
       onLogout={this.logUserOut.bind(this)}
     />
 
     if (this.state.login === 0) {
       //this.checkLoginState();
       loginPage = <LoginPage onLogin={this.logUserIn.bind(this)} />;
-    } else if (!this.state.questions) {
+    } else if (this.state.entryType === "User" && !this.state.allQuestionsAnswered && !this.state.questions) {
       this.fetchQuestions();
     }
 
-    if (this.state.login == 1 && this.state.entryType === "None"){
+    if (this.state.login == 1 && this.state.entryType === "None") {
       this.fetchGroupList();
-      entryPage = <EntryPage involvedList={this.groupList} adminList={this.groupList} 
-                   onGroupEntrySelected={this.onGroupEntrySelected.bind(this)} />;
+      entryPage = <EntryPage involvedList={this.groupList} adminList={this.groupList}
+        onGroupEntrySelected={this.onGroupEntrySelected.bind(this)} />;
     }
 
     if (this.state.login == 1 && this.state.entryType === "Admin") {
       if (this.groupList.length == 0) {
         this.fetchGroupList();
       } else {
-        adminPage = <AdminPage index={0} groupList={this.groupList} />;
+        adminPage = <AdminPage user={this.user} index={0} groupList={this.groupList} />;
       }
     }
-    
+
     if (this.state.entryType === "User" && this.state.login == 1 && !this.state.allQuestionsAnswered && this.state.questions) {
       let index = 0;
       questions = this.state.questions.map(q => <QuestionView

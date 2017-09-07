@@ -5,6 +5,7 @@ import LoaderPage from "./LoaderPage";
 import * as Utilities from "./Utilities";
 
 interface AdminPageProps {
+    user: Utilities.User;
     index: number;
     groupList: Utilities.Group[];
 }
@@ -22,6 +23,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     usersOnTeamker: Utilities.User[] = [];
     usersNotOnTeamker: Utilities.User[] = [];
     userDetailIndex: number = -1;
+    attributeInputs: string[] = [];
 
     constructor(props: AdminPageProps) {
         super(props);
@@ -106,6 +108,13 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         }
     }
 
+    onInputChange(index: number, event: any): void {
+        let text = event.target.value.trim();
+        this.attributeInputs[index] = text;
+
+        console.log(this.attributeInputs);
+    }
+
     onAddButtonClicked(): void {
         this.setState({
             numOfInputs: this.state.numOfInputs + 1
@@ -140,24 +149,46 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             shouldUserDetailsOpen: true
         });
     }
-    
-    onBottomButtonClicked(): void{
-        if(this.isNewGroup){
-            Utilities.openGraphShare();
-            this.isNewGroup = false;
-            this.forceUpdate();
-        }else{
-            this.isNewGroup = true;
-            this.forceUpdate();
-        }
+
+    onBottomButtonClicked(): void {
+        this.submitGroupData();
     }
-    
+
     closeUserDetails(): void {
         this.setState({
             shouldUserDetailsOpen: false
         });
 
         this.userDetailIndex = -1;
+    }
+
+    submitGroupData(): void {
+        let data = {
+            page_id: this.props.groupList[this.state.selectIndex].id,
+            page_name: this.props.groupList[this.state.selectIndex].name,
+            admin_id: this.props.user.id,
+            questions: this.attributeInputs,
+            user_id: [""],
+            user_names: [""]
+        }
+
+        fetch("http://teamker.tk/api/admin", {
+            method: "POST",
+            body: data
+        }).then(function (res: any) {
+            if (res.ok) {
+                if (this.isNewGroup) {
+                    Utilities.openGraphShare();
+                    this.isNewGroup = false;
+                    this.forceUpdate();
+                } else {
+                    this.isNewGroup = true;
+                    this.forceUpdate();
+                }
+            } else {
+                console.log("Unable to get user list");
+            }
+        }.bind(this));
     }
 
     render() {
@@ -204,7 +235,9 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                 inputs.push(
                     <form key={i}>
                         <div className={"Index"}>{i + 1}</div>
-                        <input type="text" />
+                        <input type="text" onChange={function (e: any) {
+                            this.onInputChange(i, e);
+                        }.bind(this)} />
                         {addButton}
                         {deleteButton}
                     </form>
@@ -236,24 +269,28 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             let userListB: JSX.Element[] = [];
             let i = 0;
 
-            userListA = this.usersOnTeamker.map(user => {
-                return (
-                    <div className={"User"} key={i} onClick={this.onUserListClicked.bind(this, i++)}>
-                        <img className={"Photo"} src={require("../resources/images/user.svg")} />
-                        <div className={"Name"}>{user.name}</div>
-                    </div>
-                );
-            });
+            if (this.usersOnTeamker.length > 0) {
+                userListA = this.usersOnTeamker.map(user => {
+                    return (
+                        <div className={"User"} key={i} onClick={this.onUserListClicked.bind(this, i++)}>
+                            <img className={"Photo"} src={require("../resources/images/user.svg")} />
+                            <div className={"Name"}>{user.name}</div>
+                        </div>
+                    );
+                });
+            }
 
             i = 0;
-            userListB = this.usersNotOnTeamker.map(user => {
-                return (
-                    <div className={"User"} key={i++}>
-                        <img className={"Photo"} src={require("../resources/images/user.svg")} />
-                        <div className={"Name"}>{user.name}</div>
-                    </div>
-                );
-            });
+            if (this.usersNotOnTeamker.length > 0) {
+                userListB = this.usersNotOnTeamker.map(user => {
+                    return (
+                        <div className={"User"} key={i++}>
+                            <img className={"Photo"} src={require("../resources/images/user.svg")} />
+                            <div className={"Name"}>{user.name}</div>
+                        </div>
+                    );
+                });
+            }
 
             mainContent = (
                 <div className={"MainContent"}>
