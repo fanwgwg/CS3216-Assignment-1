@@ -19,7 +19,7 @@ app.get('/', function (req, res) {
 });
 
 app.get('/logo', function (req, res) {
-	res.sendFile(__dirname + '/resources/images/logo_square.png');
+	res.sendFile(__dirname + '/resources/images/logo_square.jpeg');
 });
 
 
