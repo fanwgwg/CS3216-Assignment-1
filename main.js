@@ -32,22 +32,22 @@ app.get('/logo', function (req, res) {
  */
 app.get('/api/questions', function (req, res) {
 	// stub
-	loadJsonFromFile("./resources/mock-data/questions.json", req, res);
+	// loadJsonFromFile("./resources/mock-data/questions.json", req, res);
 
 	// from database
-	// try {
-	// 	const page_id = req.query.page_id;
-	// 	database.getQuestions(page_id, function(questions){
-	// 		res.writeHead(200, {
-	// 			"Content-Type": "application/json"
-	// 		});
-	// 		res.end(JSON.stringify(questions));
-	// 	});
-	// } catch (error) {
-	// 	console.log("Failed to fetch questions: " + error.message);
-	// 	res.writeHead(404);
-	// 	res.end();
-	// }
+	try {
+		const page_id = req.query.page_id;
+		database.getQuestions(page_id, function(questions){
+			res.writeHead(200, {
+				"Content-Type": "application/json"
+			});
+			res.end(JSON.stringify(questions));
+		});
+	} catch (error) {
+		console.log("Failed to fetch questions: " + error.message);
+		res.writeHead(404);
+		res.end();
+	}
 });
 
 /** 
@@ -62,7 +62,7 @@ app.get('/api/questions', function (req, res) {
  *		user_names: [user_name_1, user_name_2, ...]
  * }
  */
-app.post('/api/admin', function (req, res) {
+app.post('/api/admin', async function (req, res) {
 	try {
 		const body = req.body;
 		const page = {
@@ -70,21 +70,21 @@ app.post('/api/admin', function (req, res) {
 			name: body.page_name,
 			admin_id: body.admin_id
 		}
-		database.addPage(page);
+		await database.addPage(page);
 		for (let i = 0; i < body.questions.length; i++) {
 			const question = {
 				page_id: body.page_id,
 				index: i + 1,
 				attribute: body.questions[i]
 			}
-			database.addQuestion(question);
+			await database.addQuestion(question);
 		}
 		for (let i = 0; i < body.user_ids.length; i++) {
 			const user = {
 				id: body.user_ids[i],
 				name: body.user_names[i]
 			}
-			database.addUser(user);
+			await database.addUser(user);
 		}
 		res.writeHead(200);
 		res.end();
@@ -117,7 +117,7 @@ app.post('/api/response', function (req, res) {
 				score: body.responses[i]
 			}
 			database.addResponse(response);
-		}
+		}	
 	} catch (error) {
 		throw error;
 		res.writeHead(500);
