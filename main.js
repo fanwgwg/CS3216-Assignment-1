@@ -65,6 +65,7 @@ app.get('/api/questions', function (req, res) {
 app.post('/api/admin', async function (req, res) {
 	try {
 		const body = req.body;
+		console.log(req.body);
 		const page = {
 			id: body.page_id,
 			name: body.page_name,

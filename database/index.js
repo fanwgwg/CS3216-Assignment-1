@@ -135,11 +135,11 @@ module.exports = {
     checkPageExist: function (page_id, callback) {
         pool.query(`SELECT EXISTS (
                     SELECT * FROM Teamker.pages
-                    WHERE id=${pool.escape(page_id)});`, function (error, results, fields) {
+                    WHERE id=${pool.escape(page_id)}) AS exist;`, function (error, results, fields) {
             if (error) {
                 throw error;
             } else {
-                const exist = (results.length > 0) ? true : false;
+                const exist = (results[0].exist === 1) ? true : false;
                 callback(exist);
             }
         });
