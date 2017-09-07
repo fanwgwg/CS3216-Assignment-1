@@ -178,7 +178,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         }).then(function (res: any) {
             if (res.ok) {
                 if (this.isNewGroup) {
-                    Utilities.openGraphShare();
+                    Utilities.popShare();
                     this.isNewGroup = false;
                     this.forceUpdate();
                 } else {

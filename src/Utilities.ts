@@ -279,12 +279,9 @@ export function getGroupList(userId: string): Promise<Group[]> {
     });
 }
 
-export function openGraphShare(): void {
+export function popShare(): void {
     FB.ui({
-        method: 'share_open_graph',
-        action_type: 'og.likes',
-        action_properties: JSON.stringify({
-            object: 'https://teamker.tk/',
-        })
-    }, function (response: any) { });
+        method: 'share',
+        href: 'http://teamker.tk',
+      }, function(response){});
 }
