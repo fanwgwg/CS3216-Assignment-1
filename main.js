@@ -95,6 +95,8 @@ app.post('/api/admin', async function (req, res) {
  *		page_id: "facebook page id",
  *		responses: [q1_score, q2_score, ...]
  * }
+ * @returns Matched user list
+ * 		 	response = { users: [{ id: "user_id", name: "user_name", "desc": "user_desc", "score": "match_score" }, ...]}
  */
 app.post('/api/response', async function (req, res) {
 	try {
@@ -109,8 +111,13 @@ app.post('/api/response', async function (req, res) {
 			}
 			await database.addResponse(response);
 		}
-		res.writeHead(200);
-		res.end();
+		database.getMatchedList(body.user_id, body.page_id, function(data){
+			const users = {
+				"users": data
+			}
+			res.writeHead(200);
+			res.end(users);
+		});
 	} catch (error) {
 		console.log(error.message);
 		res.writeHead(500);
