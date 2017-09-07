@@ -2,7 +2,6 @@ const fs = require('fs');
 const express = require('express');
 const app = express();
 const port = process.env.port || process.env.PORT || 8000
-<<<<<<< HEAD
 const database = require('./database');
 const bodyParser = require('body-parser');
 
@@ -14,18 +13,13 @@ app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 	next();
 });
-=======
-// const database = require('./database');
-
-app.use(express.static(__dirname));
->>>>>>> cf6643ffdbafdef06593f3656f1ef8838181e185
 
 app.get('/', function (req, res) {
 	res.render("./index.html");
 });
 
-app.get('/', function (req, res) {
-	res.render("./index.html");
+app.get('/logo', function (req, res) {
+	res.sendFile(__dirname + '/resources/images/logo_square.png');
 });
 
 
