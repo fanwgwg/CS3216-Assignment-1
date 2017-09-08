@@ -53,6 +53,8 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         this.initialiseStatus = 0;
         let groupId = this.props.groupList[index].id;
 
+        console.log("check new group: "+ index + " " + groupId + " " + this.props.groupList[index].name);
+
         Utilities.checkIsNewGroup(groupId)
             .then(function (isNewGroup: boolean) {
                 console.log("isNewGroup: " + isNewGroup);
@@ -226,7 +228,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         }
 
         if (this.initialiseStatus <= 0) {
-            console.log("initialise status: " + this.initialiseStatus);
+            console.log("select index: " + this.state.selectIndex);
 
             if (this.initialiseStatus < 0) {
                 this.fetchGroupStatus(this.state.selectIndex);

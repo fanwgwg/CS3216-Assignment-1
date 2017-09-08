@@ -236,19 +236,13 @@ export function getMembersOfGroup(groupId: string): Promise<User[]> {
                 let memberList: User[] = [];
                 if (response && !response.error) {
                     /* handle the result */
-                    console.log(response);
                     for (let mem of response.data) {
-                        console.log(mem);
-                        // if (!mem.administrator){
                         let user = new User();
                         user.id = mem.id;
                         user.name = mem.name;
                         memberList.push(user);
-                        // }
                     }
 
-                    // callback(groupList);
-                    console.log(memberList);
                 }
                 resolve(memberList);
             }
