@@ -237,6 +237,8 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                 this.setState({
                     isWaitingForConfirmation: false
                 });
+
+                this.fetchGroupStatus(this.state.selectIndex);
             } else {
                 console.log("Unable to get user list");
             }
