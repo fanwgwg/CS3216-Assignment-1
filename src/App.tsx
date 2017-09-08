@@ -272,14 +272,6 @@ class App extends React.Component<AppProps, AppStates> {
       "responses": this.userScores
     };
 
-    // let data = {
-    //   "page_id": 'page_id',
-    //   "user_id": 'non-registered-1',
-    //   "user_name": 'temp_name',
-    //   "user_desc": "temp_desc",
-    //   "responses": [1, 2, 3, 4, 5]
-    // }
-
     console.log(JSON.stringify(data));
 
     fetch("http://teamker.tk/api/response", {
@@ -308,8 +300,8 @@ class App extends React.Component<AppProps, AppStates> {
       this.setState({
         isWaitingForUserList: false
       });
-    }.bind(this)).catch(function (e) {
-      console.log("error: unable to get user list");
+    }.bind(this)).catch(function (e: any) {
+      console.log("error: unable to get user list: " + e);
     });
   }
 
@@ -386,7 +378,10 @@ class App extends React.Component<AppProps, AppStates> {
 
       questionPage = (
         <div className={"QuestionPage"}>
-          <div className={"SwitchGroupButton"} onClick={this.onSwitchGroupClicked.bind(this)}>Switch Group</div>
+          <div className={"Header"}>
+                    <div>Let your friends know more about you</div>
+                    <div className={"SwitchGroupButton"} onClick={this.onSwitchGroupClicked.bind(this)}>Switch Group</div>
+          </div>
           {questions}
           <div className={"FinishButton"} onClick={this.onFinishButtonClicked.bind(this)}>Finish</div>
         </div>

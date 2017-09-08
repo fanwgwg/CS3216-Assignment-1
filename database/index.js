@@ -144,6 +144,20 @@ module.exports = {
         });
     },
 
+    checkUserResponse: function (user_id, page_id, callback) {
+        pool.query(`SELECT EXISTS (
+                    SELECT * FROM Teamker.responses
+                    WHERE user_id=${pool.escape(user_id)}
+                    AND page_id=${pool.escape(page_id)}) AS exist;`, function (error, results, fields) {
+            if (error) {
+                throw error;
+            } else {
+                const exist = (results[0].exist === 1) ? true : false;
+                callback(exist);
+            }
+        });
+    },
+
     getAllUsersFromPage: function (page_id, callback) {
         pool.query(`SELECT * FROM Teamker.involved
                     INNER JOIN Teamker.users ON user_id=id
@@ -167,11 +181,13 @@ module.exports = {
     },
 
     getRegisteredUsersFromPage: function (page_id, callback) {
-        pool.query(`SELECT DISTINCT users.id, users.name, involved.user_desc FROM Teamker.users AS users
+        pool.query(`SELECT DISTINCT users.id, users.name, involved.user_desc, GROUP_CONCAT(responses.score) AS attributes
+                    FROM Teamker.users AS users
                     INNER JOIN Teamker.involved AS involved ON users.id=involved.user_id
                     INNER JOIN Teamker.responses AS responses ON users.id=responses.user_id
-                    INNER JOIN Teamker.questions AS questions ON involved.page_id=questions.page_id
-                    WHERE involved.page_id=${pool.escape(page_id)};`, function (error, results, fields) {
+                    INNER JOIN Teamker.questions AS questions ON involved.page_id=questions.page_id AND questions.page_id=responses.page_id
+                    WHERE involved.page_id=${pool.escape(page_id)}
+                    GROUP BY users.id, involved.user_desc;`, function (error, results, fields) {
             if (error) {
                 throw error;
             } else {
@@ -182,7 +198,8 @@ module.exports = {
                     data.users.push({
                         "id": row.id,
                         "name": row.name,
-                        "desc": row.user_desc
+                        "desc": row.user_desc,
+                        "scores": row.attributes
                     });
                 });
                 callback(data);
@@ -191,12 +208,13 @@ module.exports = {
     },
 
     getNotRegisteredUsersFromPage: function (page_id, callback) {
-        pool.query(`SELECT DISTINCT users.id, users.name, involved.user_desc, questions.page_id FROM Teamker.users AS users
+        pool.query(`SELECT DISTINCT users.id, users.name, involved.user_desc, questions.page_id
+                    FROM Teamker.users AS users
                     INNER JOIN Teamker.involved AS involved ON users.id=involved.user_id
-                    LEFT JOIN Teamker.responses AS responses ON users.id=responses.user_id
-                    LEFT JOIN Teamker.questions AS questions ON responses.page_id=questions.page_id
+                    LEFT JOIN Teamker.responses AS responses ON users.id=responses.user_id AND responses.page_id=involved.page_id
+                    LEFT JOIN Teamker.questions AS questions ON responses.page_id=questions.page_id AND involved.page_id=questions.page_id
                     WHERE involved.page_id=${pool.escape(page_id)}
-                    AND questions.page_id is NULL;`, function (error, results, fields) {
+                    AND questions.page_id IS NULL;`, function (error, results, fields) {
             if (error) {
                 throw error;
             } else {

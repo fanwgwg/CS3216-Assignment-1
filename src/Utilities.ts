@@ -23,7 +23,6 @@ export class User {
     id: string = "";
     desc: string = "";
     matchScore: number = 0;
-    photoUrl: string = "";
     questionAndAnswers: QuestionAndAnswer[] = [];
 }
 
@@ -265,7 +264,6 @@ export function getMembersOfGroup(groupId: string): Promise<User[]> {
                         let user = new User();
                         user.id = mem.id;
                         user.name = mem.name;
-                        user.photoUrl = "http://graph.facebook.com/" + mem.id + "/picture?type=square";
                         memberList.push(user);
                     }
 
