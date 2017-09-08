@@ -235,11 +235,12 @@ module.exports = {
     },
 
     getMatchedList: function (user_id, page_id, callback) {
-        pool.query(`SELECT users.id, users.name, GROUP_CONCAT(responses.score) AS attributes
+        pool.query(`SELECT users.id, users.name, involved.user_desc, GROUP_CONCAT(responses.score) AS attributes
                     FROM Teamker.users
                     INNER JOIN Teamker.responses ON users.id=responses.user_id
+                    INNER JOIN Teamker.involved ON users.id=involved.user_id
                     WHERE responses.page_id=${pool.escape(page_id)}
-                    GROUP BY users.id;`, function (error, results, fields) {
+                    GROUP BY users.id, involved.user_desc;`, function (error, results, fields) {
             if (error) {
                 throw error;
             } else {
