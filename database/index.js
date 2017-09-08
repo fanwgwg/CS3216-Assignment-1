@@ -185,7 +185,7 @@ module.exports = {
                     INNER JOIN Teamker.involved AS involved ON users.id=involved.user_id
                     INNER JOIN Teamker.responses AS responses ON users.id=responses.user_id
                     INNER JOIN Teamker.questions AS questions ON involved.page_id=questions.page_id AND questions.page_id=responses.page_id
-                    WHERE involved.page_id=${pool.escape(page_id)}`), function (error, results, fields) {
+                    WHERE involved.page_id=${pool.escape(page_id)}`, function (error, results, fields) {
             if (error) {
                 throw error;
             } else {
