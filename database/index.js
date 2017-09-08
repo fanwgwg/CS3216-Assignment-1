@@ -266,7 +266,7 @@ module.exports = {
                 results.forEach(function (row) {
                     users.push(Object.assign({}, row,
                         {
-                            attributes: row.attributes.split(',').map(Number)
+                            scores: row.attributes.split(',').map(Number)
                         }
                     ));
                 });
