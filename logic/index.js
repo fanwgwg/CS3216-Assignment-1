@@ -22,7 +22,8 @@ function MostDifferent(id, users){
 			"id" : rest[i].id,
 			"name": rest[i].name,
 			"desc": rest[i].user_desc,
-			"score" : diffsum
+			"score" : diffsum,
+			"attributes" : rest[i].attributes
 		});
 	}
 	matchscores = _.sortBy(matchscores, function(user){
@@ -31,7 +32,7 @@ function MostDifferent(id, users){
 	let bestscore = matchscores[0].score;
 	if(bestscore && bestscore != 0){
 		matchscores = _.map(matchscores, (user) =>{
-			return {"id" : user.id, "score" : Math.ceil((user.score/bestscore * 100 ))};
+			return {"id" : user.id, "name" : user.name, "desc" : user.desc, "score" : Math.ceil((user.score/bestscore * 100 )), "attributes" : user.attributes};
 		});
 	}
 	return matchscores;
@@ -58,7 +59,8 @@ function MostSimilar(id, users){
 			"id" : rest[i].id,
 			"name": rest[i].name,
 			"desc": rest[i].user_desc,
-			"score" : diffsum
+			"score" : diffsum,
+			"attributes" : rest[i].attributes
 		});
 	}
 	matchscores = _.sortBy(matchscores, "score");
@@ -68,7 +70,7 @@ function MostSimilar(id, users){
 			if(user.score == 0){
 				return {"id" : user.id, "score" : 100};
 			}
-			return {"id" : user.id, "score" : Math.ceil(1/user.score * bestscore * 100)};
+			return {"id" : user.id, "name" : user.name, "desc" : user.desc, "score" : Math.ceil(1/user.score * bestscore * 100) "attributes" : user.attributes};
 		});
 	}
 	return matchscores;

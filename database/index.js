@@ -148,7 +148,7 @@ module.exports = {
         pool.query(`SELECT EXISTS (
                     SELECT * FROM Teamker.responses
                     WHERE user_id=${pool.escape(user_id)}
-                    AND page_id=${pool.escaep(page_id)}) AS exist;`, function (error, results, fields) {
+                    AND page_id=${pool.escape(page_id)}) AS exist;`, function (error, results, fields) {
             if (error) {
                 throw error;
             } else {
