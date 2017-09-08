@@ -171,16 +171,35 @@ export function getQuestions(groupId: string): Promise<Question[]> {
     });
 }
 
+// Return true if this member is on Teamker, false otherwise
+export function checkIsNewUser(userId: string, groupId: string): Promise<boolean> {
+    return new Promise<boolean>(resolve => {
+        console.log("checkIsNewUser");
+
+        fetch("http://teamker.tk/api/checkUserResponse?user_id=" + userId + "&page_id=" + groupId)
+            .then(function (response: Response) {
+                if (response.ok) {
+                    let data = response.text();
+                    console.log("response from checkIsNewUser: " + data);
+                    return data;
+                } else {
+                    console.log("undable to check if this is a new user");
+                }
+            }).then(function (data: any) {
+                console.log("response from checkIsNewUser: " + data);
+                resolve(data === "true");
+            }).catch(function (error: any) {
+                console.error(error);
+            });
+    });
+}
+
 // Return true if this group is not on Teamker, true otherwise
 export function checkIsNewGroup(groupId: string): Promise<boolean> {
     return new Promise<boolean>(resolve => {
-        // setTimeout(function () {
-        //     resolve(Math.random() > 0.5);
-        // }, 1000);
 
         console.log("checkIsNewGroup");
 
-        // fetch("http://teamker.tk/api/checkNewGroup?page_id=page_id")
         fetch("http://teamker.tk/api/checkNewGroup?page_id=" + groupId)
             .then(function (response: Response) {
                 let data = response.text();
@@ -197,21 +216,15 @@ export function checkIsNewGroup(groupId: string): Promise<boolean> {
 // Return a list of group members that have finished questions
 export function getGroupMembersOnTeamker(groupId: string): Promise<User[]> {
     return new Promise<User[]>(resolve => {
-        // setTimeout(function () {
-        //     getUserList("").then(function (data) {
-        //         resolve(data.slice(0, 10));
-        //     })
-        // }, 1000);
 
         console.log("getGroupMembersOnTeamker");
 
-        // fetch("http://teamker.tk/api/usersOnTeamker?page_id=page_id")
         fetch("http://teamker.tk/api/usersOnTeamker?page_id=" + groupId)
             .then(function (response: Response) {
                 return response.text();
             }).then(function (jsonString: any) {
                 let data = JSON.parse(jsonString).users;
-                console.log("response from usersNotOnTeamker: " + data);
+                console.log("response from UsersOnTeamker: " + data);
                 // return data;
                 resolve(data);
             }).catch(function (error: any) {
@@ -223,15 +236,9 @@ export function getGroupMembersOnTeamker(groupId: string): Promise<User[]> {
 // Return a list of group members that have not finished questions
 export function getGroupMembersNotOnTeamker(groupId: string): Promise<User[]> {
     return new Promise<User[]>(resolve => {
-        // setTimeout(function () {
-        //     getUserList("").then(function (data) {
-        //         resolve(data.slice(10, 25));
-        //     })
-        // }, 1000);
 
         console.log("getGroupMembersNotOnTeamker");
 
-        // fetch("http://teamker.tk/api/usersNotOnTeamker?page_id=page_id")
         fetch("http://teamker.tk/api/usersNotOnTeamker?page_id=" + groupId)
             .then(function (response: Response) {
                 return response.text();
@@ -258,7 +265,7 @@ export function getMembersOfGroup(groupId: string): Promise<User[]> {
                         let user = new User();
                         user.id = mem.id;
                         user.name = mem.name;
-                        user.photoUrl = "http://graph.facebook.com/"+ mem.id +"/picture?type=square";
+                        user.photoUrl = "http://graph.facebook.com/" + mem.id + "/picture?type=square";
                         memberList.push(user);
                     }
 
@@ -305,6 +312,29 @@ export function getGroupListInvloved(userId: string): Promise<Group[]> {
                 console.error(error);
             });
     });
+}
+
+export function buildUserList(users: any, questions: Question[]): User[] {
+    let userList = users.map(function (user: any) {
+        let q: QuestionAndAnswer[] = [];
+
+        for (let i = 0; i < questions.length; i++) {
+            q.push({
+                question: questions[i],
+                answer: user.scores[i]
+            });
+        }
+
+        return {
+            name: user.name,
+            id: user.id,
+            desc: user.desc,
+            matchScore: user.matchScore,
+            questionAndAnswers: q
+        };
+    });
+
+    return userList;
 }
 
 export function popShare(): void {

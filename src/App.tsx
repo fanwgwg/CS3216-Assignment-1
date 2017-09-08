@@ -47,6 +47,7 @@ class App extends React.Component<AppProps, AppStates> {
   groupList: Utilities.Group[] = [];
   groupListInvolved: Utilities.Group[] = [];
   groupSelectionIndex: number = -1;
+  userFetchStatus: number = -1;
   fetchGroupListStatus: number = -1; // -1 for haven't fetched yet, 0 for fetching, 1 for fetched
 
   constructor(props: AppProps) {
@@ -79,15 +80,36 @@ class App extends React.Component<AppProps, AppStates> {
     this.checkLoginState();
   }
 
+  fetchUserStatus() {
+    console.log("start fetching user status: " + this.user.id + "/" + this.groupId);
+    this.userFetchStatus = 0;
+
+    Utilities.checkIsNewUser(this.user.id, this.groupId)
+      .then(function (isNewUser: any) {
+        if (isNewUser) {
+          console.log("isNewUser: true");
+          this.fetchQuestions();
+        } else {
+          console.log("isNewUser: false");
+          this.userFetchStatus = 1;
+          this.setState({
+            isWaitingForUserList: true
+          })
+        }
+      }.bind(this));
+  }
+
   fetchQuestions() {
     console.log("start fetching questions");
 
-    Utilities.getQuestions(this.groupId).then(function (questions: any) {
-      console.log("questions: " + questions);
-      this.setState({
-        questions: questions
-      });
-    }.bind(this));
+    Utilities.getQuestions(this.groupId)
+      .then(function (questions: any) {
+        console.log("questions: " + questions);
+        this.userFetchStatus = 1;
+        this.setState({
+          questions: questions
+        });
+      }.bind(this));
   }
 
   fetchGroupList() {
@@ -113,8 +135,6 @@ class App extends React.Component<AppProps, AppStates> {
         FB.api('/me', function (response: any) {
           this.user.id = response.id;
           this.user.name = response.name;
-          // this.userId = response.id;
-          // this.userName = response.name;
           this.setState({
             login: 1
           });
@@ -157,6 +177,8 @@ class App extends React.Component<AppProps, AppStates> {
       }.bind(this));
 
       this.user = new Utilities.User();
+      this.userFetchStatus = -1;
+      this.fetchGroupListStatus = -1;
       this.userList = [];
       this.groupList = [];
 
@@ -279,24 +301,7 @@ class App extends React.Component<AppProps, AppStates> {
       console.log("userlist received: " + JSON.stringify(jsonData.users));
       let users = jsonData.users;
 
-      this.userList = users.map(function (user: any) {
-        let q: Utilities.QuestionAndAnswer[] = [];
-
-        for (let i = 0; i < this.state.questions.length; i++) {
-          q.push({
-            question: this.state.questions[i],
-            answer: user.attributes[i]
-          });
-        }
-
-        return {
-          name: user.name,
-          id: user.id,
-          desc: user.desc,
-          matchScore: user.matchScore,
-          questionAndAnswers: q
-        };
-      })
+      this.userList = Utilities.buildUserList(users, this.state.questions);
 
       console.log(this.userList);
 
@@ -328,8 +333,8 @@ class App extends React.Component<AppProps, AppStates> {
     if (this.state.login === 0) {
       //this.checkLoginState();
       loginPage = <LoginPage onLogin={this.logUserIn.bind(this)} />;
-    } else if (this.state.entryType === "User" && !this.state.allQuestionsAnswered && !this.state.questions) {
-      this.fetchQuestions();
+    } else if (this.state.entryType === "User" && !this.state.allQuestionsAnswered && !this.state.questions && this.userFetchStatus < 0) {
+      this.fetchUserStatus();
       loaderPage = <LoaderPage message={"Please wait for a moment..."} color={"white"} containerStyle={{ height: "100vh" }} />
     }
 
@@ -357,7 +362,7 @@ class App extends React.Component<AppProps, AppStates> {
       }
     }
 
-    if (this.state.entryType === "User" && this.state.login == 1 && !this.state.allQuestionsAnswered && this.state.questions) {
+    if (this.state.entryType === "User" && this.state.login == 1 && !this.state.allQuestionsAnswered && this.state.questions && this.userFetchStatus > 0) {
       let index = 0;
       questions = this.state.questions.map(q => <QuestionView
         key={index}
@@ -388,11 +393,15 @@ class App extends React.Component<AppProps, AppStates> {
       );
     }
 
-    if (this.state.entryType === "User" && this.state.login == 1 && this.state.allQuestionsAnswered && this.state.isWaitingForUserList) {
+    if (this.state.entryType === "User" && this.state.login == 1 && this.userFetchStatus == 0) {
+      loaderPage = <LoaderPage message={"Wait for a moment..."} color={"white"} containerStyle={{ height: "100vh" }} />
+    }
+
+    if (this.state.entryType === "User" && this.state.login == 1 && (this.state.allQuestionsAnswered || (!this.state.questions && this.userFetchStatus > 0)) && this.state.isWaitingForUserList) {
       loaderPage = <LoaderPage message={"We are finding your best match now..."} color={"white"} containerStyle={{ height: "100vh" }} />
     }
 
-    if (this.state.entryType === "User" && this.state.login == 1 && this.state.allQuestionsAnswered && !this.state.isWaitingForUserList) {
+    if (this.state.entryType === "User" && this.state.login == 1 && (this.state.allQuestionsAnswered || (!this.state.questions && this.userFetchStatus > 0)) && !this.state.isWaitingForUserList) {
       mainPage = <MainPage userList={this.userList} onSwitchGroup={this.onSwitchGroupClicked.bind(this)} />;
     }
 
