@@ -26,18 +26,16 @@ export default class Entrypage extends React.Component<EntryPageProps>{
         if (!this.props.isLoading) {
             let i = 0;
             for (let grp of this.props.involvedList) {
-                //let groupStyle = (i == this.state.selectIndex) ? "GroupSelected" : "Group";
                 invGroupList.push(
-                    <div className={"Group"} key={i++} onClick={this.props.onGroupEntrySelected.bind(this, "User", grp.id)}>
+                    <div className={"Group"} key={i} onClick={this.props.onGroupEntrySelected.bind(this, "User", grp.id, i++)}>
                         {grp.name}</div>
                 );
             }
 
             i = 0;
             for (let grp of this.props.adminList) {
-                //let groupStyle = (i == this.state.selectIndex) ? "GroupSelected" : "Group";
                 admGroupList.push(
-                    <div className={"Group"} key={i++} onClick={this.props.onGroupEntrySelected.bind(this, "Admin", grp.id)}>
+                    <div className={"Group"} key={i} onClick={this.props.onGroupEntrySelected.bind(this, "Admin", grp.id, i++)}>
                         {grp.name}</div>
                 );
             }

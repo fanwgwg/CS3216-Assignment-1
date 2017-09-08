@@ -46,6 +46,7 @@ class App extends React.Component<AppProps, AppStates> {
   userList: Utilities.User[] = [];
   groupList: Utilities.Group[] = [];
   groupListInvolved: Utilities.Group[] = [];
+  groupSelectionIndex: number = -1;
   fetchGroupListStatus: number = -1; // -1 for haven't fetched yet, 0 for fetching, 1 for fetched
 
   constructor(props: AppProps) {
@@ -172,8 +173,9 @@ class App extends React.Component<AppProps, AppStates> {
     }.bind(this));
   }
 
-  onGroupEntrySelected(entry: EntryType, groupId: string): void {
+  onGroupEntrySelected(entry: EntryType, groupId: string, index: number): void {
     this.groupId = groupId;
+    this.groupSelectionIndex = index;
 
     document.cookie = "entryType=" + entry;
 
@@ -192,6 +194,7 @@ class App extends React.Component<AppProps, AppStates> {
 
   onSwitchGroupClicked(): void {
     this.fetchGroupListStatus = -1;
+    this.groupSelectionIndex = -1;
     this.groupList = [];
     this.groupListInvolved = [];
     this.setState({
@@ -349,7 +352,7 @@ class App extends React.Component<AppProps, AppStates> {
         console.log("fetch in admin");
         this.fetchGroupList();
       } else {
-        adminPage = <AdminPage user={this.user} index={0} groupList={this.groupList}
+        adminPage = <AdminPage user={this.user} index={this.groupSelectionIndex} groupList={this.groupList}
           onSwitchGroup={this.onSwitchGroupClicked.bind(this)} />;
       }
     }
