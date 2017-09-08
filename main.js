@@ -174,7 +174,7 @@ app.post('/api/response', async function (req, res) {
  * 
  * @param /frontpage?user_id="user facebook id"
  * @return list of pages the user is involved
- * 			response = { pages: ["CS3216", "CS3217", "CS2103"] }
+ * 			response = { pages: [{id: "page id", name: "page name"}, ...] }
  */
 app.get('/api/frontpage', function (req, res) {
 	try {

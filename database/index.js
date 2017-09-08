@@ -227,7 +227,7 @@ module.exports = {
                     pages: []
                 };
                 results.forEach(function (row) {
-                    data.pages.push(row.name);
+                    data.pages.push({id: row.page_id, name: row.name});
                 });
                 callback(data);
             }
