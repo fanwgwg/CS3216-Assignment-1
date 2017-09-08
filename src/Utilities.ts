@@ -243,6 +243,7 @@ export function getMembersOfGroup(groupId: string): Promise<User[]> {
                         let user = new User();
                         user.id = mem.id;
                         user.name = mem.name;
+                        user.photoUrl = "http://graph.facebook.com/"+ mem.id +"/picture?type=square";
                         memberList.push(user);
                         // }
                     }
