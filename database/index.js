@@ -198,7 +198,8 @@ module.exports = {
                     data.users.push({
                         "id": row.id,
                         "name": row.name,
-                        "desc": row.user_desc
+                        "desc": row.user_desc,
+                        "scores": row.attributes
                     });
                 });
                 callback(data);
