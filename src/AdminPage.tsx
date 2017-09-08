@@ -16,6 +16,7 @@ interface AdminPageStates {
     numOfInputs: number;
     matchMostSimilar: boolean;
     shouldUserDetailsOpen: boolean;
+    isWaitingForConfirmation: boolean;
 }
 
 export default class AdminPage extends React.Component<AdminPageProps, AdminPageStates> {
@@ -34,7 +35,8 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             selectIndex: this.props.index,
             numOfInputs: 3,
             matchMostSimilar: false,
-            shouldUserDetailsOpen: false
+            shouldUserDetailsOpen: false,
+            isWaitingForConfirmation: false
         });
     }
 
@@ -108,7 +110,9 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     }
 
     getButtonContent(): string {
-        if (this.isNewGroup) {
+        if (this.state.isWaitingForConfirmation) {
+            return "Wait...";
+        } else if (this.isNewGroup) {
             return "Confirm";
         } else {
             return "Delete this group from Teamker";
@@ -187,11 +191,9 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         let groupId = this.props.groupList[this.state.selectIndex].id;
         fetch("http://teamker.tk/api/deletePage?page_id=" + groupId)
             .then(function (res: any) {
-                console.log("delete page response: received");
                 this.props.onSwitchGroup();
             }.bind(this)).catch(function (e: any) {
-                console.log(e);
-                console.log("unable to delete page");
+                console.log("unable to delete page: " + e);
             }.bind(this));
     }
 
@@ -212,6 +214,10 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
 
         console.log("submit data: " + JSON.stringify(data));
 
+        this.setState({
+            isWaitingForConfirmation: true
+        });
+
         fetch("http://teamker.tk/api/admin", {
             method: "POST",
             mode: "cors",
@@ -224,11 +230,13 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                 if (this.isNewGroup) {
                     Utilities.popShare();
                     this.isNewGroup = false;
-                    this.forceUpdate();
                 } else {
                     this.isNewGroup = true;
-                    this.forceUpdate();
                 }
+
+                this.setState({
+                    isWaitingForConfirmation: false
+                });
             } else {
                 console.log("Unable to get user list");
             }
@@ -238,7 +246,6 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     }
 
     render() {
-
         Utilities.initGA();
         Utilities.logPageView("placeholder", "/admin");
 
