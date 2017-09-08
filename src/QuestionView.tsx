@@ -1,11 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from "react-dom";
 
-import { Question } from './Utilities';
+import * as Utilities from './Utilities';
 
 interface QuestionViewProps {
     index: number;
-    question: Question;
+    question: Utilities.Question;
     isUnfinished: boolean;
     isDescriptionQuestion: boolean;
     onDescriptionUpdated: Function;
@@ -41,6 +41,11 @@ export default class QuestionView extends React.Component<QuestionViewProps, Que
     }
 
     render() {
+
+        Utilities.initGA();
+        Utilities.logPageView("placeholder", "/questions");
+        
+
         if (this.props.isDescriptionQuestion) {
             return (
                 <div className={"QuestionContainer"}>

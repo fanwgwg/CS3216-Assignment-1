@@ -1,11 +1,17 @@
 import * as React from 'react';
 
+import * as Utilities from './Utilities';
+
 interface LoginPageProps {
     onLogin: Function;
 }
 
 export default class LoginPage extends React.Component<LoginPageProps>{
     render() {
+
+        Utilities.initGA();
+        Utilities.logPageView("placeholder", "/login");
+
         console.log("start rendering login page");
         return (
             <div className={"LoginPage"}>

@@ -1,3 +1,14 @@
+var ReactGA = require('react-ga');
+
+export function logPageView(username: string, path: string) {
+    ReactGA.set({ user: username })
+    ReactGA.pageview(path)
+}
+
+export function initGA() {
+    ReactGA.initialize('UA-106049419-1');
+}
+
 export class Question {
     body: string = "";
 }
@@ -281,12 +292,9 @@ export function getGroupList(userId: string): Promise<Group[]> {
     });
 }
 
-export function openGraphShare(): void {
+export function popShare(): void {
     FB.ui({
-        method: 'share_open_graph',
-        action_type: 'og.likes',
-        action_properties: JSON.stringify({
-            object: 'https://teamker.tk/',
-        })
-    }, function (response: any) { });
+        method: 'share',
+        href: 'http://teamker.tk',
+    }, function (response) { });
 }

@@ -194,7 +194,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         }).then(function (res: any) {
             if (res.ok) {
                 if (this.isNewGroup) {
-                    Utilities.openGraphShare();
+                    Utilities.popShare();
                     this.isNewGroup = false;
                     this.forceUpdate();
                 } else {
@@ -208,6 +208,10 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     }
 
     render() {
+
+        Utilities.initGA();
+        Utilities.logPageView("placeholder", "/admin");
+        
         let mainContent: JSX.Element = null;
         let groupList: JSX.Element[] = [];
         let inputs: JSX.Element[] = [];

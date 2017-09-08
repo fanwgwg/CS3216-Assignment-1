@@ -24,6 +24,10 @@ export default class MainPage extends React.Component<MainPageProps, MainPageSta
     }
 
     render() {
+
+        Utilities.initGA();
+        Utilities.logPageView("placeholder", "/main");
+
         let userCards: JSX.Element[] = [];
         let userDetails: JSX.Element = null;
 

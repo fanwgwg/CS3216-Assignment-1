@@ -11,7 +11,7 @@ module.exports = {
 
     addPage: function (page) {
         return new Promise((resolve, reject) => {
-            pool.query(`INSERT INTO Teamker.pages VALUES(
+            pool.query(`INSERT IGNORE INTO Teamker.pages VALUES(
                         ${pool.escape(page.id)},
                         ${pool.escape(page.name)},
                         ${pool.escape(page.admin_id)});`, function (error, results, fields) {
@@ -26,7 +26,7 @@ module.exports = {
 
     addUser: function (user) {
         return new Promise((resolve, reject) => {
-            pool.query(`INSERT INTO Teamker.users VALUES(
+            pool.query(`INSERT IGNORE INTO Teamker.users VALUES(
                         ${pool.escape(user.id)},
                         ${pool.escape(user.name)});`, function (error, results, fields) {
                 if (error) reject(error);
@@ -40,10 +40,10 @@ module.exports = {
 
     addInvolved: function (involved) {
         return new Promise((resolve, reject) => {
-            pool.query(`INSERT INTO Teamker.involved VALUES(
+            pool.query(`INSERT IGNORE INTO Teamker.involved VALUES(
                         ${pool.escape(involved.user_id)},
                         ${pool.escape(involved.page_id)},
-                        'temp_desc');`, function (error, results, fields) {
+                        ${pool.escape(involved.user_desc)});`, function (error, results, fields) {
                 if (error) reject(error);
                 else {
                     console.log("New involved added: " + involved.user_id);
@@ -69,7 +69,7 @@ module.exports = {
 
     addQuestion: function (question) {
         return new Promise((resolve, reject) => {
-            pool.query(`INSERT INTO Teamker.questions VALUES(
+            pool.query(`INSERT IGNORE INTO Teamker.questions VALUES(
                         ${pool.escape(question.page_id)},
                         ${pool.escape(question.index)},
                         ${pool.escape(question.attribute)});`, function (error, results, fields) {
@@ -84,7 +84,7 @@ module.exports = {
 
     addResponse: function (response) {
         return new Promise((resolve, reject) => {
-            pool.query(`INSERT INTO Teamker.responses VALUES(
+            pool.query(`INSERT IGNORE INTO Teamker.responses VALUES(
                         ${pool.escape(response.user_id)},
                         ${pool.escape(response.page_id)},
                         ${pool.escape(response.question_index)},
@@ -134,11 +134,11 @@ module.exports = {
     checkPageExist: function (page_id, callback) {
         pool.query(`SELECT EXISTS (
                     SELECT * FROM Teamker.pages
-                    WHERE id=${pool.escape(page_id)});`, function (error, results, fields) {
+                    WHERE id=${pool.escape(page_id)}) AS exist;`, function (error, results, fields) {
             if (error) {
                 throw error;
             } else {
-                const exist = (results.length > 0) ? true : false;
+                const exist = (results[0].exist === 1) ? true : false;
                 callback(exist);
             }
         });
@@ -256,23 +256,17 @@ module.exports = {
         });
     },
 
-    parseUserData: function (callback) {
-        let users = [];
-        pool.query(`SELECT users.id, users.name, GROUP_CONCAT(responses.score) AS attributes
-                  FROM Teamker.users
-                  INNER JOIN Teamker.responses ON users.id = responses.user_id
-                  WHERE responses.page_id = 'page_id'
-                  GROUP BY users.id;`, function (error, results, fields) {
-            if (error) throw error;
-            else {
-                results.forEach(function (row) {
-                    users.push(Object.assign({}, row, {
-                        attributes: row.attributes.split(',').map(Number)
-                    }));
-                });
-                callback(users);
-            }
+    deletePage: function (page_id) {
+        return new Promise((resolve, reject) => {
+            pool.query(`DELETE from Teamker.pages
+                        WHERE id=${pool.escape(page_id)};`, function (error, results, fields) {
+                if (error) {
+                    reject(error);
+                } else {
+                    console.log("Page deleted: " + page_id);
+                    resolve();
+                }
+            });
         });
     }
-
 }
