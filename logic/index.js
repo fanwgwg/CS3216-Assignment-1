@@ -11,6 +11,7 @@ function MostDifferent(id, users){
 			rest.splice(i,1);
 		}
 	}
+	if (rest.length === 0) return [];
 	let matchscores = [];
 	for(i = 0; i < rest.length; i++){
 		let diffsum = 0;
@@ -46,6 +47,7 @@ function MostSimilar(id, users){
 			rest.splice(i,1);
 		}
 	}
+	if (rest.length === 0) return [];
 	let matchscores = [];
 	for(i = 0; i < rest.length; i++){
 		let diffsum = 0;
