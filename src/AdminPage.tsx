@@ -9,6 +9,7 @@ interface AdminPageProps {
     index: number;
     groupList: Utilities.Group[];
     onDeletePage: Function;
+    onSwitchGroup: Function;
 }
 
 interface AdminPageStates {
@@ -376,7 +377,10 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
 
         return (
             <div className={"AdminPage"}>
-                <div className={"Header"}>Welcome to the admin page.</div>
+                <div className={"Header"}>
+                    <div>Welcome to the admin page.</div>
+                    <div className={"SwitchGroupButton"} onClick={this.props.onSwitchGroup.bind(this)}>Switch Role</div>
+                </div>
                 {userDetails}
                 <div className={"Main"}>
                     <div className={"Left"}>

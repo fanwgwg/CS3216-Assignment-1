@@ -6,6 +6,7 @@ import * as Utilities from './Utilities';
 
 export interface MainPageProps {
     userList: Utilities.User[];
+    onSwitchGroup: Function;
 }
 
 export interface MainPageStates {
@@ -53,7 +54,8 @@ export default class MainPage extends React.Component<MainPageProps, MainPageSta
         return (
             <div className={"MainPage"}>
                 <div className={"Header"}>
-                    Here are our recommended match for you...
+                    <div>Here are our recommended match for you...</div>
+                    <div className={"SwitchGroupButton"} onClick={this.props.onSwitchGroup.bind(this)}>Switch Group</div>
                 </div>
                 {userDetails}
                 {userList}

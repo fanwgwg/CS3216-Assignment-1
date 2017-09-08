@@ -67,13 +67,22 @@ body {
 }
 
 .Header {
-    font-size: 60px;
+    font-size: 56px;
     color: grey;
     text-align: left;
     background-color: whitesmoke;
     padding: 20px 0px 20px 20px;
     border-bottom: #E8E8E8 solid 1px;
+    display: flex;
 }
+
+.Header .SwitchGroupButton {
+    margin-left: auto;
+    margin-right: 30px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 
 .AppContainer {
     height: 100%;
@@ -233,6 +242,24 @@ body {
 
 .EntryPage .Group:hover {
     background: #e6e6e6;
+}
+
+.SwitchGroupButton {
+    padding: 15px 25px 15px 25px;
+    border-radius: 10px;
+    background-color: rgb(147, 178, 192);
+    transition: 0.2s;
+    cursor: pointer;
+    font-size: 30px;
+    color: white;
+    display: inline-block;
+    user-select: none;
+    margin: 30px 0 0 50px;
+}
+
+.SwitchGroupButton:hover {
+    box-shadow: 2px 3px 14px 0px rgb(98, 116, 123);
+    font-size: 32px;
 }
 
 .QuestionContainer {

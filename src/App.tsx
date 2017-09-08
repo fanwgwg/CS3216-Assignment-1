@@ -21,7 +21,6 @@ interface AppProps { };
 
 interface AppStates {
   login: number;
-  groupSelected: boolean;
   questions: Utilities.Question[];
   allQuestionsAnswered: boolean;
   unfinishedQuestionIndex: number;
@@ -67,7 +66,6 @@ class App extends React.Component<AppProps, AppStates> {
 
     this.state = {
       login: -1,
-      groupSelected: false,
       questions: null,
       allQuestionsAnswered: false, // set to true to display adminPage for debugging use
       unfinishedQuestionIndex: -1,
@@ -191,7 +189,15 @@ class App extends React.Component<AppProps, AppStates> {
   updateDesc(description: string): void {
     this.userDesc = description;
   }
-
+  
+  onSwitchGroupClicked(): void {
+    this.setState({
+      entryType: "None",
+      questions: null,
+      allQuestionsAnswered: false,
+      unfinishedQuestionIndex: -1
+    });
+  }
   onFinishButtonClicked(): void {
     let allQuestionsAnswered = true;
     for (let i = 0; i < this.numberOfQuestions; i++) {
@@ -347,7 +353,8 @@ class App extends React.Component<AppProps, AppStates> {
         console.log("fetch in admin");
         this.fetchGroupList();
       } else {
-        adminPage = <AdminPage user={this.user} index={0} groupList={this.groupList} onDeletePage={this.onDeletePage.bind(this)} />;
+        adminPage = <AdminPage user={this.user} index={0} groupList={this.groupList} 
+        onSwitchGroup={this.onSwitchGroupClicked.bind(this)} onDeletePage={this.onDeletePage.bind(this)} />;
       }
     }
 
@@ -375,6 +382,7 @@ class App extends React.Component<AppProps, AppStates> {
 
       questionPage = (
         <div className={"QuestionPage"}>
+          <div className={"SwitchGroupButton"} onClick={this.onSwitchGroupClicked.bind(this)}>Switch Group</div>
           {questions}
           <div className={"FinishButton"} onClick={this.onFinishButtonClicked.bind(this)}>Finish</div>
         </div>
@@ -386,7 +394,7 @@ class App extends React.Component<AppProps, AppStates> {
     }
 
     if (this.state.entryType === "User" && this.state.login == 1 && this.state.allQuestionsAnswered && !this.state.isWaitingForUserList) {
-      mainPage = <MainPage userList={this.userList} />;
+      mainPage = <MainPage userList={this.userList} onSwitchGroup={this.onSwitchGroupClicked.bind(this)}/>;
     }
 
     return (
