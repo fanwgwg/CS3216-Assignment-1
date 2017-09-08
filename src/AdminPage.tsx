@@ -8,7 +8,6 @@ interface AdminPageProps {
     user: Utilities.User;
     index: number;
     groupList: Utilities.Group[];
-    onDeletePage: Function;
     onSwitchGroup: Function;
 }
 
@@ -189,11 +188,11 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         fetch("http://teamker.tk/api/deletePage?page_id=" + groupId)
             .then(function (res: any) {
                 console.log("delete page response: received");
-                this.props.onDeletePage();
-            }).catch(function (e: any) {
+                this.props.onSwitchGroup();
+            }.bind(this)).catch(function (e: any) {
                 console.log(e);
                 console.log("unable to delete page");
-            });
+            }.bind(this));
     }
 
     submitGroupData(): void {
