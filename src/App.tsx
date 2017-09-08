@@ -279,8 +279,13 @@ class App extends React.Component<AppProps, AppStates> {
       console.log("userlist received: " + JSON.stringify(jsonData.users));
       let users = jsonData.users;
 
+      console.log("users: " + users);
+      console.log("this: " + this);
+
       this.userList = users.map(function (user: any) {
         let q: Utilities.QuestionAndAnswer[] = [];
+
+        console.log("at user: " + JSON.stringify(user));
 
         for (let i = 0; i < this.state.questions.length; i++) {
           q.push({
@@ -289,6 +294,8 @@ class App extends React.Component<AppProps, AppStates> {
           });
         }
 
+        console.log("q a : " + q);
+
         return {
           name: user.name,
           id: user.id,
@@ -296,15 +303,15 @@ class App extends React.Component<AppProps, AppStates> {
           matchScore: user.matchScore,
           questionAndAnswers: q
         };
-      })
+      }.bind(this))
 
       console.log(this.userList);
 
       this.setState({
         isWaitingForUserList: false
       });
-    }.bind(this)).catch(function (e) {
-      console.log("error: unable to get user list");
+    }.bind(this)).catch(function (e: any) {
+      console.log("error: unable to get user list: " + e);
     });
   }
 

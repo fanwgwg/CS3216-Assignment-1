@@ -22,6 +22,10 @@ export default class UserDetail extends React.Component<UserDetailProps, UserDet
         let userList = document.getElementsByClassName("UserList") as HTMLCollectionOf<HTMLElement>;
         userList[0].style.pointerEvents = "auto";
     }
+    
+    openProfile(): void{
+        window.open("http://www.facebook.com/"+this.props.user.id, "_blank");
+    }
 
     render() {
         let index = 0;
@@ -37,7 +41,8 @@ export default class UserDetail extends React.Component<UserDetailProps, UserDet
                 <div className={"Top"}>
                     <img className={"CloseButton"} src={require("../resources/images/close.svg")} onClick={this.props.onCloseButtonClicked.bind(this)} />
                 </div>
-                <img className={"Icon"} src={this.props.user.photoUrl} />
+                <img className={"Icon"} src={"http://graph.facebook.com/" + this.props.user.id + "/picture?type=normal"} 
+                 onClick = {this.openProfile.bind(this)} />
                 <div className={"Answers"}>{answers}</div>
             </div>
         )

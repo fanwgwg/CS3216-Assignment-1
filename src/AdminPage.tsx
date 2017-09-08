@@ -332,7 +332,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                 userListA = this.usersOnTeamker.map(user => {
                     return (
                         <div className={"User"} key={i} onClick={this.onUserListClicked.bind(this, i++)}>
-                            <img className={"Photo"} src={require("../resources/images/user.svg")} />
+                            <img className={"Photo"} src={"http://graph.facebook.com/" + user.id + "/picture?type=square"} />
                             <div className={"Name"}>{user.name}</div>
                         </div>
                     );
@@ -344,7 +344,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                 userListB = this.usersNotOnTeamker.map(user => {
                     return (
                         <div className={"User"} key={i++}>
-                            <img className={"Photo"} src={require("../resources/images/user.svg")} />
+                            <img className={"Photo"} src={"http://graph.facebook.com/" + user.id + "/picture?type=square"} />
                             <div className={"Name"}>{user.name}</div>
                         </div>
                     );

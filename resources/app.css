@@ -445,8 +445,9 @@ body {
 }
 
 .UserCard .Detail .Icon {
-    height: 30px;
-    padding-right: 10px;
+    height: 36px;
+    margin-right: 10px;
+    border-radius: 50%;
 }
 
 .UserCard .Detail .Name {
@@ -505,6 +506,7 @@ body {
     z-index: 1;
     height: 100px;
     transition: 0.1s;
+    border-radius: 50%;
 }
 
 .UserDetail .Icon:hover {
@@ -738,6 +740,7 @@ body {
 .AdminPage .User .Photo {
     width: 30px;
     height: 30px;
+    border-radius: 50%;
 }
 
 .AdminPage .User .Name {
