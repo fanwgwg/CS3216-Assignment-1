@@ -245,7 +245,7 @@ app.get('/api/checkNewGroup', function (req, res) {
  * 
  * @param /api/usersOnTeamker?page_id="facebook page id"
  * @return list of registered users
- * 			response = { users: [{id: "user id", name: "user name", desc: "user desc"}, ...] }
+ * 			response = { users: [{id: "user id", name: "user name", desc: "user desc", scores: [...]}, ...] }
  */
 app.get('/api/usersOnTeamker', function (req, res) {
 	try {

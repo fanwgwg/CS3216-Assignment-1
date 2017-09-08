@@ -199,7 +199,7 @@ module.exports = {
                         "id": row.id,
                         "name": row.name,
                         "desc": row.user_desc,
-                        "scores": row.attributes
+                        "scores": row.attributes.split(',').map(Number)
                     });
                 });
                 callback(data);
