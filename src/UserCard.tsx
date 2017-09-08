@@ -39,7 +39,9 @@ export default class UserCard extends React.Component<UserCardProps, UserCardSta
                     {index}
                     <div className={"Detail"}>
                         <div className={"Top"}>
-                            <img className={"Icon"} src={this.props.user.photoUrl} />
+                            <img className={"Icon"} 
+                             src={"http://graph.facebook.com/" + this.props.user.id + "/picture?type=square"}
+                             onClick = {window.open.bind("http://www.facebook.com/"+this.props.user.id, "_blank")} />
                             <div className={"Name"}>{this.props.user.name}</div>
                         </div>
                         <div className={"Bottom"}>{this.props.user.desc}</div>

@@ -382,7 +382,10 @@ class App extends React.Component<AppProps, AppStates> {
 
       questionPage = (
         <div className={"QuestionPage"}>
-          <div className={"SwitchGroupButton"} onClick={this.onSwitchGroupClicked.bind(this)}>Switch Group</div>
+          <div className={"Header"}>
+                    <div>Let your friends know more about you</div>
+                    <div className={"SwitchGroupButton"} onClick={this.onSwitchGroupClicked.bind(this)}>Switch Group</div>
+          </div>
           {questions}
           <div className={"FinishButton"} onClick={this.onFinishButtonClicked.bind(this)}>Finish</div>
         </div>
