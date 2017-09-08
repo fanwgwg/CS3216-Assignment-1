@@ -182,7 +182,7 @@ app.get('/api/userList', async function (req, res) {
 		const user_id = req.query.user_id;
 		const page_id = req.query.page_id; 
 		const admin_id = await database.getAdminId(page_id);
-		database.getMatchedList(body.user_id, body.page_id, function(data){
+		database.getMatchedList(user_id, page_id, function(data){
 			const users = {
 				"admin_id": admin_id,
 				"users": data
