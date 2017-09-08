@@ -210,7 +210,7 @@ module.exports = {
                     LEFT JOIN Teamker.responses AS responses ON users.id=responses.user_id AND responses.page_id=involved.page_id
                     LEFT JOIN Teamker.questions AS questions ON responses.page_id=questions.page_id AND involved.page_id=questions.page_id
                     WHERE involved.page_id=${pool.escape(page_id)}
-                    AND questions.page_id IS NULL;`), function (error, results, fields) {
+                    AND questions.page_id IS NULL;`, function (error, results, fields) {
             if (error) {
                 throw error;
             } else {
