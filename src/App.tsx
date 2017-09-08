@@ -13,7 +13,6 @@ import MainPage from './MainPage';
 import AdminPage from './AdminPage';
 import TopBar from './TopBar';
 
-
 require("../resources/app.css");
 
 type EntryType = "User" | "Admin" | "None";
@@ -47,6 +46,7 @@ class App extends React.Component<AppProps, AppStates> {
   user: Utilities.User = new Utilities.User();
   userList: Utilities.User[] = [];
   groupList: Utilities.Group[] = [];
+  groupListInvolved: Utilities.Group[] = [];
   fetchGroupListStatus: number = -1; // -1 for haven't fetched yet, 0 for fetching, 1 for fetched
 
   constructor(props: AppProps) {
@@ -89,31 +89,14 @@ class App extends React.Component<AppProps, AppStates> {
         questions: questions
       });
     }.bind(this));
-
-    // let downloader = Utilities.creteJsonDownloader(this.jsonUrls,
-    //   () => {
-    //     let downloadedObjects = downloader.getDownloadedJsonObjects();
-
-    //     let questions = downloadedObjects["api/questions"].questions;
-
-    //     if (!questions) {
-    //       return; // Not fully downloaded yet
-    //     }
-
-    //     this.numberOfQuestions = questions.length;
-
-    //     this.setState({
-    //       questions: questions
-    //     });
-    //   }
-    // );
   }
 
   fetchGroupList() {
     this.fetchGroupListStatus = 0;
-    Utilities.getGroupList(this.user.id)
+    Promise.all([Utilities.getGroupListInvloved(this.user.id), Utilities.getGroupList(this.user.id)])
       .then(function (data: any) {
-        this.groupList = data;
+        this.groupListInvolved = data[0];
+        this.groupList = data[1];
         this.fetchGroupListStatus = 1;
         this.forceUpdate();
       }.bind(this));
@@ -149,7 +132,6 @@ class App extends React.Component<AppProps, AppStates> {
         });
       }
     }.bind(this), true);
-
   }
 
   logUserIn(): void {
@@ -158,8 +140,6 @@ class App extends React.Component<AppProps, AppStates> {
         FB.api('/me', function (response: any) {
           this.user.id = response.id;
           this.user.name = response.name;
-          // this.userId = response.id;
-          // this.userName = response.name;
           this.setState({
             login: true
           });
@@ -178,8 +158,6 @@ class App extends React.Component<AppProps, AppStates> {
       }.bind(this));
 
       this.user = new Utilities.User();
-      // this.userId = "";
-      // this.userName = "";
       this.userList = [];
       this.groupList = [];
 
@@ -236,7 +214,7 @@ class App extends React.Component<AppProps, AppStates> {
       });
     }
 
-    if (allQuestionsAnswered) {
+    if (allQuestionsAnswered && this.userDesc.length > 0) {
       this.submitData();
 
       this.setState({
@@ -250,22 +228,32 @@ class App extends React.Component<AppProps, AppStates> {
     }
   }
 
-  submitData(): void {
-    // let data = {
-    //   "page_id": this.groupId,
-    //   "user_id": this.user.id,
-    //   "user_name": this.user.name,
-    //   "user_desc": "",
-    //   "responses": this.userScores
-    // };
+  onDeletePage() {
+    this.fetchGroupListStatus = -1;
+    this.groupList = [];
+    this.setState({
+      entryType: "None"
+    });
+  }
 
+  submitData(): void {
     let data = {
-      "page_id": 'page_id',
-      "user_id": 'non-registered-1',
-      "user_name": 'temp_name',
-      "user_desc": "temp_desc",
-      "responses": [1, 2, 3, 4, 5]
-    }
+      "page_id": this.groupId,
+      "user_id": this.user.id,
+      "user_name": this.user.name,
+      "user_desc": this.userDesc,
+      "responses": this.userScores
+    };
+
+    // let data = {
+    //   "page_id": 'page_id',
+    //   "user_id": 'non-registered-1',
+    //   "user_name": 'temp_name',
+    //   "user_desc": "temp_desc",
+    //   "responses": [1, 2, 3, 4, 5]
+    // }
+
+    console.log(JSON.stringify(data));
 
     fetch("http://teamker.tk/api/response", {
       method: "POST",
@@ -275,27 +263,47 @@ class App extends React.Component<AppProps, AppStates> {
       },
       body: JSON.stringify(data)
     }).then(function (res: any) {
-      console.log("response received: " + res);
       if (res.ok) {
-        Utilities.getUserList(this.user.id)
-          .then(function (data: any) {
-            console.log("userlist received: " + data);
-            this.userList = data;
-            this.setState({
-              isWaitingForUserList: false
-            });
-          }.bind(this));
+        console.log("response received: " + res);
+        return res.text();
       } else {
         console.log("Unable to get user list");
       }
+    }).then(function (data: any) {
+      let jsonData = JSON.parse(data);
+      console.log("userlist received: " + JSON.stringify(jsonData.users));
+      let users = jsonData.users;
+
+      this.userList = users.map(function (user: any) {
+        let q: Utilities.QuestionAndAnswer[] = [];
+
+        for (let i = 0; i < this.state.questions.length; i++) {
+          q.push({
+            question: this.state.questions[i],
+            answer: user.attributes[i]
+          });
+        }
+
+        return {
+          name: user.name,
+          id: user.id,
+          desc: user.desc,
+          matchScore: user.matchScore,
+          questionAndAnswers: q
+        };
+      })
+
+      console.log(this.userList);
+
+      this.setState({
+        isWaitingForUserList: false
+      });
     }.bind(this)).catch(function (e) {
       console.log("error: unable to get user list");
     });
   }
 
   render() {
-
-
     let topBar: JSX.Element = null;
     let loginPage: JSX.Element = null;
     let entryPage: JSX.Element = null;
@@ -317,6 +325,7 @@ class App extends React.Component<AppProps, AppStates> {
       loginPage = <LoginPage onLogin={this.logUserIn.bind(this)} />;
     } else if (this.state.entryType === "User" && !this.state.allQuestionsAnswered && !this.state.questions) {
       this.fetchQuestions();
+      loaderPage = <LoaderPage message={"Please wait for a moment..."} color={"white"} containerStyle={{ height: "100vh" }} />
     }
 
     if (this.state.login == 1 && this.state.entryType === "None") {
@@ -326,7 +335,7 @@ class App extends React.Component<AppProps, AppStates> {
       }
 
       entryPage = <EntryPage
-        involvedList={this.groupList}
+        involvedList={this.groupListInvolved}
         adminList={this.groupList}
         isLoading={this.fetchGroupListStatus <= 0}
         onGroupEntrySelected={this.onGroupEntrySelected.bind(this)}
@@ -338,7 +347,7 @@ class App extends React.Component<AppProps, AppStates> {
         console.log("fetch in admin");
         this.fetchGroupList();
       } else {
-        adminPage = <AdminPage user={this.user} index={0} groupList={this.groupList} />;
+        adminPage = <AdminPage user={this.user} index={0} groupList={this.groupList} onDeletePage={this.onDeletePage.bind(this)} />;
       }
     }
 

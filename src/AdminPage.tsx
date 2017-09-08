@@ -8,6 +8,7 @@ interface AdminPageProps {
     user: Utilities.User;
     index: number;
     groupList: Utilities.Group[];
+    onDeletePage: Function;
 }
 
 interface AdminPageStates {
@@ -53,7 +54,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         this.initialiseStatus = 0;
         let groupId = this.props.groupList[index].id;
 
-        console.log("check new group: "+ index + " " + groupId + " " + this.props.groupList[index].name);
+        console.log("check new group: " + index + " " + groupId + " " + this.props.groupList[index].name);
 
         Utilities.checkIsNewGroup(groupId)
             .then(function (isNewGroup: boolean) {
@@ -157,16 +158,36 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         });
     }
 
-    onBottomButtonClicked(): void {
-        this.submitGroupData();
-    }
-
     closeUserDetails(): void {
         this.setState({
             shouldUserDetailsOpen: false
         });
 
         this.userDetailIndex = -1;
+    }
+
+    onBottomButtonClicked(): void {
+        if (this.isNewGroup) {
+            this.submitGroupData();
+        } else {
+            this.deleteGroup();
+        }
+    }
+
+    deleteGroup(): void {
+        let groupId = this.props.groupList[this.state.selectIndex].id;
+        fetch("http://teamker.tk/api/deletePage?page_id=" + groupId, {
+            method: "POST",
+            mode: "cors"
+        }).then(function (res: any) {
+            if (res.ok) {
+                this.props.onDeletePage();
+            } else {
+                console.log("unable to delete page");
+            }
+        }).catch(function (e: any) {
+            console.log("unable to delete page");
+        });
     }
 
     submitGroupData(): void {
@@ -206,14 +227,16 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             } else {
                 console.log("Unable to get user list");
             }
-        }.bind(this));
+        }.bind(this)).catch(function (e: any) {
+            console.log("Unable to get user list");
+        });;
     }
 
     render() {
 
         Utilities.initGA();
         Utilities.logPageView("placeholder", "/admin");
-        
+
         let mainContent: JSX.Element = null;
         let groupList: JSX.Element[] = [];
         let inputs: JSX.Element[] = [];
