@@ -274,7 +274,7 @@ export function buildUserList(users: any, questions: Question[]): User[] {
             name: user.name,
             id: user.id,
             desc: user.desc,
-            matchScore: user.matchScore,
+            matchScore: user.score,
             questionAndAnswers: q
         };
     });

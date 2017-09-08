@@ -311,9 +311,11 @@ class App extends React.Component<AppProps, AppStates> {
   }
 
   fetchUserList(): void {
+    console.log("fetch user list");
     Promise.all([Utilities.getUserList(this.groupId, this.user.id), Utilities.getQuestions(this.groupId)])
       .then(function (res: any) {
         this.userList = Utilities.buildUserList(res[0], res[1]);
+        console.log("userList received in App.tsx " + this.userList);
         this.setState({
           isWaitingForUserList: false
         })
