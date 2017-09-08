@@ -148,7 +148,7 @@ module.exports = {
         pool.query(`SELECT EXISTS (
                     SELECT * FROM Teamker.responses
                     WHERE user_id=${pool.escape(user_id)}
-                    AND page_id=${poo.escaep(page_id)}) AS exist;`, function (error, results, fields) {
+                    AND page_id=${pool.escaep(page_id)}) AS exist;`, function (error, results, fields) {
             if (error) {
                 throw error;
             } else {
@@ -184,7 +184,7 @@ module.exports = {
         pool.query(`SELECT DISTINCT users.id, users.name, involved.user_desc FROM Teamker.users AS users
                     INNER JOIN Teamker.involved AS involved ON users.id=involved.user_id
                     INNER JOIN Teamker.responses AS responses ON users.id=responses.user_id
-                    INNER JOIN Teamker.questions AS questions ON involved.page_id=questions.page_id
+                    INNER JOIN Teamker.questions AS questions ON involved.page_id=questions.page_id AND questions.page_id=responses.page_id
                     WHERE involved.page_id=${pool.escape(page_id)};`, function (error, results, fields) {
             if (error) {
                 throw error;
