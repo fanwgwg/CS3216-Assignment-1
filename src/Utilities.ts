@@ -78,65 +78,63 @@ export function creteJsonDownloader(jsonUrls: string[], callback: Function) {
 }
 
 // Return a list of users to display in the main page
-export function getUserList(userId: string): Promise<User[]> {
-    let questions: Question[] = [
-        {
-            "body": "How much do you know about Photoshop and design?"
-        },
-        {
-            "body": "How much do you know about Html and CSS?"
-        },
-        {
-            "body": "How much do you know about Javascript?"
-        },
-        {
-            "body": "How much do you know about server side languages?"
-        },
-        {
-            "body": "How much do you know about database?"
-        }
-    ];
+export function getUserList(data: any): Promise<User[]> {
+    // let questions: Question[] = [
+    //     {
+    //         "body": "How much do you know about Photoshop and design?"
+    //     },
+    //     {
+    //         "body": "How much do you know about Html and CSS?"
+    //     },
+    //     {
+    //         "body": "How much do you know about Javascript?"
+    //     },
+    //     {
+    //         "body": "How much do you know about server side languages?"
+    //     },
+    //     {
+    //         "body": "How much do you know about database?"
+    //     }
+    // ];
 
-    let questionAndAnswers: QuestionAndAnswer[] = questions.map(x => {
-        return {
-            question: x,
-            answer: Math.floor(Math.random() * 9 + 1)
-        }
-    })
+    // let questionAndAnswers: QuestionAndAnswer[] = questions.map(x => {
+    //     return {
+    //         question: x,
+    //         answer: Math.floor(Math.random() * 9 + 1)
+    //     }
+    // })
 
-    let users = ["Li Zihan", "Ho Yi Hang", "Goh Wei Wen", "Chan Khan", "Stefano Chiesa Suryanto",
-        "Lau Shi Jie", "Yip Mun Kit Bernard", "Tan Zheng Wei", "Tan Kai Meng Wilson", "Jeremy Jee De Sheng",
-        "Ng Jun Wei", "Chan Jin Jia", "Chua Lin Jing", "Apoorva Ullas", "Charlton Lim", "WANG RIWU",
-        "Lim Jia Yee", "Lim Ta Eu", "Aaron Ong Chong Shi", "Danielle Chan Xin Yun", "Maximilianus Kusnadi",
-        "Oh Han Gyeol", "WON JUN RU DAPHNE", "Kushagra Goyal", "Curtis Tan Wei Jie", "See Soon Kiat", "See Loo Jane",
-        "Alan Lee Yung Chong", "Fan Weiguang", "Bai Chuan", "Chng Hui Yie", "Ong Jing Yin", "Ng Si Kai",
-        "Liew Yu Young Jovin", "Aaron Ong Chong Shi"];
+    // let users = ["Li Zihan", "Ho Yi Hang", "Goh Wei Wen", "Chan Khan", "Stefano Chiesa Suryanto",
+    //     "Lau Shi Jie", "Yip Mun Kit Bernard", "Tan Zheng Wei", "Tan Kai Meng Wilson", "Jeremy Jee De Sheng",
+    //     "Ng Jun Wei", "Chan Jin Jia", "Chua Lin Jing", "Apoorva Ullas", "Charlton Lim", "WANG RIWU",
+    //     "Lim Jia Yee", "Lim Ta Eu", "Aaron Ong Chong Shi", "Danielle Chan Xin Yun", "Maximilianus Kusnadi",
+    //     "Oh Han Gyeol", "WON JUN RU DAPHNE", "Kushagra Goyal", "Curtis Tan Wei Jie", "See Soon Kiat", "See Loo Jane",
+    //     "Alan Lee Yung Chong", "Fan Weiguang", "Bai Chuan", "Chng Hui Yie", "Ong Jing Yin", "Ng Si Kai",
+    //     "Liew Yu Young Jovin", "Aaron Ong Chong Shi"];
 
-    let userList = users.map(name => {
-        return {
-            name: name,
-            id: "",
-            desc: "This is a description about myself",
-            matchScore: Math.floor(Math.random() * 99 + 1),
-            photoUrl: require("../resources/images/user.svg"),
-            questionAndAnswers: questionAndAnswers
-        };
-    });
+    // let userList = users.map(name => {
+    //     return {
+    //         name: name,
+    //         id: "",
+    //         desc: "This is a description about myself",
+    //         matchScore: Math.floor(Math.random() * 99 + 1),
+    //         photoUrl: require("../resources/images/user.svg"),
+    //         questionAndAnswers: questionAndAnswers
+    //     };
+    // });
 
-    userList.sort((a: User, b: User) => {
-        return a.matchScore < b.matchScore ? 1 : -1;
-    });
+    // userList.sort((a: User, b: User) => {
+    //     return a.matchScore < b.matchScore ? 1 : -1;
+    // });
+
+    // return new Promise<User[]>(resolve => {
+    //     setTimeout(function () {
+    //         resolve(userList);
+    //     }, 1000);
+    // });
 
     return new Promise<User[]>(resolve => {
-        setTimeout(function () {
-            resolve(userList);
-        }, 1000);
-    });
-}
-
-export function getQuestions(groupId: string): Promise<Question[]> {
-    return new Promise<Question[]>(resolve => {
-        fetch("http://teamker.tk/api/questions?page_id=page_id")
+        fetch("http://teamker.tk/api/response")
             .then(function (response: Response) {
                 return response.text();
             }).then(function (jsonString: any) {
@@ -153,6 +151,25 @@ export function getQuestions(groupId: string): Promise<Question[]> {
     });
 }
 
+export function getQuestions(groupId: string): Promise<Question[]> {
+    return new Promise<Question[]>(resolve => {
+        // fetch("http://teamker.tk/api/questions?page_id=page_id")
+        fetch("http://teamker.tk/api/questions?page_id=" + groupId)
+            .then(function (response: Response) {
+                return response.text();
+            }).then(function (jsonString: any) {
+                let data = JSON.parse(jsonString).questions;
+                console.log("response from getQuestions: " + data);
+                let questions = data.map(function (q: any) {
+                    return {
+                        body: "How good at you at " + q.body + " ?"
+                    }
+                });
+
+                resolve(questions);
+            })
+    });
+}
 
 // Return true if this group is not on Teamker, true otherwise
 export function checkIsNewGroup(groupId: string): Promise<boolean> {
@@ -163,8 +180,8 @@ export function checkIsNewGroup(groupId: string): Promise<boolean> {
 
         console.log("checkIsNewGroup");
 
-        fetch("http://teamker.tk/api/checkNewGroup?page_id=page_id")
-            // fetch("/api/checkNewGroup?page_id=" + groupId)
+        // fetch("http://teamker.tk/api/checkNewGroup?page_id=page_id")
+        fetch("http://teamker.tk/api/checkNewGroup?page_id=" + groupId)
             .then(function (response: Response) {
                 let data = response.text();
                 console.log("response from checkIsNewGroup: " + data);
@@ -188,8 +205,8 @@ export function getGroupMembersOnTeamker(groupId: string): Promise<User[]> {
 
         console.log("getGroupMembersOnTeamker");
 
-        fetch("http://teamker.tk/api/usersOnTeamker?page_id=page_id")
-            // fetch("/api/usersOnTeamker?page_id=" + groupId)
+        // fetch("http://teamker.tk/api/usersOnTeamker?page_id=page_id")
+        fetch("http://teamker.tk/api/usersOnTeamker?page_id=" + groupId)
             .then(function (response: Response) {
                 return response.text();
             }).then(function (jsonString: any) {
@@ -214,8 +231,8 @@ export function getGroupMembersNotOnTeamker(groupId: string): Promise<User[]> {
 
         console.log("getGroupMembersNotOnTeamker");
 
-        fetch("http://teamker.tk/api/usersNotOnTeamker?page_id=page_id")
-            // fetch("/api/usersNotOnTeamker?page_id=" + groupId)
+        // fetch("http://teamker.tk/api/usersNotOnTeamker?page_id=page_id")
+        fetch("http://teamker.tk/api/usersNotOnTeamker?page_id=" + groupId)
             .then(function (response: Response) {
                 return response.text();
             }).then(function (jsonString: any) {
@@ -236,20 +253,14 @@ export function getMembersOfGroup(groupId: string): Promise<User[]> {
                 let memberList: User[] = [];
                 if (response && !response.error) {
                     /* handle the result */
-                    console.log(response);
                     for (let mem of response.data) {
-                        console.log(mem);
-                        // if (!mem.administrator){
                         let user = new User();
                         user.id = mem.id;
                         user.name = mem.name;
                         user.photoUrl = "http://graph.facebook.com/"+ mem.id +"/picture?type=square";
                         memberList.push(user);
-                        // }
                     }
 
-                    // callback(groupList);
-                    console.log(memberList);
                 }
                 resolve(memberList);
             }
@@ -260,22 +271,6 @@ export function getMembersOfGroup(groupId: string): Promise<User[]> {
 // Return a list of group that the user owns (this is from Facebook but not our database)
 export function getGroupList(userId: string): Promise<Group[]> {
     return new Promise<Group[]>(resolve => {
-
-        // setTimeout(function () {
-        //     let mockGroup = {
-        //         name: "CS3216 Software Engineering in Digital Platforms",
-        //         id: ""
-        //     };
-
-        //     let groupList: Group[] = [];
-
-        //     for (let i = 0; i < 10; i++) {
-        //         groupList.push(mockGroup);
-        //     }
-
-        //     resolve(groupList);
-        // }, 2000);
-
         FB.api(
             "/me/groups",
             function (response: any) {
@@ -290,6 +285,23 @@ export function getGroupList(userId: string): Promise<Group[]> {
                 resolve(groupList);
             }
         );
+    });
+}
+
+// Return a list of pages the user is involved
+export function getGroupListInvloved(userId: string): Promise<Group[]> {
+    console.log("check getGroupListInvolved with userId: " + userId);
+    return new Promise<Group[]>(resolve => {
+        fetch("http://teamker.tk/api/frontpage?user_id=" + userId)
+            .then(function (response: Response) {
+                return response.text();
+            }).then(function (jsonString: any) {
+                let data = JSON.parse(jsonString).pages;
+                console.log("response from getGroupListInvolved: " + data);
+                resolve(data);
+            }).catch(function (error: any) {
+                console.error(error);
+            });
     });
 }
 
