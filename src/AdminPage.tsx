@@ -247,6 +247,10 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         });;
     }
 
+    openProfile(userId: string): void{
+        window.open("http://www.facebook.com/"+userId, "_blank");
+    }
+
     render() {
         Utilities.initGA();
         Utilities.logPageView("placeholder", "/admin");
@@ -332,7 +336,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                 userListA = this.usersOnTeamker.map(user => {
                     return (
                         <div className={"User"} key={i} onClick={this.onUserListClicked.bind(this, i++)}>
-                            <img className={"Photo"} src={require("../resources/images/user.svg")} />
+                            <img className={"Photo"} src={"http://graph.facebook.com/" + user.id + "/picture?type=square"} />
                             <div className={"Name"}>{user.name}</div>
                         </div>
                     );
@@ -343,8 +347,8 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             if (this.usersNotOnTeamker.length > 0) {
                 userListB = this.usersNotOnTeamker.map(user => {
                     return (
-                        <div className={"User"} key={i++}>
-                            <img className={"Photo"} src={require("../resources/images/user.svg")} />
+                        <div className={"User"} key={i++} onClick = {this.openProfile.bind(this, user.id)}>
+                            <img className={"Photo"} src={"http://graph.facebook.com/" + user.id + "/picture?type=square"} />
                             <div className={"Name"}>{user.name}</div>
                         </div>
                     );
