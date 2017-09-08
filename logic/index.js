@@ -70,7 +70,7 @@ function MostSimilar(id, users){
 			if(user.score == 0){
 				return {"id" : user.id, "score" : 100};
 			}
-			return {"id" : user.id, "name" : user.name, "desc" : user.desc, "score" : Math.ceil(1/user.score * bestscore * 100) "attributes" : user.attributes};
+			return {"id" : user.id, "name" : user.name, "desc" : user.desc, "score" : Math.ceil(1/user.score * bestscore * 100), "attributes" : user.attributes};
 		});
 	}
 	return matchscores;
