@@ -21,7 +21,7 @@ function MostDifferent(id, users){
 		matchscores.push({
 			"id" : rest[i].id,
 			"name": rest[i].name,
-			"desc": rest[i].desc,
+			"desc": rest[i].user_desc,
 			"score" : diffsum
 		});
 	}
@@ -57,7 +57,7 @@ function MostSimilar(id, users){
 		matchscores.push({
 			"id" : rest[i].id,
 			"name": rest[i].name,
-			"desc": rest[i].desc,
+			"desc": rest[i].user_desc,
 			"score" : diffsum
 		});
 	}
