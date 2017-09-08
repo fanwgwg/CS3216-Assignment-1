@@ -113,6 +113,7 @@ app.get('/api/deletePage', async function (req, res) {
 		res.writeHead(200);
 		res.end();
 	} catch (error) {
+		throw error;
 		res.writeHead(500);
 		res.end(error.message);
 	}

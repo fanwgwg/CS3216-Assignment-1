@@ -256,28 +256,6 @@ module.exports = {
         });
     },
 
-    getMatchedList: function (user_id, page_id, callback) {
-        pool.query(`SELECT users.id, users.name, GROUP_CONCAT(responses.score) AS attributes
-                    FROM Teamker.users
-                    INNER JOIN Teamker.responses ON users.id=responses.user_id
-                    WHERE responses.page_id=${pool.escape(page_id)}
-                    GROUP BY users.id;`, function (error, results, fields) {
-            if (error) {
-                throw error;
-            } else {
-                let users = [];
-                results.forEach(function (row) {
-                    users.push(Object.assign({}, row,
-                        {
-                            attributes: row.attributes.split(',').map(Number)
-                        }
-                    ));
-                });
-                callback(logic.MostDifferent(user_id, users));
-            }
-        });
-    },
-
     deletePage: function (page_id) {
         return new Promise((resolve, reject) => {
             pool.query(`DELETE from Teamker.pages
