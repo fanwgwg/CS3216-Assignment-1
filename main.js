@@ -26,7 +26,7 @@ app.get('/logo', function (req, res) {
 /** 
  * Gives question attributes of a group (when new user registers)
  * 
- * @param /questions?page_id="facebook page id"
+ * @param /api/questions?page_id="facebook page id"
  * @return list of questions under the page
  * 			response = { questions: ["coding", "business", "design"] }
  */
@@ -108,7 +108,7 @@ app.post('/api/admin', async function (req, res) {
 /** 
  * Delete a page from system (when admin press delete page)
  * 
- * @param /deletePage?page_id="facebook page id"
+ * @param /api/deletePage?page_id="facebook page id"
  */
 app.get('/api/deletePage', async function (req, res) {
 	try {
@@ -172,7 +172,7 @@ app.post('/api/response', async function (req, res) {
 /** 
  * User login to web app
  * 
- * @param /frontpage?user_id="user facebook id"
+ * @param /api/frontpage?user_id="user facebook id"
  * @return list of pages the user is involved
  * 			response = { pages: [{id: "page id", name: "page name"}, ...] }
  */
@@ -185,6 +185,30 @@ app.get('/api/frontpage', function (req, res) {
 				'Cache-Control': 'no-cache'
 			});
 			res.end(JSON.stringify(pages));
+		});
+	} catch (error) {
+		throw error;
+		res.writeHead(500);
+		res.end(error.message);
+	}
+});
+
+/**
+ * Return true if the user responded to questions, false otherwise
+ * 
+ * @param /api/checkUserResponse?user_id="user facebook id"&page_id="facebook page id"
+ * @return response = "true" OR "false" string
+ */
+app.get('/api/checkUserResponse', function (req, res) {
+	try {
+		const user_id = req.query.user_id;
+		const page_id = req.query.page_id;
+		database.checkUserResponse(user_id, page_id, function (exist) {
+			res.writeHead(200, {
+				"Content-Type": "application/json",
+				'Cache-Control': 'no-cache'
+			});
+			res.end(JSON.stringify(!exist));
 		});
 	} catch (error) {
 		throw error;
