@@ -193,6 +193,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             console.log("fetch group status");
             this.fetchGroupStatus(index);
             this.initialiseStatus = 0;
+            this.attributeInputs = [];
             this.setState({
                 selectIndex: index
             });
@@ -286,6 +287,13 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
         window.open("http://www.facebook.com/" + userId, "_blank");
     }
 
+    checkInputEnter(event: any) {
+        let keycode = event.keyCode;
+        if (keycode === 13 /* Enter */) {
+            event.preventDefault();
+          }
+    }
+
     render() {
         Utilities.initGA();
         Utilities.logPageView("placeholder", "/admin");
@@ -335,7 +343,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                         <div className={"Index"}>{i + 1}</div>
                         <input type="text" onChange={function (e: any) {
                             this.onInputChange(i, e);
-                        }.bind(this)} />
+                        }.bind(this)} onKeyDown={this.checkInputEnter.bind(this)} />
                         {addButton}
                         {deleteButton}
                     </form>
@@ -346,10 +354,10 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                 <div className={"MainContent"}>
                     <div className={"PartA"}>
                         <div className={"Title"}>Set up question attributes</div>
-                        <div className={"Explaination"}>You can set 3-20 question attributes here. Each question will be in the format “How much do you know about … ?”, and answer will be scores from 1 to 10.</div>
+                        <div className={"Explaination"}>You can set 3-20 question attributes here. Each question will be in the format “How good are you at … ?”, and answer will be scores from 1 to 10.</div>
                         <div className={"AttributesInputs"}>{inputs}</div>
                     </div>
-                    <div className={"PartB"}>
+                    {/* <div className={"PartB"}>
                         <div className={"Title"}>Set up matching options</div>
                         <div className={"MatchOption"}>
                             <div className={"MatchContent"}>Match members if they are</div>
@@ -358,8 +366,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                                 <div className={this.state.matchMostSimilar ? "Option" : "OptionSelected"}>most different</div>
                             </div>
                         </div>
-
-                    </div>
+                    </div> */}
                 </div>
             );
         } else if (this.initialiseStatus > 0) {
