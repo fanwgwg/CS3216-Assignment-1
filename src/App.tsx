@@ -92,6 +92,7 @@ class App extends React.Component<AppProps, AppStates> {
         } else {
           console.log("isNewUser: false");
           this.userFetchStatus = 1;
+          this.fetchUserList();
           this.setState({
             isWaitingForUserList: true
           })
@@ -219,11 +220,15 @@ class App extends React.Component<AppProps, AppStates> {
     this.groupSelectionIndex = -1;
     this.groupList = [];
     this.groupListInvolved = [];
+    this.userFetchStatus = -1;
+    this.userList = [];
+
     this.setState({
       entryType: "None",
       questions: null,
       allQuestionsAnswered: false,
-      unfinishedQuestionIndex: -1
+      unfinishedQuestionIndex: -1,
+      isWaitingForUserList: false
     });
   }
 
@@ -305,6 +310,18 @@ class App extends React.Component<AppProps, AppStates> {
     });
   }
 
+  fetchUserList(): void {
+    console.log("fetch user list");
+    Promise.all([Utilities.getUserList(this.groupId, this.user.id), Utilities.getQuestions(this.groupId)])
+      .then(function (res: any) {
+        this.userList = Utilities.buildUserList(res[0], res[1]);
+        console.log("userList received in App.tsx " + this.userList);
+        this.setState({
+          isWaitingForUserList: false
+        })
+      }.bind(this));
+  }
+
   render() {
     let topBar: JSX.Element = null;
     let loginPage: JSX.Element = null;
@@ -323,7 +340,6 @@ class App extends React.Component<AppProps, AppStates> {
     />;
 
     if (this.state.login === 0) {
-      //this.checkLoginState();
       loginPage = <LoginPage onLogin={this.logUserIn.bind(this)} />;
     } else if (this.state.entryType === "User" && !this.state.allQuestionsAnswered && !this.state.questions && this.userFetchStatus < 0) {
       this.fetchUserStatus();
@@ -343,6 +359,10 @@ class App extends React.Component<AppProps, AppStates> {
         onGroupEntrySelected={this.onGroupEntrySelected.bind(this)}
       />;
     }
+
+    // if (this.state.login == 1 && this.state.entryType === "User" && (!this.state.questions && this.userFetchStatus > 0)) {
+    //   this.fetchUserList();
+    // }
 
     if (this.state.login == 1 && this.state.entryType === "Admin") {
       if (this.fetchGroupListStatus < 0 && this.groupList.length == 0) {
@@ -379,8 +399,8 @@ class App extends React.Component<AppProps, AppStates> {
       questionPage = (
         <div className={"QuestionPage"}>
           <div className={"Header"}>
-                    <div>Let your friends know more about you</div>
-                    <div className={"SwitchGroupButton"} onClick={this.onSwitchGroupClicked.bind(this)}>Switch Group</div>
+            <div>Let your friends know more about you</div>
+            <div className={"SwitchGroupButton"} onClick={this.onSwitchGroupClicked.bind(this)}>Switch Group</div>
           </div>
           {questions}
           <div className={"FinishButton"} onClick={this.onFinishButtonClicked.bind(this)}>Finish</div>

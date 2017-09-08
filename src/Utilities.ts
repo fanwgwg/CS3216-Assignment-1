@@ -77,75 +77,22 @@ export function creteJsonDownloader(jsonUrls: string[], callback: Function) {
 }
 
 // Return a list of users to display in the main page
-export function getUserList(data: any): Promise<User[]> {
-    // let questions: Question[] = [
-    //     {
-    //         "body": "How much do you know about Photoshop and design?"
-    //     },
-    //     {
-    //         "body": "How much do you know about Html and CSS?"
-    //     },
-    //     {
-    //         "body": "How much do you know about Javascript?"
-    //     },
-    //     {
-    //         "body": "How much do you know about server side languages?"
-    //     },
-    //     {
-    //         "body": "How much do you know about database?"
-    //     }
-    // ];
+export function getUserList(groupId: string, userId: string): Promise<any[]> {
+    return new Promise<any[]>(resolve => {
+        fetch("http://teamker.tk/api/userList?user_id=" + userId + "&page_id=" + groupId)
+            .then(function (res: Response) {
+                if (res.ok) {
+                    console.log("getUserListResponse received: " + res);
+                    return res.text();
+                } else {
+                    console.log("Unable to get user list");
+                }
+            }).then(function (data: any) {
+                let jsonData = JSON.parse(data);
+                console.log("userlist received: " + JSON.stringify(jsonData.users));
+                let users = jsonData.users;
 
-    // let questionAndAnswers: QuestionAndAnswer[] = questions.map(x => {
-    //     return {
-    //         question: x,
-    //         answer: Math.floor(Math.random() * 9 + 1)
-    //     }
-    // })
-
-    // let users = ["Li Zihan", "Ho Yi Hang", "Goh Wei Wen", "Chan Khan", "Stefano Chiesa Suryanto",
-    //     "Lau Shi Jie", "Yip Mun Kit Bernard", "Tan Zheng Wei", "Tan Kai Meng Wilson", "Jeremy Jee De Sheng",
-    //     "Ng Jun Wei", "Chan Jin Jia", "Chua Lin Jing", "Apoorva Ullas", "Charlton Lim", "WANG RIWU",
-    //     "Lim Jia Yee", "Lim Ta Eu", "Aaron Ong Chong Shi", "Danielle Chan Xin Yun", "Maximilianus Kusnadi",
-    //     "Oh Han Gyeol", "WON JUN RU DAPHNE", "Kushagra Goyal", "Curtis Tan Wei Jie", "See Soon Kiat", "See Loo Jane",
-    //     "Alan Lee Yung Chong", "Fan Weiguang", "Bai Chuan", "Chng Hui Yie", "Ong Jing Yin", "Ng Si Kai",
-    //     "Liew Yu Young Jovin", "Aaron Ong Chong Shi"];
-
-    // let userList = users.map(name => {
-    //     return {
-    //         name: name,
-    //         id: "",
-    //         desc: "This is a description about myself",
-    //         matchScore: Math.floor(Math.random() * 99 + 1),
-    //         photoUrl: require("../resources/images/user.svg"),
-    //         questionAndAnswers: questionAndAnswers
-    //     };
-    // });
-
-    // userList.sort((a: User, b: User) => {
-    //     return a.matchScore < b.matchScore ? 1 : -1;
-    // });
-
-    // return new Promise<User[]>(resolve => {
-    //     setTimeout(function () {
-    //         resolve(userList);
-    //     }, 1000);
-    // });
-
-    return new Promise<User[]>(resolve => {
-        fetch("http://teamker.tk/api/response")
-            .then(function (response: Response) {
-                return response.text();
-            }).then(function (jsonString: any) {
-                let data = JSON.parse(jsonString).questions;
-                console.log("response from getQuestions: " + data);
-                let questions = data.map(function (q: any) {
-                    return {
-                        body: "How good at you at " + q.body + " ?"
-                    }
-                });
-
-                resolve(questions);
+                resolve(users);
             })
     });
 }
@@ -319,7 +266,7 @@ export function buildUserList(users: any, questions: Question[]): User[] {
         for (let i = 0; i < questions.length; i++) {
             q.push({
                 question: questions[i],
-                answer: user.scores[i]
+                answer: user.attributes[i]
             });
         }
 
@@ -327,7 +274,7 @@ export function buildUserList(users: any, questions: Question[]): User[] {
             name: user.name,
             id: user.id,
             desc: user.desc,
-            matchScore: user.matchScore,
+            matchScore: user.score,
             questionAndAnswers: q
         };
     });
