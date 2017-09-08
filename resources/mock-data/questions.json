@@ -1,0 +1,19 @@
+{
+    "questions": [
+        {
+            "body": "How much do you know about Photoshop and design?"
+        },
+        {
+            "body": "How much do you know about Html and CSS?"
+        },
+        {
+            "body": "How much do you know about Javascript?"
+        },
+        {
+            "body": "How much do you know about server side languages?"
+        },
+        {
+            "body": "How much do you know about database?"
+        }
+    ]
+}
