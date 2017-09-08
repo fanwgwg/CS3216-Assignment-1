@@ -208,7 +208,7 @@ app.get('/api/checkUserResponse', function (req, res) {
 				"Content-Type": "application/json",
 				'Cache-Control': 'no-cache'
 			});
-			res.end(JSON.stringify(exist));
+			res.end(JSON.stringify(!exist));
 		});
 	} catch (error) {
 		throw error;
