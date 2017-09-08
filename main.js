@@ -24,7 +24,7 @@ app.get('/logo', function (req, res) {
 
 
 /** 
- * Register a new user to database
+ * Gives question attributes of a group (when new user registers)
  * 
  * @param /questions?page_id="facebook page id"
  * @return list of questions under the page
@@ -51,7 +51,7 @@ app.get('/api/questions', function (req, res) {
 });
 
 /** 
- * Register facebook group
+ * Register facebook group (when admin press submit)
  * 
  * request.body = {
  *    	page_id: "facebook group id",
@@ -65,7 +65,6 @@ app.get('/api/questions', function (req, res) {
 app.post('/api/admin', async function (req, res) {
 	try {
 		const body = req.body;
-		console.log(req.body);
 		const page = {
 			id: body.page_id,
 			name: body.page_name,
@@ -91,6 +90,23 @@ app.post('/api/admin', async function (req, res) {
 		res.end();
 	} catch (error) {
 		throw error;
+		res.writeHead(500);
+		res.end(error.message);
+	}
+});
+
+/** 
+ * Delete a page from system (when admin press delete page)
+ * 
+ * @param /deletePage?page_id="facebook page id"
+ */
+app.get('/api/deletePage', async function (req, res) {
+	try {
+		const page_id = req.query.page_id;
+		await database.deletePage(page_id);
+		res.writeHead(200);
+		res.end();
+	} catch (error) {
 		res.writeHead(500);
 		res.end(error.message);
 	}
