@@ -39,7 +39,8 @@ app.get('/api/questions', function (req, res) {
 		const page_id = req.query.page_id;
 		database.getQuestions(page_id, function(questions){
 			res.writeHead(200, {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				'Cache-Control': 'no-cache'
 			});
 			res.end(JSON.stringify(questions));
 		});
@@ -92,7 +93,10 @@ app.post('/api/admin', async function (req, res) {
 			}
 			await database.addInvolved(involved);
 		}
-		res.writeHead(200);
+		res.writeHead(200, {
+			"Content-Type": "application/json",
+			'Cache-Control': 'no-cache'
+		});
 		res.end();
 	} catch (error) {
 		throw error;
@@ -110,7 +114,10 @@ app.get('/api/deletePage', async function (req, res) {
 	try {
 		const page_id = req.query.page_id;
 		await database.deletePage(page_id);
-		res.writeHead(200);
+		res.writeHead(200, {
+			"Content-Type": "application/json",
+			'Cache-Control': 'no-cache'
+		});
 		res.end();
 	} catch (error) {
 		throw error;
@@ -174,7 +181,8 @@ app.get('/api/frontpage', function (req, res) {
 		const user_id = req.query.user_id;
 		database.getPagesUserInvolved(user_id, function (pages) {
 			res.writeHead(200, {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				'Cache-Control': 'no-cache'
 			});
 			res.end(JSON.stringify(pages));
 		});
@@ -196,7 +204,8 @@ app.get('/api/checkNewGroup', function (req, res) {
 		const page_id = req.query.page_id;
 		database.checkPageExist(page_id, function (exist) {
 			res.writeHead(200, {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				'Cache-Control': 'no-cache'
 			});
 			res.end(JSON.stringify(!exist));
 		});
@@ -219,7 +228,8 @@ app.get('/api/usersOnTeamker', function (req, res) {
 		const page_id = req.query.page_id;
 		database.getRegisteredUsersFromPage(page_id, function (users) {
 			res.writeHead(200, {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				'Cache-Control': 'no-cache'
 			});
 			res.end(JSON.stringify(users));
 		});
@@ -242,7 +252,8 @@ app.get('/api/usersNotOnTeamker', function (req, res) {
 		const page_id = req.query.page_id;
 		database.getNotRegisteredUsersFromPage(page_id, function (users) {
 			res.writeHead(200, {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				'Cache-Control': 'no-cache'
 			});
 			res.end(JSON.stringify(users));
 		});
@@ -263,7 +274,8 @@ function loadJsonFromFile(jsonPath, req, res) {
 			res.end(err.message);
 		} else {
 			res.writeHead(200, {
-				"Content-Type": "application/json"
+				"Content-Type": "application/json",
+				'Cache-Control': 'no-cache'
 			});
 			res.end(data.toString());
 		}
