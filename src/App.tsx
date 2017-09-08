@@ -191,6 +191,9 @@ class App extends React.Component<AppProps, AppStates> {
   }
 
   onSwitchGroupClicked(): void {
+    this.fetchGroupListStatus = -1;
+    this.groupList = [];
+    this.groupListInvolved = [];
     this.setState({
       entryType: "None",
       questions: null,
