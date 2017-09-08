@@ -106,6 +106,45 @@ app.post('/api/admin', async function (req, res) {
 });
 
 /** 
+ * Register facebook group (when admin press submit)
+ * 
+ * request.body = {
+ *    	page_id: "facebook group id",
+ *		page_name: "facebook group name",
+ *		admin_id: "facebook group admin id",
+ *		user_ids: [user_id_1, user_id_2, ...]
+ *		user_names: [user_name_1, user_name_2, ...]
+ * }
+ */
+app.post('/api/adminReload', async function (req, res) {
+	try {
+		const body = req.body;
+		for (let i = 0; i < body.user_ids.length; i++) {
+			const user = {
+				id: body.user_ids[i],
+				name: body.user_names[i]
+			}
+			await database.addUser(user);
+			const involved = {
+				user_id: body.user_ids[i],
+				page_id: body.page_id,
+				user_desc: 'default description'
+			}
+			await database.addInvolved(involved);
+		}
+		res.writeHead(200, {
+			"Content-Type": "application/json",
+			'Cache-Control': 'no-cache'
+		});
+		res.end();
+	} catch (error) {
+		throw error;
+		res.writeHead(500);
+		res.end(error.message);
+	}
+});
+
+/** 
  * Delete a page from system (when admin press delete page)
  * 
  * @param /api/deletePage?page_id="facebook page id"
