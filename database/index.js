@@ -199,7 +199,7 @@ module.exports = {
                         "id": row.id,
                         "name": row.name,
                         "desc": row.user_desc,
-                        "scores": row.attributes.split(',').map(Number)
+                        "attributes": row.attributes.split(',').map(Number)
                     });
                 });
                 callback(data);
@@ -266,7 +266,7 @@ module.exports = {
                 results.forEach(function (row) {
                     users.push(Object.assign({}, row,
                         {
-                            scores: row.attributes.split(',').map(Number)
+                            attributes: row.attributes.split(',').map(Number)
                         }
                     ));
                 });
