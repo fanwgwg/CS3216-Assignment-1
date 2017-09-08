@@ -85,6 +85,12 @@ app.post('/api/admin', async function (req, res) {
 				name: body.user_names[i]
 			}
 			await database.addUser(user);
+			const involved = {
+				user_id: body.user_ids[i],
+				page_id: body.page_id,
+				user_desc: 'default description'
+			}
+			await database.addInvolved(involved);
 		}
 		res.writeHead(200);
 		res.end();

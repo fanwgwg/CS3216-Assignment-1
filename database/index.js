@@ -43,7 +43,7 @@ module.exports = {
             pool.query(`INSERT IGNORE INTO Teamker.involved VALUES(
                         ${pool.escape(involved.user_id)},
                         ${pool.escape(involved.page_id)},
-                        'temp_desc');`, function (error, results, fields) {
+                        ${pool.escape(involved.user_desc)});`, function (error, results, fields) {
                 if (error) reject(error);
                 else {
                     console.log("New involved added: " + involved.user_id);
