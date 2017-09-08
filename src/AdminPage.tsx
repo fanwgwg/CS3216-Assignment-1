@@ -80,11 +80,42 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                         this.usersOnTeamker = [];
                         this.usersNotOnTeamker = [];
                         this.initialiseStatus = 1;
-                        this.fetchGroupMembers(index);
-                        this.forceUpdate();
+                        this.refreshGroupMembers(index);
                     }.bind(this));
                 }
             }.bind(this));
+    }
+
+    refreshGroupMembers(index: number): void {
+        let user_ids = this.membersInGroup.map(user => user.id);
+        let user_names = this.membersInGroup.map(user => user.name);
+
+        let data = {
+            page_id: this.props.groupList[this.state.selectIndex].id,
+            page_name: this.props.groupList[this.state.selectIndex].name,
+            user_ids: user_ids,
+            user_names: user_names
+        }
+
+        fetch("http://teamker.tk/api/adminReload", {
+            method: "POST",
+            mode: "cors",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }).then(function (res: any) {
+            if (res.ok) {
+                this.setState({
+                    isWaitingForConfirmation: false
+                });
+                this.fetchGroupMembers(this.state.selectIndex);
+            } else {
+                console.log("Unable to refresh group members");
+            }
+        }.bind(this)).catch(function (e: any) {
+            console.log("Unable to refresh group members: " + e);
+        });
     }
 
     getMessageStyle(): string {
@@ -248,11 +279,11 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             }
         }.bind(this)).catch(function (e: any) {
             console.log("Unable to get user list");
-        });;
+        });
     }
 
-    openProfile(userId: string): void{
-        window.open("http://www.facebook.com/"+userId, "_blank");
+    openProfile(userId: string): void {
+        window.open("http://www.facebook.com/" + userId, "_blank");
     }
 
     render() {
@@ -351,7 +382,7 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
             if (this.usersNotOnTeamker.length > 0) {
                 userListB = this.usersNotOnTeamker.map(user => {
                     return (
-                        <div className={"User"} key={i++} onClick = {this.openProfile.bind(this, user.id)}>
+                        <div className={"User"} key={i++} onClick={this.openProfile.bind(this, user.id)}>
                             <img className={"Photo"} src={"http://graph.facebook.com/" + user.id + "/picture?type=square"} />
                             <div className={"Name"}>{user.name}</div>
                         </div>
