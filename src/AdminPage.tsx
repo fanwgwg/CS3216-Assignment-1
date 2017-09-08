@@ -69,7 +69,14 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
                         this.forceUpdate();
                     }.bind(this));
                 } else {
-                    this.fetchGroupMembers(index);
+                    Utilities.getMembersOfGroup(groupId).then(function (users: Utilities.User[]) {
+                        this.membersInGroup = users;
+                        this.usersOnTeamker = [];
+                        this.usersNotOnTeamker = [];
+                        this.initialiseStatus = 1;
+                        this.fetchGroupMembers(index);
+                        this.forceUpdate();
+                    }.bind(this));
                 }
             }.bind(this));
     }
@@ -142,7 +149,9 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
     }
 
     onGroupListClicked(index: number) {
+        console.log("group list clicked");
         if (!(this.isNewGroup && index == this.state.selectIndex)) {
+            console.log("fetch group status");
             this.fetchGroupStatus(index);
             this.initialiseStatus = 0;
             this.setState({
@@ -176,18 +185,14 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
 
     deleteGroup(): void {
         let groupId = this.props.groupList[this.state.selectIndex].id;
-        fetch("http://teamker.tk/api/deletePage?page_id=" + groupId, {
-            method: "POST",
-            mode: "cors"
-        }).then(function (res: any) {
-            if (res.ok) {
+        fetch("http://teamker.tk/api/deletePage?page_id=" + groupId)
+            .then(function (res: any) {
+                console.log("delete page response: received");
                 this.props.onDeletePage();
-            } else {
+            }).catch(function (e: any) {
+                console.log(e);
                 console.log("unable to delete page");
-            }
-        }).catch(function (e: any) {
-            console.log("unable to delete page");
-        });
+            });
     }
 
     submitGroupData(): void {

@@ -246,6 +246,7 @@ export function getGroupMembersNotOnTeamker(groupId: string): Promise<User[]> {
 }
 
 export function getMembersOfGroup(groupId: string): Promise<User[]> {
+    console.log("get members of a group from fb");
     return new Promise<User[]>(resolve => {
         FB.api(
             "/" + groupId + "/members",
@@ -261,6 +262,7 @@ export function getMembersOfGroup(groupId: string): Promise<User[]> {
                         memberList.push(user);
                     }
 
+                    console.log(memberList);
                 }
                 resolve(memberList);
             }
