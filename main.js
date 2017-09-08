@@ -170,6 +170,34 @@ app.post('/api/response', async function (req, res) {
 });
 
 /** 
+ * Registered user login
+ * 
+ * @param /api/userList?user_id="user facebook id"&page_id="page facebook id"
+ * @return matched user list
+ * 			response = {admin_id: "admin ID",
+ * 						users: [{ id: "user_id", name: "user_name", "desc": "user_desc", "score": "match_score" }, ...]}
+ */
+app.get('/api/userList', async function (req, res) {
+	try {
+		const user_id = req.query.user_id;
+		const page_id = req.query.page_id; 
+		const admin_id = await database.getAdminId(page_id);
+		database.getMatchedList(user_id, page_id, function(data){
+			const users = {
+				"admin_id": admin_id,
+				"users": data
+			}
+			res.writeHead(200);
+			res.end(JSON.stringify(users));
+		});
+	} catch (error) {
+		throw error;
+		res.writeHead(500);
+		res.end(error.message);
+	}
+});
+
+/** 
  * User login to web app
  * 
  * @param /api/frontpage?user_id="user facebook id"
@@ -245,7 +273,7 @@ app.get('/api/checkNewGroup', function (req, res) {
  * 
  * @param /api/usersOnTeamker?page_id="facebook page id"
  * @return list of registered users
- * 			response = { users: [{id: "user id", name: "user name", desc: "user desc"}, ...] }
+ * 			response = { users: [{id: "user id", name: "user name", desc: "user desc", scores: [...]}, ...] }
  */
 app.get('/api/usersOnTeamker', function (req, res) {
 	try {
