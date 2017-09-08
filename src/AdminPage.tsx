@@ -42,14 +42,18 @@ export default class AdminPage extends React.Component<AdminPageProps, AdminPage
 
     fetchGroupMembers(index: number): void {
         let groupId = this.props.groupList[index].id;
-        Promise.all([Utilities.getGroupMembersOnTeamker(groupId), Utilities.getGroupMembersNotOnTeamker(groupId)])
-            .then(function (res: any) {
-                this.usersOnTeamker = res[0];
-                this.usersNotOnTeamker = res[1];
-                this.initialiseStatus = 1;
-                this.membersInGroup = [];
-                this.forceUpdate();
-            }.bind(this));
+        Promise.all([
+            Utilities.getGroupMembersOnTeamker(groupId),
+            Utilities.getGroupMembersNotOnTeamker(groupId),
+            Utilities.getQuestions(groupId)
+        ]).then(function (res: any) {
+            this.usersOnTeamker = Utilities.buildUserList(res[0], res[2]);
+            console.log("users: " + JSON.stringify(res[0]));
+            this.usersNotOnTeamker = res[1];
+            this.initialiseStatus = 1;
+            this.membersInGroup = [];
+            this.forceUpdate();
+        }.bind(this));
     }
 
     fetchGroupStatus(index: number): void {
