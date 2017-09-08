@@ -11,6 +11,7 @@ function MostDifferent(id, users){
 			rest.splice(i,1);
 		}
 	}
+	if (rest.length === 0) return [];
 	let matchscores = [];
 	for(i = 0; i < rest.length; i++){
 		let diffsum = 0;
@@ -20,7 +21,7 @@ function MostDifferent(id, users){
 		matchscores.push({
 			"id" : rest[i].id,
 			"name": rest[i].name,
-			"desc": rest[i].desc,
+			"desc": rest[i].user_desc,
 			"score" : diffsum
 		});
 	}
@@ -46,6 +47,7 @@ function MostSimilar(id, users){
 			rest.splice(i,1);
 		}
 	}
+	if (rest.length === 0) return [];
 	let matchscores = [];
 	for(i = 0; i < rest.length; i++){
 		let diffsum = 0;
@@ -55,7 +57,7 @@ function MostSimilar(id, users){
 		matchscores.push({
 			"id" : rest[i].id,
 			"name": rest[i].name,
-			"desc": rest[i].desc,
+			"desc": rest[i].user_desc,
 			"score" : diffsum
 		});
 	}
