@@ -144,6 +144,20 @@ module.exports = {
         });
     },
 
+    checkUserResponse: function (user_id, page_id, callback) {
+        pool.query(`SELECT EXISTS (
+                    SELECT * FROM Teamker.responses
+                    WHERE user_id=${pool.escape(user_id)}
+                    AND page_id=${poo.escaep(page_id)}) AS exist;`, function (error, results, fields) {
+            if (error) {
+                throw error;
+            } else {
+                const exist = (results[0].exist === 1) ? true : false;
+                callback(exist);
+            }
+        });
+    },
+
     getAllUsersFromPage: function (page_id, callback) {
         pool.query(`SELECT * FROM Teamker.involved
                     INNER JOIN Teamker.users ON user_id=id
